@@ -17,12 +17,12 @@ import ledger.Log;
 import routing.RoutingTable;
 import rpc_abstract.SendMessage;
 
-public class SendHeartBeat extends SendMessage {
+public class LeaderSendHeartBeat extends SendMessage {
 	
 	private Ledger ledger;
 	private RoutingTable rt;
 	
-	public SendHeartBeat(Ledger ledger, RoutingTable rt) {
+	public LeaderSendHeartBeat(Ledger ledger, RoutingTable rt) {
 		this.ledger = ledger;
 		this.rt = rt;
 	}
@@ -62,7 +62,7 @@ public class SendHeartBeat extends SendMessage {
 		
 	    ExecutorService exec = Executors.newFixedThreadPool(3);
 	    
-	    Callable<Void> callable = new SendHeartBeat(ledger, rt);
+	    Callable<Void> callable = new LeaderSendHeartBeat(ledger, rt);
 		Future<Void> future = exec.submit(callable);
 		    
 	    try {

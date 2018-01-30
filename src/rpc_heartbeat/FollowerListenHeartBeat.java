@@ -17,7 +17,7 @@ import ledger.Log;
 import rpc_abstract.RespondMessage;
 
 // Heart beat thread to listen for RPC from leader
-public class RespondHeartBeat extends RespondMessage {  
+public class FollowerListenHeartBeat extends RespondMessage {
 	
 	private Long last_heartbeat; // the time stamp of the last heart beat received
 	private Ledger ledger; // the ledger to append new heart beats to 
@@ -27,7 +27,7 @@ public class RespondHeartBeat extends RespondMessage {
 	// Constructor 
 	// provide the last_heartbeat object to update
 	// ledger to append new logs to
-	public RespondHeartBeat(Ledger ledger, int port, int random_interval) {
+	public FollowerListenHeartBeat(Ledger ledger, int port, int random_interval) {
 		this.ledger = ledger;
 		this.port = port;
 		this.random_interval = random_interval;
@@ -75,7 +75,7 @@ public class RespondHeartBeat extends RespondMessage {
 		
 		Ledger ledger = new Ledger();
 		
-		Callable<Void> callable = new RespondHeartBeat(ledger,8080, 10);
+		Callable<Void> callable = new FollowerListenHeartBeat(ledger,8080, 10);
 	    ExecutorService exec = Executors.newFixedThreadPool(3);
 	    Future<Void> future = exec.submit(callable);
 	    

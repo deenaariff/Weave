@@ -1,8 +1,5 @@
 package leader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,8 +7,8 @@ import java.util.concurrent.Executors;
 import info.HostInfo;
 import ledger.Ledger;
 import routing.RoutingTable;
-import rpc_heartbeat.RespondHeartBeat;
-import rpc_heartbeat.SendHeartBeat;
+import rpc_heartbeat.FollowerListenHeartBeat;
+import rpc_heartbeat.LeaderSendHeartBeat;
 import state.State;
 
 /**
@@ -72,7 +69,7 @@ public class Leader extends State {
 	 */
 	@Override
 	public int run() {
-		Callable<Void> shb = new SendHeartBeat(this.ledger, this.rt);
+		Callable<Void> shb = new LeaderSendHeartBeat(this.ledger, this.rt);
 		exec.submit(shb);
 		return 1;
 	}
@@ -84,7 +81,7 @@ public class Leader extends State {
 	 */
 	public static void main (String [] args) {
 		
-		Callable<Void> rhb = new RespondHeartBeat(new Ledger(), 8080, 10);
+		Callable<Void> rhb = new FollowerListenHeartBeat(new Ledger(), 8080, 10);
 		
 		Ledger ledger = new Ledger();
 		HostInfo host = new HostInfo("127.0.0.1");

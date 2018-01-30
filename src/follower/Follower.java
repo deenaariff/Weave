@@ -1,8 +1,5 @@
 package follower;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,8 +8,8 @@ import info.HostInfo;
 import ledger.Ledger;
 import ledger.Log;
 import routing.RoutingTable;
-import rpc_heartbeat.RespondHeartBeat;
-import rpc_heartbeat.SendHeartBeat;
+import rpc_heartbeat.FollowerListenHeartBeat;
+import rpc_heartbeat.LeaderSendHeartBeat;
 import state.State;
 
 /** 
@@ -70,7 +67,7 @@ public class Follower extends State {
 	@Override
 	public int run() {
 		// Create a thread to accept heart beats
-		Callable<Void> accept_hb = new RespondHeartBeat(this.ledger, this.host.getHeartBeatPort(), this.random_interval);
+		Callable<Void> accept_hb = new FollowerListenHeartBeat(this.ledger, this.host.getHeartBeatPort(), this.random_interval);
 	    exec.submit(accept_hb);
 		return 1;
 	}
@@ -108,7 +105,7 @@ public class Follower extends State {
 		// Create a MockHeartBeat()
 		RoutingTable rt = new RoutingTable();
 		rt.addEntry(host.getHostName());	
-	    Callable<Void> mhb = new SendHeartBeat(mock_ledger, rt);
+	    Callable<Void> mhb = new LeaderSendHeartBeat(mock_ledger, rt);
 	    ExecutorService exec = f.getExecutor();
 		exec.submit(mhb);	
 	}

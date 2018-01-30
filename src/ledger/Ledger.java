@@ -18,7 +18,8 @@ public class Ledger {
 	private Map<String,String> keyStore; // Map all keys to values
 	private List<Log> logs; // Store A Growing List of Log Values
 	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
-	private HashMap<Log,Integer> commit_map;
+	private HashMap<Log,Integer> commitMap;
+	private final int MAJORITYPLACEHOLDER = 7;
 	
 	/**
 	 * The Constructor for the Ledger Class
@@ -33,29 +34,51 @@ public class Ledger {
 	/**
 	 * A method to append new Log entries to the ledger. 
 	 * <p>
-	 * Enables new log entries to be queued in the updateQueue Object. This allows a Leader
-	 * class to store all log entries that need to be broadcasted to the cluster's followers between 
-	 * Heartbeat intervals. A Follower object may not wish to store all newly added Heartbeat messages
-	 * as they will not need to be broadcasted to the cluster. 
+	 * This allows a Leader to commit a log entry.
 	 * 
 	 * @param addition The new log to append to the Ledger.
 	 * @param queue Determines whether to add a log to the queue of new entries.
 	 */
-	public void appendToLogs(Log addition, boolean queue) {
+	public void commitToLogs(Log addition) {
 		logs.add(addition);
-		if(queue == true) {
-			// TODO: Need to search for followers' commits before updating key value store
-			updateKeyStore(addition.getKey(),addition.getValue());
-			updateQueue.add(addition);
-		}
+		// TODO: Need to search for followers' commits before updating key value store
+		updateKeyStore(addition.getKey(),addition.getValue());
+		updateQueue.add(addition);
 	}
 
 	/**
-	 * A method to add a log to a commit map.
-	 * This will allow us to commit a log once it has been received.
+	 * This method is called to add a new log to the update queue.
+	 * During regular hearbeat intervals the queue is emptied
+	 * and all logs in the queu are sent over the network to
+	 * follower nodes. Confirmation messages are expected from
+	 * a majority of follower nodes before the log will be
+	 * "commited" to the leader's data store.
 	 *
 	 */
-	public boolean
+	public void addToQueue(Log value) {
+		updateQueue.add(value);
+	}
+
+	/**
+	 * This method allows us to commit a log after receiving a confirmation.
+	 * The corresponding matching value to a log will be decremented in a hashmap.
+	 * if the the value becomes 0, then we delete the key-value pair from the
+	 * confirmation HashMap and commit the log to our internal data store in this
+	 * leader node.
+	 *
+	 */
+	public void receiveConfirmation(Log log) {
+		if(commitMap.containsKey(log)) {
+			Integer value = commitMap.get(log);
+			if(value == 0) {
+				commitMap.remove(log);
+				commitToLogs(log);
+			} else {
+				commitMap.put(log,value-1);
+			}
+		}
+	}
+
 	
 	/**
 	 * A method to return all new logs entries that have been queued in updateQueue List.
@@ -66,6 +89,7 @@ public class Ledger {
 	public List<Log> getUpdates() {
 		List<Log> updates = new ArrayList<Log>();
 		for(Log log : updateQueue) {
+			commitMap.put(log,MAJORITYPLACEHOLDER); // TODO: Store the # which represents majority of nodes in file
 			updates.add(log);
 		}
 		updateQueue = new ArrayList<Log>();
@@ -104,8 +128,8 @@ public class Ledger {
 	 */
 	public static void main(String[] args) {
 		Ledger ledger = new Ledger();
-		ledger.appendToLogs(new Log(1,2,"password","goats"),false);	
-		ledger.appendToLogs(new Log(2,3,"fire","hot"),false);	
+		ledger.commitToLogs(new Log(1,2,"password","goats"),false);
+		ledger.commitToLogs(new Log(2,3,"fire","hot"),false);
 		ledger.printLogs();
 	}
 	
