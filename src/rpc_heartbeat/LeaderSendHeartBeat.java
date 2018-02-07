@@ -51,32 +51,5 @@ public class LeaderSendHeartBeat extends SendMessage {
 		}
 		//return null;
 	}
-	
-	// Tests 
-	public static void main(String [] args) {
-		
-		Ledger ledger = new Ledger();
-		
-		RoutingTable rt = new RoutingTable();
-		rt.addEntry("127.0.0.1");
-		
-	    ExecutorService exec = Executors.newFixedThreadPool(3);
-	    
-	    Callable<Void> callable = new LeaderSendHeartBeat(ledger, rt);
-		Future<Void> future = exec.submit(callable);
-		    
-	    try {
-	    	future.get();
-		} catch (Exception e) {
-		    // The exception will be printed out
-		    System.out.println("Exception: " + e);
-		}
-	}
 
-	@Override
-	public void send() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

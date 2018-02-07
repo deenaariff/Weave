@@ -69,23 +69,7 @@ public class FollowerListenHeartBeat extends RespondMessage {
             listener.close();
         }
 	    return null;
-	} 
-	
-	public static void main(String[] args) {
-		
-		Ledger ledger = new Ledger();
-		
-		Callable<Void> callable = new FollowerListenHeartBeat(ledger,8080, 10);
-	    ExecutorService exec = Executors.newFixedThreadPool(3);
-	    Future<Void> future = exec.submit(callable);
-	    
-	    try {
-	      future.get();
-	    } catch (Exception e) {
-	      // The exception will be printed out
-	      System.out.println("Exception: " + e);
-	    }
-	    
 	}
+
 
 }
