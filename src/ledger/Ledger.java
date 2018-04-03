@@ -30,6 +30,8 @@ public class Ledger {
 		logs = new ArrayList<Log>();
 		updateQueue = new ArrayList<Log>();
 	}
+
+
 	
 	/**
 	 * A method to append new Log entries to the ledger. 
@@ -37,7 +39,6 @@ public class Ledger {
 	 * This allows a Leader to commit a log entry.
 	 * 
 	 * @param addition The new log to append to the Ledger.
-	 * @param queue Determines whether to add a log to the queue of new entries.
 	 */
 	public void commitToLogs(Log addition) {
 		logs.add(addition);
@@ -78,7 +79,6 @@ public class Ledger {
 			}
 		}
 	}
-
 	
 	/**
 	 * A method to return all new logs entries that have been queued in updateQueue List.

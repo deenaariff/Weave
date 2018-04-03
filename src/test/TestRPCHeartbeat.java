@@ -1,12 +1,12 @@
 package test;
 
 import ledger.Ledger;
+import ledger.Log;
 import org.junit.jupiter.api.Test;
 import routing.RoutingTable;
 import rpc_heartbeat.FollowerListenHeartBeat;
 import rpc_heartbeat.LeaderSendHeartBeat;
-import rpc_heartbeat.RespondHeartBeat;
-import rpc_heartbeat.SendHeartBeat;
+import info.HostInfo;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -15,44 +15,38 @@ import java.util.concurrent.Future;
 
 public class TestRPCHeartbeat {
 
-    @Test
-    public void testRespondHeartBeat() {
-
-        Ledger ledger = new Ledger();
-
-        Callable<Void> callable = new FollowerListenHeartBeat(ledger,8080, 10);
-        ExecutorService exec = Executors.newFixedThreadPool(3);
-        Future<Void> future = exec.submit(callable);
-
-        try {
-            future.get();
-        } catch (Exception e) {
-            // The exception will be printed out
-            System.out.println("Exception: " + e);
-        }
-    }
-
+    private final String local = "127.0.0.1";
 
     @Test
-    public void testSendHeartBeat() {
+    public void testHeartBeats() {
 
-        Ledger ledger = new Ledger();
+        // Initialize Follower RPC Objects
+        Ledger f_ledger = new Ledger();
+        HostInfo follower = new HostInfo(local);
 
+        // Create the follower callable
+        Callable<Void> f_callable = new FollowerListenHeartBeat(f_ledger,follower.getHeartBeatPort(), 10);
+
+        // Initialize leader RPC Objects
+        Ledger l_ledger = new Ledger();
+        Log log = new Log(0,0,"test_key","test_value");
+        l_ledger.addToQueue(log);
         RoutingTable rt = new RoutingTable();
-        rt.addEntry("127.0.0.1");
+        rt.addEntry(local);
+
+        // Create the leader callable
+        Callable<Void> l_callable = new LeaderSendHeartBeat(l_ledger, rt);
 
         ExecutorService exec = Executors.newFixedThreadPool(3);
-
-        Callable<Void> callable = new LeaderSendHeartBeat(ledger, rt);
-        Future<Void> future = exec.submit(callable);
+        Future<Void> f_future = exec.submit(f_callable);
+        Future<Void> l_future = exec.submit(l_callable);
 
         try {
-            future.get();
+            f_future.get();
         } catch (Exception e) {
             // The exception will be printed out
             System.out.println("Exception: " + e);
         }
-
     }
 
 

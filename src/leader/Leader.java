@@ -34,7 +34,8 @@ public class Leader extends State {
 	 * The constructor for the Leader class.
 	 * 
 	 * @param ledger The ledger to check for updates and by which to broadcast updates via heartbeat messages.
-	 * @param list The list of nodes in the cluster, to send Heartbeat messages to. 
+	 * @param rt
+	 * @param host
 	 */
 	public Leader(Ledger ledger, RoutingTable rt, HostInfo host) {
 		this.ledger = ledger;
@@ -47,7 +48,6 @@ public class Leader extends State {
 	 * This is a method to add a new IP address to the Routing Table to send Heartbeat messages to. 
 	 * 
 	 * @param host The base host name / IP Address of a node in the cluster.
-	 * @param port The port to send Heartbeat messages to.
 	 */
 	public void addHost(String host) {
 		this.rt.addEntry(host);
