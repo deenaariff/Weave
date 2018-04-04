@@ -1,0 +1,7 @@
+version: 0.1
+released: 2018-06-08
+
+# Ports
+ports:
+    heartbeat: 8080
+    voting: 8081

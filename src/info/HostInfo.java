@@ -1,5 +1,7 @@
 package info;
 
+
+
 /**
  * The info wrapper that a host can use to let all subclasses gain access to host info
  * 
