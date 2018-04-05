@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RoutingTable {
 	
-	// TODO: Remove HEARTBEAT_PORT and VOTING_PORT because they are now env vars
+	// TODO: Remove HEARTBEAT_PORT and VOTING_PORT because they will now be in a config file
 	public final int HEARTBEAT_PORT = 8080;
 	public final int VOTING_PORT = 8081;
 	private List<String> table;
