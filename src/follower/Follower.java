@@ -37,7 +37,7 @@ public class Follower extends State {
 	* Constructor for Follower
 	* 
 	* @param ledger A Ledger object that the follower can append new entries to
-	* @param port The port to listen on for heartbeat messages
+	* @param host The port to listen on for heartbeat messages
 	*/
 	public Follower(Ledger ledger, HostInfo host) {
 		this.host = host;
@@ -50,8 +50,9 @@ public class Follower extends State {
 	* Second Constructor for Follower to pass in a executor service
 	* 
 	* @param ledger A Ledger object that the follower can append new entries to
-	* @param port The port to listen on for heartbeat messages
-	*/
+	* @param host The port to listen on for heartbeat message
+	* @param exec The Executor Service to run callables and obtain futures
+	 * */
 	public Follower(Ledger ledger, HostInfo host, ExecutorService exec) {
 		this.host = host;
 		this.ledger = ledger;
@@ -97,8 +98,8 @@ public class Follower extends State {
 		
 		// Create Mock Ledger to Send New Messages
 		Ledger mock_ledger = new Ledger();
-		mock_ledger.appendToLogs(new Log(1,0,"Brad","Pitt"));
-		mock_ledger.appendToLogs(new Log(1,1,"George","Clooney"));
+		mock_ledger.addToQueue(new Log(1,0,"Brad","Pitt"));
+		mock_ledger.addToQueue(new Log(1,1,"George","Clooney"));
 		
 		f.run();
 		
