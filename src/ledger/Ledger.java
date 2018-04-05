@@ -31,8 +31,6 @@ public class Ledger {
 		updateQueue = new ArrayList<Log>();
 	}
 
-
-	
 	/**
 	 * A method to append new Log entries to the ledger. 
 	 * <p>
