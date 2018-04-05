@@ -46,27 +46,24 @@ public class HeartBeat implements Serializable {
 	public int getTerm() { return term; }
 
 	/**
+	 * Return the queue of committed logs on the leader
 	 *
-	 *
-	 * @return
+	 * @return The queue of logs
 	 */
 	public List<Log> getCommits() { return commits; }
 
 	/**
+	 * Return whether this heartbeat message has been acknowledged by a follower
 	 *
-	 * @return
-	 */
-	public static long getSerialVersionUID() { return serialVersionUID; }
-
-	/**
-	 *
-	 * @return
+	 * @return The boolean value of whether acknowledged
 	 */
 	public boolean isAcknowledged() { return acknowledged; }
 
 	/**
-	 *
-	 * @param acknowledged
+	 * Sets the acknowledged variable so that the leader knows whether this
+     * heartbeat has been received
+     *
+	 * @param acknowledged The value of the boolean
 	 */
 	public void setAcknowledged(boolean acknowledged) { this.acknowledged = acknowledged; }
 }
