@@ -14,7 +14,6 @@ import java.util.concurrent.Future;
 
 import ledger.Ledger;
 import ledger.Log;
-import rpc_abstract.RespondMessage;
 
 // Heart beat thread to listen for RPC from leader
 public class FollowerListenHeartBeat implements Callable<Void> {
@@ -35,7 +34,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	
 	// Ensure that the heart beat is added to the ledger
 	public void updateLedger(Log heartbeat) {
-		ledger.appendToLogs(heartbeat);
+		ledger.commitToLogs(heartbeat);
 	}
 	
 	@SuppressWarnings("unchecked")
