@@ -4,14 +4,36 @@ import java.util.Map;
 
 public class Configuration {
 
+    public Configuration(){}
+
+    private String version;
+
+    private String released;
+
     private Map<String,Integer> ports;
 
-    public Integer getHeartBeatPort() {
-        return ports.get("heartbeat");
+    public String getVersion() {
+        return version;
     }
 
-    public Integer getVotingPort() {
-        return ports.get("voting");
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getReleased() {
+        return released;
+    }
+
+    public void setReleased(String released) {
+        this.released = released;
+    }
+
+    public Map<String, Integer> getPorts() {
+        return ports;
+    }
+
+    public void setPorts(Map<String, Integer> ports) {
+        this.ports = ports;
     }
 
 }

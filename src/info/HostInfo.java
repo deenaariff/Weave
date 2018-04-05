@@ -112,8 +112,7 @@ public class HostInfo {
 	
 	/**
 	 * Increment current term of the hostInfo object
-	 * 
-	 * @param new_term the term to update the current term to
+	 *
 	 */
 	public void incrementTerm() {
 		this.term += 1;

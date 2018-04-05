@@ -6,6 +6,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * The Main Class to Run a Raft node
@@ -26,7 +27,9 @@ public class Raft {
             throw new RuntimeException("Unable to Locate Configuration File");
         }
 
-		RaftNode node = new RaftNode(config.getHeartBeatPort(),config.getVotingPort());
+        Map<String,Integer> ports = config.getPorts();
+
+		RaftNode node = new RaftNode(ports.get("heartbeat"),ports.get("voting"));
 		
 		System.out.println("Starting Raft Consensus Algorithm");
 		
