@@ -8,9 +8,9 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
 
 import messages.Vote;
-import rpc_abstract.RespondMessage;
 
 /**
  * This class implements Callable to implement the logic of listening for
@@ -19,7 +19,7 @@ import rpc_abstract.RespondMessage;
  * votes.
  * 
  **/
-public class ListenVote extends RespondMessage {
+public class ListenVote implements Callable<Void> {
 	
 	private int port;
 	

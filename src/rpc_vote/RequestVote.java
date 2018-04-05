@@ -32,8 +32,7 @@ public class RequestVote implements Callable<Integer> {
 	 * Constructor of the RequestVote Class
 	 * 
 	 * @param rt The routing table of the Node
-	 * @param origin The origin IP of the current node
-	 * @param originPort The port that the node is listening for votes on
+	 * @param host HostInfo of the node
 	 */
 	public RequestVote (RoutingTable rt, HostInfo host) {
 		this.rt = rt;
