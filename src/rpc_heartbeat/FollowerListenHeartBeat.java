@@ -17,7 +17,7 @@ import ledger.Log;
 import rpc_abstract.RespondMessage;
 
 // Heart beat thread to listen for RPC from leader
-public class FollowerListenHeartBeat extends RespondMessage {
+public class FollowerListenHeartBeat implements Callable<Void> {
 	
 	private Long last_heartbeat; // the time stamp of the last heart beat received
 	private Ledger ledger; // the ledger to append new heart beats to 
@@ -35,7 +35,7 @@ public class FollowerListenHeartBeat extends RespondMessage {
 	
 	// Ensure that the heart beat is added to the ledger
 	public void updateLedger(Log heartbeat) {
-		ledger.appendToLogs(heartbeat, false);
+		ledger.appendToLogs(heartbeat);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -36,7 +36,7 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void call() throws IOException, ClassNotFoundException {
+    public Void call() throws IOException, ClassNotFoundException {
         ServerSocket listener = new ServerSocket(hostInfo.getHeartBeatPort());
         try {
             while (true) {
@@ -57,8 +57,6 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
         } finally {
             listener.close();
         }
-        return null;
-
     }
 
 

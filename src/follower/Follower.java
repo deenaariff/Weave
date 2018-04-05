@@ -97,8 +97,8 @@ public class Follower extends State {
 		
 		// Create Mock Ledger to Send New Messages
 		Ledger mock_ledger = new Ledger();
-		mock_ledger.appendToLogs(new Log(1,0,"Brad","Pitt"), true);
-		mock_ledger.appendToLogs(new Log(1,1,"George","Clooney"),true);
+		mock_ledger.appendToLogs(new Log(1,0,"Brad","Pitt"));
+		mock_ledger.appendToLogs(new Log(1,1,"George","Clooney"));
 		
 		f.run();
 		

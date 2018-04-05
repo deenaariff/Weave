@@ -128,8 +128,8 @@ public class Ledger {
 	 */
 	public static void main(String[] args) {
 		Ledger ledger = new Ledger();
-		ledger.commitToLogs(new Log(1,2,"password","goats"),false);
-		ledger.commitToLogs(new Log(2,3,"fire","hot"),false);
+		ledger.commitToLogs(new Log(1,2,"password","goats"));
+		ledger.commitToLogs(new Log(2,3,"fire","hot"));
 		ledger.printLogs();
 	}
 	

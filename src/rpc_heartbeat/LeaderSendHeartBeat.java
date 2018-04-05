@@ -15,9 +15,8 @@ import java.util.concurrent.TimeUnit;
 import ledger.Ledger;
 import ledger.Log;
 import routing.RoutingTable;
-import rpc_abstract.SendMessage;
 
-public class LeaderSendHeartBeat extends SendMessage {
+public class LeaderSendHeartBeat implements Callable<Void> {
 	
 	private Ledger ledger;
 	private RoutingTable rt;
