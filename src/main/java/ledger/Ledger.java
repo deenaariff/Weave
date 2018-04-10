@@ -46,9 +46,23 @@ public class Ledger {
 	}
 
 	/**
+	 * Obtain commited data from the internal key-value store
+	 *
+	 * @param key
+	 * @return
+	 */
+	public String getData(String key) {
+		if(keyStore.containsKey(key)) {
+			return keyStore.get(key);
+		} else {
+			throw new RuntimeException("This Key Has Not Been Commited to the Cluster");
+		}
+	}
+
+	/**
 	 * This method is called to add a new log to the update queue.
-	 * During regular hearbeat intervals the queue is emptied
-	 * and all logs in the queu are sent over the network to
+	 * During regular heartbeat intervals the queue is emptied
+	 * and all logs in the queue are sent over the network to
 	 * follower nodes. Confirmation messages are expected from
 	 * a majority of follower nodes before the log will be
 	 * "commited" to the leader's data store.

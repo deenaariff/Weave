@@ -8,11 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 /**
  * The Main Class to Run a Raft node
  * 
  * @author deenaariff
  */
+@SpringBootApplication
 public class Raft {
 
 	public static void main(String[] args) {
@@ -32,6 +36,9 @@ public class Raft {
 		RaftNode node = new RaftNode(ports.get("heartbeat"),ports.get("voting"));
 		
 		System.out.println("Starting Raft Consensus Algorithm");
+
+		// Start the Client Service API
+		SpringApplication.run(Application.class, args);
 		
 		// Run the State Machine 
 		while (true) {	
