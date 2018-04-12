@@ -4,20 +4,19 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import ledger.Ledger;
-import ledger.Log;
 import messages.HeartBeat;
 import routing.RoutingTable;
 
 /**
  * This class is used by the leader, and periodically sends heartbeat messages
- * to its followers. It sends these messages on a separate thread, and these
- * messages contain information about the current state of the distributed
- * system
+ * to its followers.
+ *
+ * Messages are sent on a separate thread, and they contain information about
+ * the current state of the distributed system.
  */
 public class LeaderSendHeartBeat implements Callable<Void> {
 	
@@ -75,5 +74,4 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 			}
 		}
 	}
-
 }

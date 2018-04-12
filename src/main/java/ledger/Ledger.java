@@ -1,5 +1,7 @@
 package ledger;
 
+import messages.HeartBeat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,8 @@ import java.util.Map;
  */
 public class Ledger {
 
+    // TODO: Many of the references to this object's variables were not referenced using the 'this' keyword. Need to fix.
+
 	private Map<String,String> keyStore; // Map all keys to values
 	private List<Log> logs; // Store A Growing List of Log Values
 	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
@@ -26,9 +30,9 @@ public class Ledger {
 	 * 
 	 */
 	public Ledger() {
-		keyStore = new HashMap<String,String>();
-		logs = new ArrayList<Log>();
-		updateQueue = new ArrayList<Log>();
+		this.keyStore = new HashMap<String,String>();
+		this.logs = new ArrayList<Log>();
+		this.updateQueue = new ArrayList<Log>();
 	}
 
 	/**
@@ -43,6 +47,10 @@ public class Ledger {
 		// TODO: Need to search for followers' commits before updating key value store
 		updateKeyStore(addition.getKey(),addition.getValue());
 		updateQueue.add(addition);
+	}
+
+	public void commitToLogs(HeartBeat hb) {
+		this.logs = hb.getCommits();
 	}
 
 	/**
@@ -117,6 +125,14 @@ public class Ledger {
 	private void updateKeyStore(String key, String value) {
 		keyStore.put(key, value);
 	}
+
+	public void updateKeyStore() {
+        Map<String,String> keyStore = new HashMap<String,String>();
+        for(Log log : logs) {
+            keyStore.put(log.getKey(), log.getValue());
+        }
+        this.keyStore = keyStore;
+    }
 	
 	/**
 	 * This members prints all current logs that have been stored in the ledger.
