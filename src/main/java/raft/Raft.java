@@ -1,4 +1,4 @@
-package main;
+package raft;
 import configuration.Configuration;
 import node.RaftNode;
 import org.yaml.snakeyaml.Yaml;
@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import rpc_client.ClientController;
 
 /**
  * The Main Class to Run a Raft node
@@ -38,7 +39,7 @@ public class Raft {
 		System.out.println("Starting Raft Consensus Algorithm");
 
 		// Start the Client Service API
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(ClientController.class, args);
 		
 		// Run the State Machine 
 		while (true) {	
