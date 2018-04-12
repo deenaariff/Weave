@@ -4,51 +4,76 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import ledger.Ledger;
 import ledger.Log;
+import messages.HeartBeat;
 import routing.RoutingTable;
 
+/**
+ * This class is used by the leader, and periodically sends heartbeat messages
+ * to its followers. It sends these messages on a separate thread, and these
+ * messages contain information about the current state of the distributed
+ * system
+ */
 public class LeaderSendHeartBeat implements Callable<Void> {
 	
 	private Ledger ledger;
 	private RoutingTable rt;
-	
-	public LeaderSendHeartBeat(Ledger ledger, RoutingTable rt) {
+	private HeartBeat hb;
+	private Integer hbInterval = 300;  // milliseconds
+
+    /**
+     * Constructor for the LeaderSendHearBeat class
+     *
+     * @param ledger
+     * @param rt
+     * @param hb
+     */
+	public LeaderSendHeartBeat(Ledger ledger, RoutingTable rt, HeartBeat hb) {
 		this.ledger = ledger;
 		this.rt = rt;
+		this.hb = hb;
 	}
-	
-	public void send (List<Log> logs, String hostName, Integer portNumber) throws UnknownHostException, IOException {
+
+    /**
+     * This method serializes the heartbeat object and sends it to proper host
+     *
+     * @param hb
+     * @param hostName
+     * @param portNumber
+     * @throws IOException
+     */
+	public void send (HeartBeat hb, String hostName, Integer portNumber) throws IOException {
 		Socket socket = new Socket(hostName, portNumber);
 		final OutputStream outputStream = socket.getOutputStream();
 		final ObjectOutputStream output = new ObjectOutputStream(outputStream);
-		output.writeObject(logs);
+		output.writeObject(hb);
 		socket.close();
 	}
 
-	@Override
+    /**
+     * This callable sends the heartbeat object to all hosts in the routing table
+     *
+     * @return
+     * @throws Exception
+     */
 	public Void call() throws Exception {
 		while(true) {
-			TimeUnit.SECONDS.sleep(1);
-			List<Log> updates = this.ledger.getUpdates();
-			for(String host : this.rt.getTable()) {
+			TimeUnit.MILLISECONDS.sleep(hbInterval);
+
+			for (String host : this.rt.getTable()) {
 				try {
 					System.out.println("Sending Updates to " + host + " " + this.rt.HEARTBEAT_PORT);
-					send(updates, host, rt.HEARTBEAT_PORT);
+					send(hb, host, rt.HEARTBEAT_PORT);
 				} catch (Exception e) {
 					System.out.println("Exception: " + e);
 				}
 			}
 		}
-		//return null;
 	}
 
 }
