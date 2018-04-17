@@ -37,7 +37,6 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 		this.rt = rt;
 		this.port = port;
 		this.random_interval = random_interval;
-        this.last_heartbeat = System.nanoTime();  // TODO: Is this ok? Can we say that the last heartbeat was the time of instantiation?
 	}
 
     /**
@@ -53,7 +52,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
      */
 	public Void call() throws IOException, ClassNotFoundException {
 		ServerSocket listener = new ServerSocket(this.port);
-		this.last_heartbeat = System.nanoTime();  // TODO: Check this with the message up there
+		this.last_heartbeat = System.nanoTime();
 
 	    try {
 	        // Listen for the heartbeat until the waiting time interval has elapsed
