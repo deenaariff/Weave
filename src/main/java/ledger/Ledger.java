@@ -32,6 +32,7 @@ public class Ledger {
 		keyStore = new HashMap<String,String>();
 		logs = new ArrayList<Log>();
 		updateQueue = new ArrayList<Log>();
+		commitMap = new HashMap<Log,Integer>();
 	}
 
 	/**

@@ -35,19 +35,19 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Override
 	public Void call() throws IOException, ClassNotFoundException {
+	    System.out.println("[Follower]: Listening for Incoming Heartbeat Messages");
 		ServerSocket listener = new ServerSocket(this.port);
 		this.last_heartbeat = System.nanoTime();
 	    try {
 	    	while (true) {
-	    		if(this.last_heartbeat - System.nanoTime() > this.random_interval) {
-	    			System.out.println("Randomized Follower Waiting Interval Elapsed");
+	    		if(System.nanoTime() - this.last_heartbeat  > this.random_interval) {
+	    			System.out.println("[Follower]: Randomized Follower Waiting Interval Elapsed - Revert to Candidate");
 	    			break;
 	    		} else {
 		    		Socket socket = listener.accept();
 		            try {
-		            	System.out.println("Received a Heartbeat");
+		            	System.out.println("[Follower]: Received a Heartbeat");
 		            	final InputStream yourInputStream = socket.getInputStream();
 		                final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
 		                final List<Log> heartbeats = (List<Log>) inputStream.readObject();

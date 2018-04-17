@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
+
 
 /**
  * This class needs to be used by the Leader to listen to incoming client messages
@@ -52,7 +54,7 @@ public class ClientController {
         Log update = new Log(0,0,key,value);
         this.ledger.addToQueue(update);
         System.out.println("Hit");
-        System.out.println(this.ledger.getUpdates());
+        System.out.println(Arrays.toString(this.ledger.getUpdates().toArray()));
         return "Update Queued for Replication";
     }
 
