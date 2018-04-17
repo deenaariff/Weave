@@ -38,12 +38,9 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	}
 
     /**
-     * Ensure that the heart beat is added to the ledger
+     * This method will update the ledger based on what it sees from the leader
      *
-     * This method will deserialize the heartbeat object then update its ledger
-     * based on what it sees from the leader.
-     *
-     * @param hb
+     * @param hb the de-serialized heartbeat object
      */
 	public void updateLedger(HeartBeat hb) {
 	    // Update the list of logs
@@ -54,12 +51,16 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	}
 
     /**
+     * This callable listens for the heartbeat messages sent from the leader.
+     *
+     * If a heartbeat is received, we de-serialize the heartbeat and update the
+     * ledger. If a heartbeat is not received within the random time interval,
+     * we terminate the thread and become a candidate.
      *
      * @return
      * @throws IOException
      * @throws ClassNotFoundException
      */
-	@SuppressWarnings("unchecked")
 	public Void call() throws IOException, ClassNotFoundException {
 		ServerSocket listener = new ServerSocket(this.port);
 		this.last_heartbeat = System.nanoTime();
@@ -93,6 +94,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	    } finally {
             listener.close();
         }
+
 	    return null;
 	}
 }

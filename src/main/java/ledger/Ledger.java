@@ -49,6 +49,11 @@ public class Ledger {
 		updateQueue.add(addition);
 	}
 
+	/**
+	 * This method commits all heartbeat logs to the host logs
+     *
+	 * @param hb
+	 */
 	public void commitToLogs(HeartBeat hb) {
 		this.logs = hb.getCommits();
 	}
@@ -126,11 +131,17 @@ public class Ledger {
 		keyStore.put(key, value);
 	}
 
+    /**
+     * This method updates the key value store by re-entering all values in the
+     * logs to a new hashmap
+     */
 	public void updateKeyStore() {
         Map<String,String> keyStore = new HashMap<String,String>();
+
         for(Log log : logs) {
             keyStore.put(log.getKey(), log.getValue());
         }
+
         this.keyStore = keyStore;
     }
 	
