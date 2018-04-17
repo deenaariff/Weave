@@ -1,5 +1,7 @@
 package ledger;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Map;
  * @author deenaariff
  *
  */
+@Component
 public class Ledger {
 
 	private Map<String,String> keyStore; // Map all keys to values
@@ -104,7 +107,7 @@ public class Ledger {
 			commitMap.put(log,MAJORITYPLACEHOLDER); // TODO: Store the # which represents majority of nodes in file
 			updates.add(log);
 		}
-		updateQueue = new ArrayList<Log>();
+		//updateQueue = new ArrayList<Log>();
 		return updates;
 	}
 	

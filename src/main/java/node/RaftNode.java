@@ -5,7 +5,6 @@ import info.HostInfo;
 import leader.Leader;
 import ledger.Ledger;
 import routing.RoutingTable;
-import rpc_client.ClientController;
 import state.State;
 
 /**
@@ -23,20 +22,18 @@ public class RaftNode {
 	private State leader;
 	private State follower;
 	private State candidate;
-	private ClientController cc;
 	
 	/**
 	 * The constructor for the RaftNode Class
 	 * 
 	 */
-	public RaftNode(Integer heartBeatPort, Integer votingPort) {
-		this.ledger = new Ledger();	
+	public RaftNode(Ledger ledger, Integer heartBeatPort, Integer votingPort) {
+		this.ledger = this.ledger;
 		this.host = new HostInfo("127.0.0.1", heartBeatPort, votingPort);
 		this.rt = new RoutingTable();
 		this.follower = new Follower(this.ledger,this.host);
 		this.candidate = new Candidate(this.ledger, this.rt, this.host);
 		this.leader = new Leader(this.ledger, this.rt, this.host);
-		this.cc = new ClientController(this.ledger);
 	}
 	
 	/**
