@@ -104,6 +104,22 @@ public class Ledger {
 			}
 		}
 	}
+
+    public void receiveConfirmation(HeartBeat hb) {
+//        if(commitMap.containsKey(log)) {
+//            Integer value = commitMap.get(log);
+//            if(value == 0) {
+//                commitMap.remove(log);
+//                commitToLogs(log);
+//            } else {
+//                commitMap.put(log,value-1);
+//            }
+//        }
+
+        // TODO: What if the heartbeat we commit, over-writes previously written information from another heartbeat
+        // Ex: HB1(1,2,3,4,5) HB2(1,2,3,4,5,6)
+        // HB1 gets approved _after_ HB2
+    }
 	
 	/**
 	 * A method to return all new logs entries that have been queued in updateQueue List.

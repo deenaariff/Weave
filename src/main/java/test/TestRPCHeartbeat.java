@@ -13,11 +13,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * This class is used to test the communication of RPC heartbeats between
+ * leaders and followers.
+ */
 public class TestRPCHeartbeat {
 
     private final String local = "127.0.0.1";
 
-    @Test
     public void testHeartBeats() {
 
         // Initialize Follower RPC Objects
@@ -48,7 +51,4 @@ public class TestRPCHeartbeat {
             System.out.println("Exception: " + e);
         }
     }
-
-
-
 }
