@@ -2,7 +2,6 @@ package test;
 
 import ledger.Ledger;
 import ledger.Log;
-import org.junit.jupiter.api.Test;
 import routing.RoutingTable;
 import rpc_heartbeat.FollowerListenHeartBeat;
 import rpc_heartbeat.LeaderSendHeartBeat;
@@ -12,6 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class is used to test the communication of RPC heartbeats between
@@ -21,6 +21,11 @@ public class TestRPCHeartbeat {
 
     private final String local = "127.0.0.1";
 
+    /**
+     * This method runs both the leader and the follower locally. The follower
+     * is placed into the routing table as local host. Then the executor service
+     * runs both the leader and the follower on separate threads.
+     */
     public void testHeartBeats() {
 
         // Initialize Follower RPC Objects

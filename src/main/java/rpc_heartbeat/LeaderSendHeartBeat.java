@@ -30,7 +30,7 @@ public class LeaderSendHeartBeat implements Callable<Void> {
      *
      * @param ledger
      * @param rt
-     * @param hb
+     * @param hb heartbeat is loaded with the leader's committed logs
      */
 	public LeaderSendHeartBeat(Ledger ledger, RoutingTable rt, HeartBeat hb) {
 		this.ledger = ledger;

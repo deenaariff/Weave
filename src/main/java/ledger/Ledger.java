@@ -50,15 +50,6 @@ public class Ledger {
 	}
 
 	/**
-	 * This method commits all heartbeat logs to the host logs
-     *
-	 * @param hb
-	 */
-	public void commitToLogs(HeartBeat hb) {
-		this.logs = hb.getCommits();
-	}
-
-	/**
 	 * Obtain commited data from the internal key-value store
 	 *
 	 * @param key
@@ -144,21 +135,21 @@ public class Ledger {
 	 * @param value The value mapped to the lookup key of the data being entered.
 	 */
 	private void updateKeyStore(String key, String value) {
-		keyStore.put(key, value);
+        this.keyStore.put(key, value);
 	}
 
     /**
-     * This method updates the key value store by re-entering all values in the
-     * logs to a new hashmap
+     * This method is used by followers, and updates the ledger based on the
+     * heartbeat. It iterates through all of the new commits sent from the
+     * leader, and adds it to the logs and key store
+     *
+     * @param hb The heartbeat message sent from the leader
      */
-	public void updateKeyStore() {
-        Map<String,String> keyStore = new HashMap<String,String>();
-
-        for(Log log : logs) {
-            keyStore.put(log.getKey(), log.getValue());
+    public void update(HeartBeat hb) {
+        for(Log log : hb.getCommits()) {
+            this.logs.add(log);
+            updateKeyStore(log.getKey(), log.getValue());
         }
-
-        this.keyStore = keyStore;
     }
 	
 	/**

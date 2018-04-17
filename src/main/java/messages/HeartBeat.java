@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class HeartBeat implements Serializable {
 
-	private int term;
-	private List<Log> commits;
+	private int term;  // The leader's term
+	private List<Log> commits;  // The leader's committed logs
 	private boolean acknowledged;  // TODO: Is this still needed? Technically when a heartbeat is sent back, it is acknowledged
 	private static final long serialVersionUID = 1L;  // TODO: Double check what this does
 
