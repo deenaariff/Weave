@@ -35,6 +35,22 @@ public class RaftNode {
 		this.candidate = new Candidate(this.ledger, this.rt, this.host);
 		this.leader = new Leader(this.ledger, this.rt, this.host);
 	}
+
+	/**
+	 * Second constructor for the RaftNode Class
+     * Pass option Routing Table
+	 *
+	 */
+	public RaftNode(RoutingTable rt, Ledger ledger, Integer heartBeatPort, Integer votingPort) {
+		this.ledger = this.ledger;
+		this.host = new HostInfo("127.0.0.1", heartBeatPort, votingPort);
+		this.rt = rt;
+		this.follower = new Follower(this.ledger,this.host);
+		this.candidate = new Candidate(this.ledger, this.rt, this.host);
+		this.leader = new Leader(this.ledger, this.rt, this.host);
+	}
+
+
 	
 	/**
 	 * Runs the Node in the leader state

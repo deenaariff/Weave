@@ -31,7 +31,6 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 		socket.close();
 	}
 
-	@Override
 	public Void call() throws Exception {
 		while(true) {
 			TimeUnit.SECONDS.sleep(1);

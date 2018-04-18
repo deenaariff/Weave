@@ -22,18 +22,6 @@ public class Raft {
 
 	public static void main(String[] args) {
 
-	    Configuration config;
-		
-		/* Create a new Raft Node
-        Yaml yaml = new Yaml();
-        try( InputStream in = Files.newInputStream( Paths.get( args[ 0 ] ) ) ) {
-            config = yaml.loadAs( in, Configuration.class );
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to Locate Configuration File");
-        }
-
-        Map<String,Integer> ports = config.getPorts(); */
-
 		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 		ledger = (Ledger) context.getBean("ledger");
 
