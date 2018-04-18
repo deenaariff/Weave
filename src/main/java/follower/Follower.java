@@ -43,7 +43,6 @@ public class Follower extends State {
 	public Follower(Ledger ledger, HostInfo host) {
 		this.host = host;
 		this.ledger = ledger;
-		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
 		this.exec = Executors.newFixedThreadPool(3);
 	}
 	
@@ -57,7 +56,6 @@ public class Follower extends State {
 	public Follower(Ledger ledger, HostInfo host, ExecutorService exec) {
 		this.host = host;
 		this.ledger = ledger;
-		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
 		this.exec = exec;
 	}
 	
@@ -68,6 +66,8 @@ public class Follower extends State {
 	 */
 	@Override
 	public int run() {
+
+		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
 
 		// Create a thread to accept heart beats
 		Callable<Void> accept_hb = new FollowerListenHeartBeat(this.ledger, this.host.getHeartBeatPort(), this.random_interval);

@@ -42,7 +42,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	    try {
 	    	while (true) {
 	    		if(System.nanoTime() - this.last_heartbeat  > this.random_interval) {
-	    			System.out.println("[Follower]: Randomized Follower Waiting Interval Elapsed - Revert to Candidate");
+	    			System.out.println("[Follower]: Randomized Follower Waiting Interval (" + this.random_interval +  "  ms) Elapsed - Revert to Candidate");
 	    			break;
 	    		} else {
 		    		Socket socket = listener.accept();
@@ -52,7 +52,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 		                final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
 		                final List<Log> heartbeats = (List<Log>) inputStream.readObject();
 		                for(Log heartbeat : heartbeats) {
-		                	//System.out.println("Received new log: " + heartbeat.getKey() + " : " + heartbeat.getValue());
+		                	System.out.println("[Follower]: Received new log: " + heartbeat.getKey() + " : " + heartbeat.getValue());
 		                	updateLedger(heartbeat);
 		                }
 		            	this.last_heartbeat = System.nanoTime();

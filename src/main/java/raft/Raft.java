@@ -37,7 +37,7 @@ public class Raft {
 		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 		ledger = (Ledger) context.getBean("ledger");
 
-		RaftNode node = new RaftNode(ledger,8080,8081);
+		RaftNode node = new RaftNode(ledger,8081,8082);
 		
 		System.out.println("Starting Raft Consensus Algorithm");
 
