@@ -2,7 +2,6 @@ package rpc_heartbeat;
 
 import info.HostInfo;
 import ledger.Ledger;
-import ledger.Log;
 import messages.HeartBeat;
 import routing.RoutingTable;
 
@@ -11,7 +10,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -21,24 +19,19 @@ import java.util.concurrent.Callable;
 public class LeaderListenHeartBeatConfirm implements Callable<Void> {
 
     private Ledger ledger;
-    private RoutingTable rt;
-    private HeartBeat hb;
     private HostInfo hostInfo;
+    private RoutingTable rt;
 
-    // TODO: Leader maintains a hashmap for each heartbeat?
-    // TODO: When item in hashmap reaches a specific number, we can finally commit to logs?
-
-
-    public LeaderListenHeartBeatConfirm(Ledger ledger, HostInfo hostInfo) {
+    public LeaderListenHeartBeatConfirm(Ledger ledger, HostInfo hostInfo, RoutingTable rt) {
         this.ledger = ledger;
         this.hostInfo = hostInfo;
+        this.rt = rt;
     }
 
     /**
-     * This methods runs the call() method for a Callable.
-     *
-     * It will listen to Follower HeartBeat confirmations and decrement
-     * the HashMap for Logs Accordingly.
+     * This method listens for returning confirmation heartbeats from followers.
+     * Once received, it will pass the heartbeat to the ledger so that the
+     * ledger can update its commit map and list of logs accordingly
      *
      * @return
      * @throws IOException
@@ -61,7 +54,7 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
                     final HeartBeat hb = (HeartBeat) inputStream.readObject();
 
                     // Notify the ledger that we have received a confirmation heartbeat
-                    ledger.receiveConfirmation(hb);
+                    ledger.receiveConfirmation(hb, rt);
                 } finally {
                     socket.close();
                 }

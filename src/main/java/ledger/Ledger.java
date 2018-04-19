@@ -90,7 +90,7 @@ public class Ledger {
      *
      * @param hb
      */
-    public void receiveConfirmation(HeartBeat hb) {
+    public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
         if (commitMap.containsKey(hb)) {
             Integer value = commitMap.get(hb);
             if (value == 1) {  // The last heartbeat to fulfill majority
@@ -100,7 +100,7 @@ public class Ledger {
                 commitMap.put(hb, value-1);
             }
         } else {
-            commitMap.put(hb, MAJORITYPLACEHOLDER);
+            commitMap.put(hb, rt.getMajority());
         }
     }
 	

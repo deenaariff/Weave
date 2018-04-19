@@ -37,7 +37,6 @@ public class RoutingTable {
      * @return
      */
 	public Integer getMajority() {
-	    // TODO: This cannot be called ... deprecate this method?
         return (int) Math.ceil(this.table.size() / 2);
     }
 	
