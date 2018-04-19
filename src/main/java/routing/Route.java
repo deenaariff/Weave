@@ -2,6 +2,8 @@ package routing;
 
 public class Route {
 
+    private Integer id;
+
     private String IP;
     private int endpoint_port;
     private int heartbeat_port;
@@ -14,6 +16,14 @@ public class Route {
         this.IP = ip;
         this.heartbeat_port = heartbeat_port;
         this.voting_port = voting_port;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getIP() {

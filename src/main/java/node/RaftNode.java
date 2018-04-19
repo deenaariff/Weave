@@ -4,6 +4,7 @@ import follower.Follower;
 import info.HostInfo;
 import leader.Leader;
 import ledger.Ledger;
+import routing.Route;
 import routing.RoutingTable;
 import state.State;
 
@@ -27,9 +28,9 @@ public class RaftNode {
 	 * The constructor for the RaftNode Class
 	 * 
 	 */
-	public RaftNode(Ledger ledger, String host, Integer heartBeatPort, Integer votingPort) {
+	public RaftNode(Ledger ledger, Route route) {
 		this.ledger = this.ledger;
-		this.host = new HostInfo("127.0.0.1", heartBeatPort, votingPort);
+		this.host = new HostInfo(route);
 		this.rt = new RoutingTable();
 		this.follower = new Follower(this.ledger,this.host);
 		this.candidate = new Candidate(this.ledger, this.rt, this.host);
@@ -41,9 +42,9 @@ public class RaftNode {
      * Pass option Routing Table
 	 *
 	 */
-	public RaftNode(RoutingTable rt, String host, Ledger ledger, Integer heartBeatPort, Integer votingPort) {
+	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
 		this.ledger = this.ledger;
-		this.host = new HostInfo("127.0.0.1", heartBeatPort, votingPort);
+		this.host = new HostInfo(route);
 		this.rt = rt;
 		this.follower = new Follower(this.ledger,this.host);
 		this.candidate = new Candidate(this.ledger, this.rt, this.host);
