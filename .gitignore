@@ -7,3 +7,7 @@ Distributed-Value-Key-Store.iml
 tmp/
 target/
 bin/
+out/
+src/main/java/META-INF/
+src/main/resources/META-INF/
+start.sh

@@ -32,8 +32,8 @@ public class Raft {
 
         System.out.println("IP Address: " + route.getIP());
         System.out.println("Listening on PORT: " + route.getEndpointPort());
-        System.out.println("HeartBeat PORT: " + route.getVotingPort());
-        System.out.println("Voting PORT: " + route.getHeartbeatPort());
+        System.out.println("HeartBeat PORT: " + route.getHeartbeatPort());
+        System.out.println("Voting PORT: " + route.getVotingPort());
 
 		RaftNode node = new RaftNode(rt, ledger, route);
 		

@@ -51,7 +51,14 @@ public class TestRPCHeartbeat {
         rt.addEntry(local_route.getIP(),local_route.getHeartbeatPort(),local_route.getVotingPort());
 
         // Create the leader callable
-        Callable<Void> l_callable = new LeaderSendHeartBeat(l_ledger, rt);
+        Route leader_route = new Route();
+        leader_route.setIP("127.0.0.1");
+        leader_route.setId(2);
+        leader_route.setHeartBeatPort(8091);
+        leader_route.setVotingPort(8092);
+
+        HostInfo leader = new HostInfo(leader_route);
+        Callable<Void> l_callable = new LeaderSendHeartBeat(l_ledger, leader, rt);
 
         ExecutorService exec = Executors.newFixedThreadPool(3);
         Future<Void> f_future = exec.submit(f_callable);

@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,11 +74,12 @@ public class RoutingTable {
         try {
 
             ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource(configFile).getFile());
+
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(configFile);
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(file);
+            Document doc = dBuilder.parse(is);
 
             doc.getDocumentElement().normalize();
 

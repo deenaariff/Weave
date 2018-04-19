@@ -71,7 +71,7 @@ public class Leader extends State {
 	 */
 	@Override
 	public int run() {
-		Callable<Void> shb = new LeaderSendHeartBeat(this.ledger, this.rt);
+		Callable<Void> shb = new LeaderSendHeartBeat(this.ledger, this.host, this.rt);
         Future<Void> future = exec.submit(shb);
 
         try {
