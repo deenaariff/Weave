@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import ledger.Ledger;
 import ledger.Log;
+import routing.Route;
 import routing.RoutingTable;
 
 public class LeaderSendHeartBeat implements Callable<Void> {
@@ -35,10 +36,10 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 		while(true) {
 			TimeUnit.SECONDS.sleep(1);
 			List<Log> updates = this.ledger.getUpdates();
-			for(String host : this.rt.getTable()) {
+			for(Route route : this.rt.getTable()) {
 				try {
-					System.out.println("Sending Updates to " + host + " " + this.rt.HEARTBEAT_PORT);
-					send(updates, host, rt.HEARTBEAT_PORT);
+					System.out.println("Sending Updates to " + route.getIP() + " " + route.getHeartbeatPort());
+					send(updates, route.getIP(), route.getHeartbeatPort());
 				} catch (Exception e) {
 					System.out.println("Exception: " + e);
 				}

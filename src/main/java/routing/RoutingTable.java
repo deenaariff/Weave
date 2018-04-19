@@ -1,29 +1,32 @@
 package routing;
 
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.EndElement;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 
 public class RoutingTable {
 
 	private List<Route> table;
+	private HashMap<Integer,Route> id_map;
 	
 	public RoutingTable() {
+        this.id_map = new HashMap<Integer, Route>();
 		this.table = new ArrayList<Route>();
 	}
 
 	public RoutingTable(String configFile) {
-        this.table = configToTable(configFile);
+	    this.id_map = new HashMap<Integer, Route>();
+        this.table = new ArrayList<Route>();
+        configToTable(configFile);
     }
 	
 	public List<Route> getTable() {
@@ -34,77 +37,77 @@ public class RoutingTable {
 		this.table.add(new Route(ip, heartbeat_port, voting_port));
 	}
 
+
+    /**
+     * Get the Routing information for a given id
+     *
+     * @param id
+     * @return
+     */
+    public Route getRouteById(Integer id) {
+        try {
+            return id_map.get(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Route not available for this id");
+        }
+    }
+
     /**
      * Construct the Routing Table Given the Appropriate xml file
      *
      * @param configFile
      * @return
      */
-    private List<Route> configToTable(String configFile) {
-        List<Route> routes = new ArrayList<Route>();
+    private void configToTable(String configFile) {
+
         try {
-            // First, create a new XMLInputFactory
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            // Setup a new eventReader
-            InputStream in = new FileInputStream(configFile);
-            XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
-            // read the XML document
-            Route route = null;
 
-            while (eventReader.hasNext()) {
-                XMLEvent event = eventReader.nextEvent();
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(classLoader.getResource(configFile).getFile());
 
-                if (event.isStartElement()) {
-                    StartElement startElement = event.asStartElement();
-                    // If we have an item element, we create a new item
-                    if (startElement.getName().getLocalPart().equals(Route)) {
-                        route = new Route();
-                        // We read the attributes from this tag and add the date
-                        // attribute to our object
-                        Iterator<Attribute> attributes = startElement
-                                .getAttributes();
-                        while (attributes.hasNext()) {
-                            Attribute attribute = attributes.next();
-                            if (attribute.getName().toString().equals(DATE)) {
-                                route.setDate(attribute.getValue());
-                            }
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(file);
 
-                        }
-                    }
-                    if (event.isStartElement()) {
-                        if (event.asStartElement().getName().getLocalPart()
-                                .equals(MODE)) {
-                            event = eventReader.nextEvent();
-                            item.setMode(event.asCharacters().getData());
-                            continue;
-                        }
-                    }
-                    if (event.asStartElement().getName().getLocalPart()
-                            .equals(UNIT)) {
-                        event = eventReader.nextEvent();
-                        item.setUnit(event.asCharacters().getData());
-                        continue;
-                    }
-                }
-                // If we reach the end of an item element, we add it to the list
-                if (event.isEndElement()) {
-                    EndElement endElement = event.asEndElement();
-                    if (endElement.getName().getLocalPart().equals(ITEM)) {
-                        routes.add(route);
-                    }
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("node");
+
+            System.out.println("[Main]: Building Routing Table for " + nList.getLength() +  "nodes" );
+
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+
+                Node nNode = nList.item(temp);
+
+                Route new_route = new Route();
+
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element eElement = (Element) nNode;
+
+                    Integer id = Integer.parseInt(eElement.getAttribute("id"));
+
+                    new_route.setIP(eElement.getElementsByTagName("ip").item(0).getTextContent());
+                    new_route.setEndpointPort(Integer.parseInt(eElement.getElementsByTagName("client").item(0).getTextContent()));
+                    new_route.setHeartBeatPort(Integer.parseInt(eElement.getElementsByTagName("heartbeat").item(0).getTextContent()));
+                    new_route.setVotingPort(Integer.parseInt(eElement.getElementsByTagName("voting").item(0).getTextContent()));
+
+                    this.id_map.put(id,new_route);
+
                 }
 
+                this.table.add(new_route);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (XMLStreamException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return routes;
     }
+
 
 }
 
 
-        }
+

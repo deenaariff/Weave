@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 
 import info.HostInfo;
 import ledger.Ledger;
+import routing.Route;
 import routing.RoutingTable;
 import rpc_heartbeat.FollowerListenHeartBeat;
 import rpc_heartbeat.LeaderSendHeartBeat;
@@ -50,8 +51,8 @@ public class Leader extends State {
 	 * 
 	 * @param host The base host name / IP Address of a node in the cluster.
 	 */
-	public void addHost(String host) {
-		this.rt.addEntry(host);
+	public void addHost(String host, Integer hb_port, Integer voting_port) {
+		this.rt.addEntry(host,hb_port,voting_port);
 	}
 	
 	/**
