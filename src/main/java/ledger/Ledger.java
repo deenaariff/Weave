@@ -1,6 +1,9 @@
 package ledger;
 
+import messages.HeartBeat;
 import org.springframework.stereotype.Component;
+import routing.RoutingTable;
+import sun.plugin2.message.HeartbeatMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +21,13 @@ import java.util.Map;
 @Component
 public class Ledger {
 
+    // TODO: Many of the references to this object's variables were not referenced using the 'this' keyword. Need to fix.
+
 	private Map<String,String> keyStore; // Map all keys to values
 	private List<Log> logs; // Store A Growing List of Log Values
 	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
-	private HashMap<Log,Integer> commitMap;
+	private HashMap<HeartBeat,Integer> commitMap;
+	private RoutingTable rt;
 	private final int MAJORITYPLACEHOLDER = 7;
 	
 	/**
@@ -29,25 +35,27 @@ public class Ledger {
 	 * 
 	 */
 	public Ledger() {
-		keyStore = new HashMap<String,String>();
-		logs = new ArrayList<Log>();
-		updateQueue = new ArrayList<Log>();
-		commitMap = new HashMap<Log,Integer>();
+		this.keyStore = new HashMap<String,String>();
+		this.logs = new ArrayList<Log>();
+		this.updateQueue = new ArrayList<Log>();
+		this.commitMap = new HashMap<HeartBeat,Integer>();
 	}
 
-	/**
-	 * A method to append new Log entries to the ledger. 
-	 * <p>
-	 * This allows a Leader to commit a log entry.
-	 * 
-	 * @param addition The new log to append to the Ledger.
-	 */
-	public void commitToLogs(Log addition) {
-		logs.add(addition);
-		// TODO: Need to search for followers' commits before updating key value store
-		updateKeyStore(addition.getKey(),addition.getValue());
-		updateQueue.add(addition);
-	}
+    /**
+     * This method is called once a majority of heartbeats have been received
+     * by the leader.
+     *
+     * This method commits all logs that are stored inside the heartbeat.
+     *
+     * @param hb
+     */
+	public void commitToLogs(HeartBeat hb) {
+        for (Log log : hb.getCommits()) {
+            logs.add(log);
+            updateKeyStore(log.getKey(),log.getValue());
+//            updateQueue.add(log);  // TODO: I don't think this line is needed right?
+        }
+    }
 
 	/**
 	 * Obtain commited data from the internal key-value store
@@ -76,25 +84,25 @@ public class Ledger {
 		updateQueue.add(value);
 	}
 
-	/**
-	 * This method allows us to commit a log after receiving a confirmation.
-	 * The corresponding matching value to a log will be decremented in a hashmap.
-	 * if the the value becomes 0, then we delete the key-value pair from the
-	 * confirmation HashMap and commit the log to our internal data store in this
-	 * leader node.
-	 *
-	 */
-	public void receiveConfirmation(Log log) {
-		if(commitMap.containsKey(log)) {
-			Integer value = commitMap.get(log);
-			if(value == 0) {
-				commitMap.remove(log);
-				commitToLogs(log);
-			} else {
-				commitMap.put(log,value-1);
-			}
-		}
-	}
+    /**
+     * This method maintains the commit map which is updated every time a
+     * heartbeat is received by the leader.
+     *
+     * @param hb
+     */
+    public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
+        if (commitMap.containsKey(hb)) {
+            Integer value = commitMap.get(hb);
+            if (value == 1) {  // The last heartbeat to fulfill majority
+                commitMap.remove(hb);
+                commitToLogs(hb);
+            } else {
+                commitMap.put(hb, value-1);
+            }
+        } else {
+            commitMap.put(hb, rt.getMajority());
+        }
+    }
 	
 	/**
 	 * A method to return all new logs entries that have been queued in updateQueue List.
@@ -119,8 +127,22 @@ public class Ledger {
 	 * @param value The value mapped to the lookup key of the data being entered.
 	 */
 	private void updateKeyStore(String key, String value) {
-		keyStore.put(key, value);
+        this.keyStore.put(key, value);
 	}
+
+    /**
+     * This method is used by followers, and updates the ledger based on the
+     * heartbeat. It iterates through all of the new commits sent from the
+     * leader, and adds it to the logs and key store
+     *
+     * @param hb The heartbeat message sent from the leader
+     */
+    public void update(HeartBeat hb) {
+        for(Log log : hb.getCommits()) {
+            this.logs.add(log);
+            updateKeyStore(log.getKey(), log.getValue());
+        }
+    }
 	
 	/**
 	 * This members prints all current logs that have been stored in the ledger.
@@ -143,10 +165,10 @@ public class Ledger {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Ledger ledger = new Ledger();
-		ledger.commitToLogs(new Log(1,2,"password","goats"));
-		ledger.commitToLogs(new Log(2,3,"fire","hot"));
-		ledger.printLogs();
+//		Ledger ledger = new Ledger();
+//		ledger.commitToLogs(new Log(1,2,"password","goats"));
+//		ledger.commitToLogs(new Log(2,3,"fire","hot"));
+//		ledger.printLogs();
 	}
 	
 }

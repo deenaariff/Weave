@@ -2,53 +2,59 @@ package rpc_heartbeat;
 
 import info.HostInfo;
 import ledger.Ledger;
-import ledger.Log;
+import messages.HeartBeat;
+import routing.RoutingTable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+/**
+ * This class is used by the Leader, and listens for returning heartbeat
+ * messages from its constituents.
+ */
 public class LeaderListenHeartBeatConfirm implements Callable<Void> {
 
-    private Ledger ledger; // the ledger to append new heart beats to
-    private int port;
-    private int random_interval;
+    private Ledger ledger;
     private HostInfo hostInfo;
+    private RoutingTable rt;
 
-    // Constructor
-    // provide the last_heartbeat object to update
-    // ledger to append new logs to
-    public LeaderListenHeartBeatConfirm(Ledger ledger, HostInfo hostInfo) {
+    public LeaderListenHeartBeatConfirm(Ledger ledger, HostInfo hostInfo, RoutingTable rt) {
         this.ledger = ledger;
         this.hostInfo = hostInfo;
+        this.rt = rt;
     }
 
     /**
-     * This methods runs the call() method for a Callable.
+     * This method listens for returning confirmation heartbeats from followers.
+     * Once received, it will pass the heartbeat to the ledger so that the
+     * ledger can update its commit map and list of logs accordingly
      *
-     * It will listen to Follower HeartBeat confirmations and decrement
-     * the HashMap for Logs Accordingly.
-     *
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
-    @SuppressWarnings("unchecked")
     public Void call() throws IOException, ClassNotFoundException {
+        System.out.println("[Leader]: Listening for Returning Heartbeat Messages");
         ServerSocket listener = new ServerSocket(hostInfo.getHeartBeatPort());
+
         try {
+            // Always listen for incoming heartbeat messages
             while (true) {
                 Socket socket = listener.accept();
                 try {
                     System.out.println("Received a Heartbeat");
+
+                    // De-serialize the heartbeat object received
                     final InputStream yourInputStream = socket.getInputStream();
                     final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
-                    final List<Log> confirmations = (List<Log>) inputStream.readObject();
-                    for(Log confirmation : confirmations) {
-                        //System.out.println("Received new log: " + heartbeat.getKey() + " : " + heartbeat.getValue());
-                        ledger.receiveConfirmation(confirmation);
-                    }
+                    final HeartBeat hb = (HeartBeat) inputStream.readObject();
+
+                    // Notify the ledger that we have received a confirmation heartbeat
+                    ledger.receiveConfirmation(hb, rt);
                 } finally {
                     socket.close();
                 }
@@ -57,6 +63,4 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
             listener.close();
         }
     }
-
-
 }

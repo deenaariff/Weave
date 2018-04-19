@@ -4,48 +4,71 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import ledger.Ledger;
-import ledger.Log;
-import routing.Route;
+import messages.HeartBeat;
 import routing.RoutingTable;
+import routing.Route;
 
+/**
+ * This class is used by the leader, and periodically sends heartbeat messages
+ * to its followers.
+ *
+ * Messages are sent on a separate thread, and they contain information about
+ * the current state of the distributed system.
+ */
 public class LeaderSendHeartBeat implements Callable<Void> {
-	
-	private Ledger ledger;
+
 	private RoutingTable rt;
-	
-	public LeaderSendHeartBeat(Ledger ledger, RoutingTable rt) {
-		this.ledger = ledger;
+	private HeartBeat hb;
+	private Integer hbInterval = 300;  // milliseconds
+
+    /**
+     * Constructor for the LeaderSendHearBeat class
+     *
+     * @param rt
+     * @param hb heartbeat is loaded with the leader's committed logs
+     */
+	public LeaderSendHeartBeat(RoutingTable rt, HeartBeat hb) {
 		this.rt = rt;
+		this.hb = hb;
 	}
-	
-	public void send (List<Log> logs, String hostName, Integer portNumber) throws UnknownHostException, IOException {
+
+    /**
+     * This method serializes the heartbeat object and sends it to proper host
+     *
+     * @param hb
+     * @param hostName
+     * @param portNumber
+     * @throws IOException
+     */
+	public void send (HeartBeat hb, String hostName, Integer portNumber) throws IOException {
 		Socket socket = new Socket(hostName, portNumber);
 		final OutputStream outputStream = socket.getOutputStream();
 		final ObjectOutputStream output = new ObjectOutputStream(outputStream);
-		output.writeObject(logs);
+		output.writeObject(hb);
 		socket.close();
 	}
 
+    /**
+     * This callable sends the heartbeat object to all hosts in the routing table
+     *
+     * @return
+     * @throws Exception
+     */
 	public Void call() throws Exception {
 		while(true) {
-			TimeUnit.SECONDS.sleep(1);
-			List<Log> updates = this.ledger.getUpdates();
-			for(Route route : this.rt.getTable()) {
+			TimeUnit.MILLISECONDS.sleep(hbInterval);
+
+			for (Route host : this.rt.getTable()) {
 				try {
-					System.out.println("Sending Updates to " + route.getIP() + " " + route.getHeartbeatPort());
-					send(updates, route.getIP(), route.getHeartbeatPort());
+					System.out.println("Sending Updates to " + host.getIP() + ":" + host.getHeartbeatPort());
+					send(hb, host.getIP(), host.getHeartbeatPort());
 				} catch (Exception e) {
 					System.out.println("Exception: " + e);
 				}
 			}
 		}
-		//return null;
 	}
-
 }

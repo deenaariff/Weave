@@ -1,8 +1,9 @@
 .idea/
 .settings
-bin/
 .classpath
 .project
 Raft.iml
-tmp/
 Distributed-Value-Key-Store.iml
+tmp/
+target/
+bin/

@@ -1,61 +1,88 @@
 package rpc_heartbeat;
 
-import java.io.IOException;
-
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import ledger.Ledger;
-import ledger.Log;
+import messages.HeartBeat;
+import routing.RoutingTable;
 
-// Heart beat thread to listen for RPC from leader
+/**
+ * This class will be instantiated by a follower, and it will listen for
+ * incoming heartbeat messages.
+ *
+ * After receiving the heartbeats, this class will de-serialize the object
+ * and update its ledger to align with the leader's ledger.
+ */
 public class FollowerListenHeartBeat implements Callable<Void> {
-	
-	private Long last_heartbeat; // the time stamp of the last heart beat received
-	private Ledger ledger; // the ledger to append new heart beats to 
-	private int port;
+
+	private Ledger ledger; // ledger to append new heart beats to
+    private RoutingTable rt;
+    private int port;
 	private int random_interval;
-	
-	// Constructor 
-	// provide the last_heartbeat object to update
-	// ledger to append new logs to
-	public FollowerListenHeartBeat(Ledger ledger, int port, int random_interval) {
+    private Long last_heartbeat; // time stamp of the last heart beat received
+
+    /**
+     * Constructor for the FollowerListenHeartBeat class
+     *
+     * @param ledger
+     * @param rt
+     * @param port
+     * @param random_interval
+     */
+	public FollowerListenHeartBeat(Ledger ledger, RoutingTable rt, int port, int random_interval) {
 		this.ledger = ledger;
+		this.rt = rt;
 		this.port = port;
 		this.random_interval = random_interval;
 	}
-	
-	// Ensure that the heart beat is added to the ledger
-	public void updateLedger(Log heartbeat) {
-		ledger.commitToLogs(heartbeat);
-	}
-	
-	@SuppressWarnings("unchecked")
+
+
+    /**
+     * This callable listens for the heartbeat messages sent from the leader.
+     *
+     * If a heartbeat is received, we de-serialize the heartbeat and update the
+     * ledger. If a heartbeat is not received within the random time interval,
+     * we terminate the thread and become a candidate.
+     *
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
 	public Void call() throws IOException, ClassNotFoundException {
 	    System.out.println("[Follower]: Listening for Incoming Heartbeat Messages");
 		ServerSocket listener = new ServerSocket(this.port);
 		this.last_heartbeat = System.nanoTime();
+
 	    try {
+	        // Listen for the heartbeat until the waiting time interval has elapsed
 	    	while (true) {
 	    		if(System.nanoTime() - this.last_heartbeat  > this.random_interval) {
 	    			System.out.println("[Follower]: Randomized Follower Waiting Interval (" + this.random_interval +  "  ms) Elapsed - Revert to Candidate");
 	    			break;
 	    		} else {
-		    		Socket socket = listener.accept();
+		    		Socket socket = listener.accept();  // TODO: Will this block?? We still need to check interval
 		            try {
-		            	System.out.println("[Follower]: Received a Heartbeat");
+		            	System.out.println("Received a Heartbeat");
+
+		            	// De-serialize the heartbeat object received
 		            	final InputStream yourInputStream = socket.getInputStream();
 		                final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
-		                final List<Log> heartbeats = (List<Log>) inputStream.readObject();
-		                for(Log heartbeat : heartbeats) {
-		                	System.out.println("[Follower]: Received new log: " + heartbeat.getKey() + " : " + heartbeat.getValue());
-		                	updateLedger(heartbeat);
-		                }
-		            	this.last_heartbeat = System.nanoTime();
+		                final HeartBeat hb = (HeartBeat) inputStream.readObject();
+
+                        // Record the time this heartbeat was received
+                        this.last_heartbeat = System.nanoTime();
+
+		                // Update the ledger based on the heartbeat received
+                        ledger.update(hb);
+						// TODO: [Follower]: Received a new log:  ___
+
+                        // Send this heartbeat back to the leader to acknowledge
+                        final OutputStream outputStream = socket.getOutputStream();
+                        final ObjectOutputStream output = new ObjectOutputStream(outputStream);
+                        output.writeObject(hb);
 		            } finally {
 		                socket.close();
 		            }
@@ -64,8 +91,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	    } finally {
             listener.close();
         }
+
 	    return null;
 	}
-
-
 }
