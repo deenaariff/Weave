@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
+import info.HostInfo;
 import ledger.Ledger;
 import messages.HeartBeat;
 import routing.RoutingTable;
@@ -19,8 +20,7 @@ import routing.RoutingTable;
 public class FollowerListenHeartBeat implements Callable<Void> {
 
 	private Ledger ledger; // ledger to append new heart beats to
-    private RoutingTable rt;
-    private int port;
+    private HostInfo host_info;
 	private int random_interval;
     private Long last_heartbeat; // time stamp of the last heart beat received
 
@@ -29,13 +29,12 @@ public class FollowerListenHeartBeat implements Callable<Void> {
      *
      * @param ledger
      * @param rt
-     * @param port
+     * @param host_info
      * @param random_interval
      */
-	public FollowerListenHeartBeat(Ledger ledger, RoutingTable rt, int port, int random_interval) {
+	public FollowerListenHeartBeat(Ledger ledger, HostInfo host_info, int random_interval) {
 		this.ledger = ledger;
-		this.rt = rt;
-		this.port = port;
+		this.host_info = host_info;
 		this.random_interval = random_interval;
 	}
 
@@ -53,7 +52,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
      */
 	public Void call() throws IOException, ClassNotFoundException {
 	    System.out.println("[Follower]: Listening for Incoming Heartbeat Messages");
-		ServerSocket listener = new ServerSocket(this.port);
+		ServerSocket listener = new ServerSocket(this.host_info.getHeartBeatPort());
 		this.last_heartbeat = System.nanoTime();
 
 	    try {

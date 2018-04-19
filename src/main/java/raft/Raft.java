@@ -19,7 +19,6 @@ import routing.RoutingTable;
 @SpringBootApplication
 public class Raft {
 
-
 	public static void main(String[] args) {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -36,7 +35,7 @@ public class Raft {
         System.out.println("HeartBeat PORT: " + route.getVotingPort());
         System.out.println("Voting PORT: " + route.getHeartbeatPort());
 
-		RaftNode node = new RaftNode(rt, ledger,route.getHeartbeatPort(),route.getVotingPort());
+		RaftNode node = new RaftNode(rt, route.getIP(), ledger,route.getHeartbeatPort(),route.getVotingPort());
 		
 		System.out.println("Starting Raft Consensus Algorithm");
 

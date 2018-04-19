@@ -70,7 +70,7 @@ public class Follower extends State {
 		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
 
 		// Create a thread to accept heart beats
-		Callable<Void> accept_hb = new FollowerListenHeartBeat(this.ledger, this.host.getHeartBeatPort(), this.random_interval);
+		Callable<Void> accept_hb = new FollowerListenHeartBeat(this.ledger, this.host, this.random_interval);
 		Future<Void> future = exec.submit(accept_hb);
 
 		try {

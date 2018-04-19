@@ -33,7 +33,7 @@ public class TestRPCHeartbeat {
         HostInfo follower = new HostInfo(local);
 
         // Create the follower callable
-        Callable<Void> f_callable = new FollowerListenHeartBeat(f_ledger,follower.getHeartBeatPort(), 10);
+        Callable<Void> f_callable = new FollowerListenHeartBeat(f_ledger,follower, 10);
 
         // Initialize leader RPC Objects
         Ledger l_ledger = new Ledger();

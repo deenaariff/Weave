@@ -53,7 +53,6 @@ public class Ledger {
         for (Log log : hb.getCommits()) {
             logs.add(log);
             updateKeyStore(log.getKey(),log.getValue());
-//            updateQueue.add(log);  // TODO: I don't think this line is needed right?
         }
     }
 
@@ -113,7 +112,6 @@ public class Ledger {
 	public List<Log> getUpdates() {
 		List<Log> updates = new ArrayList<Log>();
 		for(Log log : updateQueue) {
-			commitMap.put(log,MAJORITYPLACEHOLDER); // TODO: Store the # which represents majority of nodes in file
 			updates.add(log);
 		}
 		//updateQueue = new ArrayList<Log>();

@@ -27,7 +27,7 @@ public class RaftNode {
 	 * The constructor for the RaftNode Class
 	 * 
 	 */
-	public RaftNode(Ledger ledger, Integer heartBeatPort, Integer votingPort) {
+	public RaftNode(Ledger ledger, String host, Integer heartBeatPort, Integer votingPort) {
 		this.ledger = this.ledger;
 		this.host = new HostInfo("127.0.0.1", heartBeatPort, votingPort);
 		this.rt = new RoutingTable();
@@ -41,7 +41,7 @@ public class RaftNode {
      * Pass option Routing Table
 	 *
 	 */
-	public RaftNode(RoutingTable rt, Ledger ledger, Integer heartBeatPort, Integer votingPort) {
+	public RaftNode(RoutingTable rt, String host, Ledger ledger, Integer heartBeatPort, Integer votingPort) {
 		this.ledger = this.ledger;
 		this.host = new HostInfo("127.0.0.1", heartBeatPort, votingPort);
 		this.rt = rt;
