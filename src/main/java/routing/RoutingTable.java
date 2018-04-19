@@ -97,6 +97,7 @@ public class RoutingTable {
 
                     Integer id = Integer.parseInt(eElement.getAttribute("id"));
 
+                    new_route.setId(id);
                     new_route.setIP(eElement.getElementsByTagName("ip").item(0).getTextContent());
                     new_route.setEndpointPort(Integer.parseInt(eElement.getElementsByTagName("client").item(0).getTextContent()));
                     new_route.setHeartBeatPort(Integer.parseInt(eElement.getElementsByTagName("heartbeat").item(0).getTextContent()));

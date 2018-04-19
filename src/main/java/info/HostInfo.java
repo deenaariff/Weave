@@ -1,6 +1,7 @@
 package info;
 
 
+import routing.Route;
 
 /**
  * The info wrapper that a host can use to let all subclasses gain access to host info
@@ -9,9 +10,7 @@ package info;
 public class HostInfo {
 	
 	// TODO: Save heartbeat_port and voting_port to env var. Read from env var on startup
-	private final String HOST_NAME;
-	private final Integer HEARTBEAT_PORT;
-	private final Integer VOTING_PORT;
+	private final Route route;
 	private Integer term;
 	private String state; 
 	
@@ -19,50 +18,38 @@ public class HostInfo {
 	private final String CANDIDATE_TAG = "CANDIDATE";
 	private final String LEADER_TAG = "LEADER";
 	
-	private final Integer DEFAULT_HEARTBEAT_PORT = 8080;
-	private final Integer DEFAULT_VOTING_PORT = 8081;
-	
 	/**
 	 * Constructor for the HostInfo class
 	 * 
-	 * @param HOST_NAME Default Host IP of the host
-	 * @param hostPort Default port of the host
+	 * @param route All Relevant routing information for the host
+	 *
 	 */
-	public HostInfo(String hostName) {
-		this.HOST_NAME = hostName;
-		this.HEARTBEAT_PORT = DEFAULT_HEARTBEAT_PORT;
-		this.VOTING_PORT = DEFAULT_VOTING_PORT;
+	public HostInfo(Route route) {
+		this.route = route;
 		this.term = 0;
 		this.state = FOLLOWER_TAG;
 	}
-	
-	/**
-	 * Constructor for the HostInfo class
-	 * 
-	 * @param HOST_NAME Default Host IP of the host
-	 * @param hostPort Default port of the host
-	 */
-	public HostInfo(String hostName, Integer heartbeatPort, Integer votingPort) {
-		this.HOST_NAME = hostName;
-		this.HEARTBEAT_PORT = heartbeatPort;
-		this.VOTING_PORT = votingPort;
-		this.term = 0;
-		this.state = FOLLOWER_TAG;
-	}
-	
+
 	/**
 	 * Second constructor for the HostInfo class
 	 * 
-	 * @param HOST_NAME Default Host IP of the host
-	 * @param hostPort Default port of the host
+	 * @param route
+	 * @param term
 	 */
-	public HostInfo(String hostName, Integer heartbeatPort, Integer votingPort, Integer term) {
-		this.HOST_NAME = hostName;
-		this.HEARTBEAT_PORT = heartbeatPort;
-		this.VOTING_PORT = votingPort;
+	public HostInfo(Route route, Integer term) {
+		this.route = route;
 		this.term = term;
 		this.state = FOLLOWER_TAG;
 	}
+
+    /**
+     * Obtain id of node
+     *
+     */
+    public Integer getId() {
+        return this.route.getId();
+    }
+
 	
 	/**
 	 * Obtain the host IP of the port
@@ -70,7 +57,7 @@ public class HostInfo {
 	 * @return the HOST_NAME of the port
 	 */
 	public String getHostName() {
-		return this.HOST_NAME;
+	    return this.route.getIP();
 	}
 
 	/**
@@ -79,7 +66,7 @@ public class HostInfo {
 	 * @return the HEARTBEAT_PORT value
 	 */
 	public Integer getHeartBeatPort() {
-		return this.HEARTBEAT_PORT;
+	    return this.route.getHeartbeatPort();
 	}
 	
 	/**
@@ -88,7 +75,7 @@ public class HostInfo {
 	 * @return the VOTING_PORT value
 	 */
 	public Integer getVotingPort() {
-		return this.VOTING_PORT;
+		return this.route.getVotingPort();
 	}
 
 	/**
@@ -98,7 +85,7 @@ public class HostInfo {
 	 * @return true if current term is behind, false otherwise
 	 */
 	public boolean isTermConflict(Integer new_term) {
-		return (new_term > this.term);
+	    return (new_term > this.term);
 	}
 
 	/**
@@ -114,7 +101,7 @@ public class HostInfo {
 	 * @param new_term the term to update the current term to
 	 */
 	public void setTerm(Integer new_term) {
-		this.term = new_term;
+	    this.term = new_term;
 	}
 	
 	/**
@@ -122,7 +109,7 @@ public class HostInfo {
 	 *
 	 */
 	public void incrementTerm() {
-		this.term += 1;
+	    this.term += 1;
 	}
 	
 	/**
@@ -130,7 +117,7 @@ public class HostInfo {
 	 * 
 	 */
 	public void becomeFollower() {
-		this.state = FOLLOWER_TAG;
+	    this.state = FOLLOWER_TAG;
 	}
 	
 	/**
@@ -139,7 +126,7 @@ public class HostInfo {
 	 * @return true if follower
 	 */
 	public boolean isFollower() {
-		return this.state == FOLLOWER_TAG;
+	    return this.state == FOLLOWER_TAG;
 	}
 	
 	/**
@@ -147,7 +134,7 @@ public class HostInfo {
 	 * 
 	 */
 	public void becomeCandidate() {
-		this.state = CANDIDATE_TAG;
+	    this.state = CANDIDATE_TAG;
 	}
 	
 	/**
@@ -156,7 +143,7 @@ public class HostInfo {
 	 * @return true if candidate
 	 */
 	public boolean isCandidate() {
-		return this.state == CANDIDATE_TAG;
+	    return this.state == CANDIDATE_TAG;
 	}
 	
 	/**
@@ -164,7 +151,7 @@ public class HostInfo {
 	 * 
 	 */
 	public void becomeLeader() {
-		this.state = LEADER_TAG;
+	    this.state = LEADER_TAG;
 	}
 	
 	/**
@@ -173,7 +160,7 @@ public class HostInfo {
 	 * @return true if leader
 	 */
 	public boolean isLeader() {
-		return this.state == LEADER_TAG;
+	    return this.state == LEADER_TAG;
 	}
 	
 	/**

@@ -2,6 +2,7 @@ package test;
 
 import ledger.Ledger;
 import ledger.Log;
+import routing.Route;
 import routing.RoutingTable;
 import rpc_heartbeat.FollowerListenHeartBeat;
 import rpc_heartbeat.LeaderSendHeartBeat;
@@ -30,7 +31,14 @@ public class TestRPCHeartbeat {
 
         // Initialize Follower RPC Objects
         Ledger f_ledger = new Ledger();
-        HostInfo follower = new HostInfo(local);
+
+        Route local_route = new Route();
+        local_route.setIP("127.0.0.1");
+        local_route.setId(1);
+        local_route.setHeartBeatPort(8081);
+        local_route.setVotingPort(8082);
+
+        HostInfo follower = new HostInfo(local_route);
 
         // Create the follower callable
         Callable<Void> f_callable = new FollowerListenHeartBeat(f_ledger,follower, 10);
@@ -40,7 +48,7 @@ public class TestRPCHeartbeat {
         Log log = new Log(0,0,"test_key","test_value");
         l_ledger.addToQueue(log);
         RoutingTable rt = new RoutingTable();
-        rt.addEntry("127.0.0.1",8081,8082);
+        rt.addEntry(local_route.getIP(),local_route.getHeartbeatPort(),local_route.getVotingPort());
 
         // Create the leader callable
         Callable<Void> l_callable = new LeaderSendHeartBeat(l_ledger, rt);
