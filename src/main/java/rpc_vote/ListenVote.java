@@ -29,6 +29,19 @@ public class ListenVote implements Callable<Void> {
 	public ListenVote(int port) {
 		this.port = port;
 	}
+
+	/**
+	 * Send a vote back to the original sender of the Vote Object
+	 *
+	 * @param vote The Vote object which should be returned to the sender of the vote
+	 */
+	private void sendVote (Vote vote) throws UnknownHostException, IOException {
+		Socket socket = new Socket(vote.getHost(),vote.getHostPort());
+		final OutputStream outputStream = socket.getOutputStream();
+		final ObjectOutputStream output = new ObjectOutputStream(outputStream);
+		output.writeObject(vote);
+		socket.close();
+	}
 	
 	/**
 	 * The call method for the class
@@ -66,19 +79,6 @@ public class ListenVote implements Callable<Void> {
             listener.close();
         }
 		//return null;
-	}
-	
-	/**
-	 * Send a vote back to the original sender of the Vote Object
-	 * 
-	 * @param vote The Vote object which should be returned to the sender of the vote
-	 */
-	private void sendVote (Vote vote) throws UnknownHostException, IOException {
-		Socket socket = new Socket(vote.getHost(),vote.getHostPort());
-		final OutputStream outputStream = socket.getOutputStream();
-		final ObjectOutputStream output = new ObjectOutputStream(outputStream);
-		output.writeObject(vote);
-		socket.close();
 	}
 
 }

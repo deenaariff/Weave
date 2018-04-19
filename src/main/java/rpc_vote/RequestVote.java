@@ -62,15 +62,17 @@ public class RequestVote implements Callable<Integer> {
 	 * 
 	 * @return 1 if Node received majority of nodes, else return 0
 	 */
-	@Override
 	public Integer call() throws Exception {
 		int totalTableLength = this.rt.getTable().size();
 		int messagesReceived = 0;
-		int votesObtained = 0;
+		int votesObtained = 1; // Vote for yourself
 		
 		// Send New Vote Objects to all nodes in the routing Table.
+        System.out.println("[Candidate]: Requesting Votes from " + totalTableLength +  " Hosts");
+
 		for (String host : this.rt.getTable()) {
 			Vote newVote = new Vote(this.host);
+			// Add logic to not send to yourself
 			send(host, this.rt.VOTING_PORT, newVote);
 		}
 		
@@ -100,6 +102,8 @@ public class RequestVote implements Callable<Integer> {
 		} finally {
 			listener.close();
 		}
+
+        System.out.println("[Candidate]: " + votesObtained + " votes obtained out of " + totalTableLength +  " hosts");
 		
 		// Has obtained majority of votes? => if yes then return 1
 		return (votesObtained >= totalTableLength/2)? 1 : 0;		
@@ -107,7 +111,6 @@ public class RequestVote implements Callable<Integer> {
 	
 	/**
 	 * Tests
-	 */
 	public static void main(String[] args) {
 		
 		RoutingTable rt = new RoutingTable();
@@ -132,5 +135,6 @@ public class RequestVote implements Callable<Integer> {
 		}
 	     
 	}
+	 */
 
 }

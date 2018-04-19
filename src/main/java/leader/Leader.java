@@ -3,6 +3,7 @@ package leader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import info.HostInfo;
 import ledger.Ledger;
@@ -70,7 +71,14 @@ public class Leader extends State {
 	@Override
 	public int run() {
 		Callable<Void> shb = new LeaderSendHeartBeat(this.ledger, this.rt);
-		exec.submit(shb);
+        Future<Void> future = exec.submit(shb);
+
+        try {
+            future.get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 		return 1;
 	}
 	
@@ -78,7 +86,6 @@ public class Leader extends State {
 	 * Tests for the Leader Class.
 	 * 
 	 * @param args
-	 */
 	public static void main (String [] args) {
 		
 		Callable<Void> rhb = new FollowerListenHeartBeat(new Ledger(), 8080, 10);
@@ -94,5 +101,6 @@ public class Leader extends State {
 		
 		leader.run();	
 	}
+	*/
 
 }

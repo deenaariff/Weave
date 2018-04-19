@@ -39,6 +39,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 		this.random_interval = random_interval;
 	}
 
+
     /**
      * This callable listens for the heartbeat messages sent from the leader.
      *
@@ -51,14 +52,15 @@ public class FollowerListenHeartBeat implements Callable<Void> {
      * @throws ClassNotFoundException
      */
 	public Void call() throws IOException, ClassNotFoundException {
+	    System.out.println("[Follower]: Listening for Incoming Heartbeat Messages");
 		ServerSocket listener = new ServerSocket(this.port);
 		this.last_heartbeat = System.nanoTime();
 
 	    try {
 	        // Listen for the heartbeat until the waiting time interval has elapsed
 	    	while (true) {
-	    		if (this.last_heartbeat - System.nanoTime() > this.random_interval) {
-	    			System.out.println("Randomized Follower Waiting Interval Elapsed");
+	    		if(System.nanoTime() - this.last_heartbeat  > this.random_interval) {
+	    			System.out.println("[Follower]: Randomized Follower Waiting Interval (" + this.random_interval +  "  ms) Elapsed - Revert to Candidate");
 	    			break;
 	    		} else {
 		    		Socket socket = listener.accept();  // TODO: Will this block?? We still need to check interval
@@ -75,6 +77,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 
 		                // Update the ledger based on the heartbeat received
                         ledger.update(hb);
+						// TODO: [Follower]: Received a new log:  ___
 
                         // Send this heartbeat back to the leader to acknowledge
                         final OutputStream outputStream = socket.getOutputStream();

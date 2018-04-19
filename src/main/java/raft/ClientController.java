@@ -1,14 +1,16 @@
-package rpc_client;
+package raft;
 
 import ledger.Ledger;
 import ledger.Log;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Arrays;
 
 
 /**
@@ -19,10 +21,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ClientController {
 
-    private Ledger ledger;
+    private Ledger ledger; // Stateful ledger to be shared by all RAFT node states
 
-    public ClientController(Ledger ledger) {
-        this.ledger = ledger;
+    public ClientController() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        this.ledger = (Ledger) context.getBean("ledger");
+    }
+
+    /**
+     * Handler for default path
+     *
+     */
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ResponseBody
+    public String home() {
+        return "This is the RAFT Consensus Algorithm";
     }
 
     /**
@@ -40,6 +53,8 @@ public class ClientController {
                                  @PathVariable("value") String value) {
         Log update = new Log(0,0,key,value);
         this.ledger.addToQueue(update);
+        System.out.println("Hit");
+        System.out.println(Arrays.toString(this.ledger.getUpdates().toArray()));
         return "Update Queued for Replication";
     }
 

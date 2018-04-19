@@ -3,6 +3,7 @@ package candidate;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import info.HostInfo;
 import ledger.Ledger;
@@ -39,9 +40,17 @@ public class Candidate extends State {
 		
 		// start an election
 		Callable<Integer> requester = new RequestVote(this.rt, this.host);
-		
-		// TODO Auto-generated method stub
-		return 1;
+
+		Future<Integer> future = exec.submit(requester);
+
+		try {
+			return future.get();
+		} catch (Exception e) {
+			// The exception will be printed out
+			System.out.println("Exception: " + e);
+		}
+
+		return 0;
 	}
 
 }

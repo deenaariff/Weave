@@ -1,6 +1,7 @@
 package ledger;
 
 import messages.HeartBeat;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @author deenaariff
  *
  */
+@Component
 public class Ledger {
 
     // TODO: Many of the references to this object's variables were not referenced using the 'this' keyword. Need to fix.
@@ -33,6 +35,7 @@ public class Ledger {
 		this.keyStore = new HashMap<String,String>();
 		this.logs = new ArrayList<Log>();
 		this.updateQueue = new ArrayList<Log>();
+		this.commitMap = new HashMap<Log,Integer>();
 	}
 
 	/**
@@ -124,7 +127,7 @@ public class Ledger {
 			commitMap.put(log,MAJORITYPLACEHOLDER); // TODO: Store the # which represents majority of nodes in file
 			updates.add(log);
 		}
-		updateQueue = new ArrayList<Log>();
+		//updateQueue = new ArrayList<Log>();
 		return updates;
 	}
 	

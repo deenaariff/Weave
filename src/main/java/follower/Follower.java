@@ -3,6 +3,7 @@ package follower;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import info.HostInfo;
 import ledger.Ledger;
@@ -29,7 +30,7 @@ import state.State;
 public class Follower extends State {
 	
 	private int random_interval;
-	private int INTERVAL_MAX = 50; // max interval in milliseconds
+	private int INTERVAL_MAX = 350; // max interval in milliseconds
 	private HostInfo host;
 	private ExecutorService exec;
 
@@ -42,7 +43,6 @@ public class Follower extends State {
 	public Follower(Ledger ledger, HostInfo host) {
 		this.host = host;
 		this.ledger = ledger;
-		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
 		this.exec = Executors.newFixedThreadPool(3);
 	}
 	
@@ -56,7 +56,6 @@ public class Follower extends State {
 	public Follower(Ledger ledger, HostInfo host, ExecutorService exec) {
 		this.host = host;
 		this.ledger = ledger;
-		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
 		this.exec = exec;
 	}
 	
@@ -67,10 +66,23 @@ public class Follower extends State {
 	 */
 	@Override
 	public int run() {
+
+		this.random_interval = 0 + (int)(Math.random() * INTERVAL_MAX);
+
 		// Create a thread to accept heart beats
 		Callable<Void> accept_hb = new FollowerListenHeartBeat(this.ledger, this.host.getHeartBeatPort(), this.random_interval);
-	    exec.submit(accept_hb);
-		return 1;
+		Future<Void> future = exec.submit(accept_hb);
+
+		try {
+			future.get();
+			return 1;
+		} catch (Exception e) {
+			// The exception will be printed out
+			System.out.println("Exception: " + e);
+		}
+
+		return 0;
+
 	}
 	
 	/**
@@ -89,7 +101,7 @@ public class Follower extends State {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) { 
+	/*public static void main(String[] args) {
 		
 		// Create New Follower
 		Ledger ledger = new Ledger();
@@ -109,6 +121,6 @@ public class Follower extends State {
 	    Callable<Void> mhb = new LeaderSendHeartBeat(mock_ledger, rt);
 	    ExecutorService exec = f.getExecutor();
 		exec.submit(mhb);	
-	}
+	}*/
 
 }
