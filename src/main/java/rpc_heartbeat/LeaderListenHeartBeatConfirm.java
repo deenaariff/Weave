@@ -28,7 +28,7 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
     // TODO: Leader maintains a hashmap for each heartbeat?
     // TODO: When item in hashmap reaches a specific number, we can finally commit to logs?
 
-    // Constructor
+
     public LeaderListenHeartBeatConfirm(Ledger ledger, HostInfo hostInfo) {
         this.ledger = ledger;
         this.hostInfo = hostInfo;
@@ -40,22 +40,28 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
      * It will listen to Follower HeartBeat confirmations and decrement
      * the HashMap for Logs Accordingly.
      *
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
-    @SuppressWarnings("unchecked")
     public Void call() throws IOException, ClassNotFoundException {
+        System.out.println("[Leader]: Listening for Returning Heartbeat Messages");
         ServerSocket listener = new ServerSocket(hostInfo.getHeartBeatPort());
+
         try {
+            // Always listen for incoming heartbeat messages
             while (true) {
                 Socket socket = listener.accept();
                 try {
                     System.out.println("Received a Heartbeat");
+
+                    // De-serialize the heartbeat object received
                     final InputStream yourInputStream = socket.getInputStream();
                     final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
-                    final List<Log> confirmations = (List<Log>) inputStream.readObject();
-                    for(Log confirmation : confirmations) {
-                        //System.out.println("Received new log: " + heartbeat.getKey() + " : " + heartbeat.getValue());
-                        ledger.receiveConfirmation(confirmation);
-                    }
+                    final HeartBeat hb = (HeartBeat) inputStream.readObject();
+
+                    // Notify the ledger that we have received a confirmation heartbeat
+                    ledger.receiveConfirmation(hb);
                 } finally {
                     socket.close();
                 }

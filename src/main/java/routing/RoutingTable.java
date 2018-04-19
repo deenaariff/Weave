@@ -29,6 +29,17 @@ public class RoutingTable {
 	public List<Route> getTable() {
 		return this.table;
 	}
+
+    /**
+     * This method returns the number of nodes it would take to specify the
+     * majority of the cluster.
+     *
+     * @return
+     */
+	public Integer getMajority() {
+	    // TODO: This cannot be called ... deprecate this method?
+        return (int) Math.ceil(this.table.size() / 2);
+    }
 	
 	public void addEntry(String ip, int heartbeat_port, int voting_port) {
 		this.table.add(new Route(ip, heartbeat_port, voting_port));

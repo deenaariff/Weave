@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import ledger.Ledger;
 import messages.HeartBeat;
 import routing.RoutingTable;
 import routing.Route;
