@@ -100,7 +100,14 @@ public class HostInfo {
 	public boolean isTermConflict(Integer new_term) {
 		return (new_term > this.term);
 	}
-	
+
+	/**
+	 * Get the current term of the host
+	 *
+	 * @return the value of the term
+	 */
+	public Integer getTerm() { return term; }
+
 	/**
 	 * Update current term of the hostInfo object
 	 * 

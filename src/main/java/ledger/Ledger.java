@@ -114,7 +114,7 @@ public class Ledger {
 		for(Log log : updateQueue) {
 			updates.add(log);
 		}
-		//updateQueue = new ArrayList<Log>();
+		updateQueue = new ArrayList<Log>();  // clear entries
 		return updates;
 	}
 	
