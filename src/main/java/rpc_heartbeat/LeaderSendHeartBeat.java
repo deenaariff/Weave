@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import ledger.Ledger;
 import messages.HeartBeat;
 import routing.RoutingTable;
+import routing.Route;
 
 /**
  * This class is used by the leader, and periodically sends heartbeat messages
@@ -19,8 +20,7 @@ import routing.RoutingTable;
  * the current state of the distributed system.
  */
 public class LeaderSendHeartBeat implements Callable<Void> {
-	
-	private Ledger ledger;
+
 	private RoutingTable rt;
 	private HeartBeat hb;
 	private Integer hbInterval = 300;  // milliseconds
@@ -28,12 +28,10 @@ public class LeaderSendHeartBeat implements Callable<Void> {
     /**
      * Constructor for the LeaderSendHearBeat class
      *
-     * @param ledger
      * @param rt
      * @param hb heartbeat is loaded with the leader's committed logs
      */
-	public LeaderSendHeartBeat(Ledger ledger, RoutingTable rt, HeartBeat hb) {
-		this.ledger = ledger;
+	public LeaderSendHeartBeat(RoutingTable rt, HeartBeat hb) {
 		this.rt = rt;
 		this.hb = hb;
 	}
@@ -64,10 +62,10 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 		while(true) {
 			TimeUnit.MILLISECONDS.sleep(hbInterval);
 
-			for (String host : this.rt.getTable()) {
+			for (Route host : this.rt.getTable()) {
 				try {
-					System.out.println("Sending Updates to " + host + " " + this.rt.HEARTBEAT_PORT);
-					send(hb, host, rt.HEARTBEAT_PORT);
+					System.out.println("Sending Updates to " + host.getIP() + ":" + host.getHeartbeatPort());
+					send(hb, host.getIP(), host.getHeartbeatPort());
 				} catch (Exception e) {
 					System.out.println("Exception: " + e);
 				}
