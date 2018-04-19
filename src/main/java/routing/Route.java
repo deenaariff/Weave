@@ -3,6 +3,7 @@ package routing;
 public class Route {
 
     private String IP;
+    private int endpoint_port;
     private int heartbeat_port;
     private int voting_port;
 
@@ -21,6 +22,14 @@ public class Route {
 
     public void setIP(String IP) {
         this.IP = IP;
+    }
+
+    public int getEndpointPort() {
+        return endpoint_port;
+    }
+
+    public void setEndpointPort(int endpoint_port) {
+        this.endpoint_port = endpoint_port;
     }
 
     public void setHeartBeatPort(int heartbeat_port) {

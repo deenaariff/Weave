@@ -40,7 +40,7 @@ public class TestRPCHeartbeat {
         Log log = new Log(0,0,"test_key","test_value");
         l_ledger.addToQueue(log);
         RoutingTable rt = new RoutingTable();
-        rt.addEntry(local);
+        rt.addEntry("127.0.0.1",8081,8082);
 
         // Create the leader callable
         Callable<Void> l_callable = new LeaderSendHeartBeat(l_ledger, rt);

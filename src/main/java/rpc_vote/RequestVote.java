@@ -15,6 +15,7 @@ import java.util.concurrent.Future;
 
 import info.HostInfo;
 import messages.Vote;
+import routing.Route;
 import routing.RoutingTable;
 
 /**
@@ -70,10 +71,10 @@ public class RequestVote implements Callable<Integer> {
 		// Send New Vote Objects to all nodes in the routing Table.
         System.out.println("[Candidate]: Requesting Votes from " + totalTableLength +  " Hosts");
 
-		for (String host : this.rt.getTable()) {
+		for (Route route : this.rt.getTable()) {
 			Vote newVote = new Vote(this.host);
 			// Add logic to not send to yourself
-			send(host, this.rt.VOTING_PORT, newVote);
+			send(route.getIP(), route.getVotingPort(), newVote);
 		}
 		
 		// Create a ServerSocket listener to listen to Vote responses

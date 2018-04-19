@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import routing.Route;
+import routing.RoutingTable;
 
 /**
  * The Main Class to Run a Raft node
@@ -17,15 +19,24 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 @SpringBootApplication
 public class Raft {
 
-	@Autowired
-	private static Ledger ledger;
 
 	public static void main(String[] args) {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-		ledger = (Ledger) context.getBean("ledger");
+		Ledger ledger = (Ledger) context.getBean("ledger");
 
-		RaftNode node = new RaftNode(ledger,8081,8082);
+		/* Load the Routing Table Info from nodes.xml */
+        RoutingTable rt = new RoutingTable("nodes.xml");
+
+        /* Get this Nodes Routing Info */
+        Route route = rt.getRouteById(1);
+
+        System.out.println("IP Address: " + route.getIP());
+        System.out.println("Listening on PORT: " + route.getEndpointPort());
+        System.out.println("HeartBeat PORT: " + route.getVotingPort());
+        System.out.println("Voting PORT: " + route.getHeartbeatPort());
+
+		RaftNode node = new RaftNode(rt, ledger,route.getHeartbeatPort(),route.getVotingPort());
 		
 		System.out.println("Starting Raft Consensus Algorithm");
 
