@@ -28,7 +28,6 @@ public class FollowerListenHeartBeat implements Callable<Void> {
      * Constructor for the FollowerListenHeartBeat class
      *
      * @param ledger
-     * @param rt
      * @param host_info
      * @param random_interval
      */
@@ -58,7 +57,9 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	    try {
 	        // Listen for the heartbeat until the waiting time interval has elapsed
 	    	while (true) {
-	    		if(System.nanoTime() - this.last_heartbeat  > this.random_interval) {
+	    	    long elapsed = (System.nanoTime() - this.last_heartbeat) / 1000000;
+	    		System.out.println("Time Elapsed: " + elapsed);
+	    		if(elapsed > this.random_interval) {
 	    			System.out.println("[Follower]: Randomized Follower Waiting Interval (" + this.random_interval +  "  ms) Elapsed - Revert to Candidate");
 	    			break;
 	    		} else {

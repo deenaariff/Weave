@@ -1,5 +1,4 @@
 package raft;
-import configuration.Configuration;
 import ledger.Ledger;
 import node.RaftNode;
 
@@ -28,7 +27,7 @@ public class Raft {
         RoutingTable rt = new RoutingTable("nodes.xml");
 
         /* Get this Nodes Routing Info */
-        Route route = rt.getRouteById(1);
+        Route route = rt.getRouteById(Integer.parseInt(args[0]));
 
         System.out.println("IP Address: " + route.getIP());
         System.out.println("Listening on PORT: " + route.getEndpointPort());
@@ -40,7 +39,7 @@ public class Raft {
 		System.out.println("Starting Raft Consensus Algorithm");
 
 		// Start the Client Service API
-		SpringApplication.run(Raft.class, args);
+		/*SpringApplication.run(Raft.class, args);*/
 		
 		// Run the State Machine
 		while (true) {

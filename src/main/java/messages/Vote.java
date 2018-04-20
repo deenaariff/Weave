@@ -25,8 +25,7 @@ public class Vote implements Serializable {
 	/**
 	 * The Constructor for the Vote Class.
 	 * 
-	 * @param originHost The host of the origin that is requesting the Vote.
-	 * @param originPort The port of the origin that will accept a cast vote;
+	 * @param host The host of the origin that is requesting the Vote.
 	 */
 	public Vote(HostInfo host) {
 		this.isVoteCast = false;
