@@ -1,6 +1,6 @@
 # Weave
 
-![Weave logo](https://raw.githubusercontent.com/deenaariff/Weave/master/media/Weave.png)
+<img src="https://raw.githubusercontent.com/deenaariff/Weave/master/media/Weave.png" alt="alt text" width="250" height="250">
 
 Weave is distributed key-store implemented in Java/Spring and uses a custom implementation of RAFT based leader election for consensus. It is designed to be fast, accessible, and fault-tolerant.
 
