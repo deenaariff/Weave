@@ -65,7 +65,7 @@ public class RequestVote implements Callable<Integer> {
 		int messagesReceived = 0;
 		
 		// Send New Vote Objects to all nodes in the routing Table.
-        System.out.println("[CANDIDATE]: Requesting Votes from " + totalTableLength +  " Hosts");
+        System.out.println("[" + this.host_info.getState() + "]: Requesting Votes from " + totalTableLength +  " Hosts");
 
 
 		for (Route route : this.rt.getTable()) {
@@ -75,7 +75,7 @@ public class RequestVote implements Callable<Integer> {
 			    try {
                     send(route.getIP(), route.getVotingPort(), newVote);
                 } catch (ConnectException e) {
-			        System.out.println("[CANDIDATE]: Failed to Connect To " + route.getIP() + " at Voting Port " + route.getVotingPort());
+                    System.out.println("[" + this.host_info.getState() + "]: Failed to Connect To " + route.getIP() + " at Voting Port " + route.getVotingPort());
                     // do Nothing as non_response will be Handled by listener
 			    } catch (IOException e) {
                     e.printStackTrace();
@@ -90,7 +90,7 @@ public class RequestVote implements Callable<Integer> {
 
 		}
 
-        System.out.println("[CANDIDATE]: Listening for Responses to Vote Requests on port: " + this.host_info.getVotingPort());
+        System.out.println("[" + this.host_info.getState() + "]: Listening for Responses to Vote Requests on port: " + this.host_info.getVotingPort());
 		
 		// Create a ServerSocket listener to listen to Vote responses
 		ServerSocket listener = new ServerSocket(this.host_info.getVotingPort());
@@ -114,7 +114,7 @@ public class RequestVote implements Callable<Integer> {
                 socket.close();
             } catch (SocketTimeoutException s) {
                 if(messagesReceived != totalTableLength) {
-                    System.out.println("[CANDIDATE]: Failed to Receive Responses From All Nodes in Cluster");
+                    System.out.println("[" + this.host_info.getState() + "]: Failed to Receive Responses From All Nodes in Cluster");
                 }
                 break;
             } catch (IOException e) {
@@ -125,7 +125,7 @@ public class RequestVote implements Callable<Integer> {
 
         listener.close();
 
-        System.out.println("[CANDIDATE]: " + votes_obtained + " votes obtained out of " + totalTableLength +  " hosts");
+        System.out.println("[" + this.host_info.getState() + "]: " + votes_obtained + " votes obtained out of " + totalTableLength +  " hosts");
 		
 		// Has obtained majority of votes? => if yes then return 1
 		return (this.votes_obtained >= totalTableLength/2)? 1 : 0;
