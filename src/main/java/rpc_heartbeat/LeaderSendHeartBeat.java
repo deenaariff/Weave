@@ -27,7 +27,7 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 	private Ledger ledger;
 	private HostInfo host_info;
     private RoutingTable rt;
-	private Integer hbInterval = 300;  // milliseconds
+	private Integer hbInterval = 50;  // milliseconds
 
     /**
      * Constructor for the LeaderSendHearBeat class

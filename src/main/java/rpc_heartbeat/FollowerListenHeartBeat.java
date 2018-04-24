@@ -3,6 +3,7 @@ package rpc_heartbeat;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.Callable;
 
 import info.HostInfo;
@@ -52,45 +53,41 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 	public Void call() throws IOException, ClassNotFoundException {
 	    System.out.println("[Follower]: Listening for Incoming Heartbeat Messages");
 		ServerSocket listener = new ServerSocket(this.host_info.getHeartBeatPort());
-		this.last_heartbeat = System.nanoTime();
+		listener.setSoTimeout(this.random_interval);
 
-	    try {
-	        // Listen for the heartbeat until the waiting time interval has elapsed
-	    	while (true) {
-	    	    long elapsed = (System.nanoTime() - this.last_heartbeat) / 1000000;
-	    		System.out.println("Time Elapsed: " + elapsed);
-	    		if(elapsed > this.random_interval) {
-	    			System.out.println("[Follower]: Randomized Follower Waiting Interval (" + this.random_interval +  "  ms) Elapsed - Revert to Candidate");
-	    			break;
-	    		} else {
-		    		Socket socket = listener.accept();  // TODO: Will this block?? We still need to check interval
-		            try {
-		            	System.out.println("Received a Heartbeat");
+		// Listen for the heartbeat until the waiting time interval has elapsed
+		while (true) {
+			try {
+				Socket socket = listener.accept();
+				System.out.println("[FOLLOWER]: Received a Heartbeat");
 
-		            	// De-serialize the heartbeat object received
-		            	final InputStream yourInputStream = socket.getInputStream();
-		                final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
-		                final HeartBeat hb = (HeartBeat) inputStream.readObject();
+				// De-serialize the heartbeat object received
+				final InputStream yourInputStream = socket.getInputStream();
+				final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
+				final HeartBeat hb = (HeartBeat) inputStream.readObject();
 
-                        // Record the time this heartbeat was received
-                        this.last_heartbeat = System.nanoTime();
+				// Record the time this heartbeat was received
+				this.last_heartbeat = System.nanoTime();
 
-		                // Update the ledger based on the heartbeat received
-                        ledger.update(hb);
-						// TODO: [Follower]: Received a new log:  ___
+				// Update the ledger based on the heartbeat received
+				ledger.update(hb);
+				// TODO: [Follower]: Received a new log:  ___
 
-                        // Send this heartbeat back to the leader to acknowledge
-                        final OutputStream outputStream = socket.getOutputStream();
-                        final ObjectOutputStream output = new ObjectOutputStream(outputStream);
-                        output.writeObject(hb);
-		            } finally {
-		                socket.close();
-		            }
-	    		}
-	        }
-	    } finally {
-            listener.close();
-        }
+				// Send this heartbeat back to the leader to acknowledge
+				final OutputStream outputStream = socket.getOutputStream();
+				final ObjectOutputStream output = new ObjectOutputStream(outputStream);
+				output.writeObject(hb);
+				socket.close();
+			} catch (SocketTimeoutException s) {
+				System.out.println("[FOLLOWER]: Interval for Heart Beat Listener Elapsed : (" + this.random_interval +  ")");
+				break;
+			} catch (IOException e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+
+		listener.close();
 
 	    return null;
 	}

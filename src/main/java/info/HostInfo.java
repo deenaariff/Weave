@@ -42,6 +42,16 @@ public class HostInfo {
 		this.state = FOLLOWER_TAG;
 	}
 
+	/**
+	 * Is the route parameter the same as the member variable route
+	 *
+	 * @param route
+	 * @return
+	 */
+	public boolean matchRoute(Route route) {
+		return this.route.equals(route);
+	}
+
     /**
      * Obtain id of node
      *

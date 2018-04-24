@@ -18,6 +18,22 @@ public class Route {
         this.voting_port = voting_port;
     }
 
+    @Override
+    /**
+     * Override equals to determine equivalence based on id member variable
+     *
+     */
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!Route.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final Route param_route = (Route) obj;
+        return this.id == param_route.getId();
+    }
+
     public Integer getId() {
         return id;
     }
@@ -57,5 +73,6 @@ public class Route {
     public void setVotingPort(int voting_port) {
         this.voting_port = voting_port;
     }
+
 
 }
