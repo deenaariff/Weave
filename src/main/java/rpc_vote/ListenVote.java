@@ -47,6 +47,9 @@ public class ListenVote implements Callable<Void> {
 	 * The call method for the class
 	 */
 	public Void call() throws IOException, ClassNotFoundException {
+
+		System.out.println("Listen Vote Called");
+
 		ServerSocket listener = new ServerSocket(this.port);
 		boolean voted = false;
 		try {

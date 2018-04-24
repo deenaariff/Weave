@@ -3,6 +3,7 @@ package rpc_heartbeat;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -64,8 +65,7 @@ public class LeaderSendHeartBeat implements Callable<Void> {
      *
      * @return
      */
-	private HeartBeat createHeartBeat() {
-        List<Log> updates = ledger.getUpdates();
+	private HeartBeat createHeartBeat(List<Log> updates) {
         HeartBeat hb = new HeartBeat(host_info.getTerm(), updates);
         return hb;
     }
@@ -80,12 +80,16 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 		while(true) {
 			TimeUnit.MILLISECONDS.sleep(hbInterval);
 
+            List<Log> updates = ledger.getUpdates();
+
 			for (Route host : this.rt.getTable()) {
 				try {
-					System.out.println("Sending Updates to " + host.getIP() + ":" + host.getHeartbeatPort());
-					send(createHeartBeat(), host.getIP(), host.getHeartbeatPort());
+					send(createHeartBeat(updates), host.getIP(), host.getHeartbeatPort());
+                    System.out.println("[" + this.host_info.getState() + "]: Sending Updates to " + host.getIP() + ":" + host.getHeartbeatPort());
+				} catch (ConnectException e) {
+                    System.out.println("[" + this.host_info.getState() + "]: Error - Unable Connect to " + host.getIP() + ":" + host.getHeartbeatPort());
 				} catch (Exception e) {
-					System.out.println("Exception: " + e);
+					e.printStackTrace();
 				}
 			}
 		}

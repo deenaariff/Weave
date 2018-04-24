@@ -3,11 +3,13 @@ package info;
 
 import routing.Route;
 
+import java.io.Serializable;
+
 /**
  * The info wrapper that a host can use to let all subclasses gain access to host info
  * 
  */
-public class HostInfo {
+public class HostInfo implements Serializable {
 	
 	// TODO: Save heartbeat_port and voting_port to env var. Read from env var on startup
 	private final Route route;

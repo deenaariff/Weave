@@ -51,7 +51,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
      * @throws ClassNotFoundException
      */
 	public Void call() throws IOException, ClassNotFoundException {
-	    System.out.println("[Follower]: Listening for Incoming Heartbeat Messages");
+	    System.out.println("[" + this.host_info.getState() + "]: Listening for Incoming Heartbeat Messages");
 		ServerSocket listener = new ServerSocket(this.host_info.getHeartBeatPort());
 		listener.setSoTimeout(this.random_interval);
 
@@ -59,7 +59,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 		while (true) {
 			try {
 				Socket socket = listener.accept();
-				System.out.println("[FOLLOWER]: Received a Heartbeat");
+				System.out.println("[" + this.host_info.getState() + "]: Received a Heartbeat");
 
 				// De-serialize the heartbeat object received
 				final InputStream yourInputStream = socket.getInputStream();
@@ -79,7 +79,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 				output.writeObject(hb);
 				socket.close();
 			} catch (SocketTimeoutException s) {
-				System.out.println("[FOLLOWER]: Interval for Heart Beat Listener Elapsed : (" + this.random_interval +  ")");
+				System.out.println("[" + this.host_info.getState() + "]: Interval for Heart Beat Listener Elapsed : (" + this.random_interval +  ")");
 				break;
 			} catch (IOException e) {
 				e.printStackTrace();

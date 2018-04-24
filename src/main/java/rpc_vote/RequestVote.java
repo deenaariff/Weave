@@ -5,13 +5,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import info.HostInfo;
 import messages.Vote;
@@ -27,7 +22,8 @@ import routing.RoutingTable;
 public class RequestVote implements Callable<Integer> {
 
 	private RoutingTable rt;
-	private HostInfo host;
+	private HostInfo host_info;
+	private Integer votes_obtained;
 
 	/**
 	 * Constructor of the RequestVote Class
@@ -37,19 +33,20 @@ public class RequestVote implements Callable<Integer> {
 	 */
 	public RequestVote (RoutingTable rt, HostInfo host) {
 		this.rt = rt;
-		this.host = host;
+		this.host_info = host;
+		this.votes_obtained = 0;
 	}
 	
 	/**
 	 * Method that sends newVote objects to a given node in a cluster
 	 *  
-	 * @param hostName The host IP of the receiving node
+	 * @param hostName The host_info IP of the receiving node
 	 * @param portNumber The port number the receiving node is listening to vote requests on
 	 * @param vote A new Vote object to enable the receiving Node to vote with
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public void send (String hostName, int portNumber, Vote vote) throws UnknownHostException, IOException {
+	public void send (String hostName, int portNumber, Vote vote) throws ConnectException, IOException {
 		Socket socket = new Socket(hostName, portNumber);
 		final OutputStream outputStream = socket.getOutputStream();
 		final ObjectOutputStream output = new ObjectOutputStream(outputStream);
@@ -66,48 +63,72 @@ public class RequestVote implements Callable<Integer> {
 	public Integer call() throws Exception {
 		int totalTableLength = this.rt.getTable().size();
 		int messagesReceived = 0;
-		int votesObtained = 1; // Vote for yourself
 		
 		// Send New Vote Objects to all nodes in the routing Table.
-        System.out.println("[Candidate]: Requesting Votes from " + totalTableLength +  " Hosts");
+        System.out.println("[CANDIDATE]: Requesting Votes from " + totalTableLength +  " Hosts");
+
 
 		for (Route route : this.rt.getTable()) {
-			Vote newVote = new Vote(this.host);
+			Vote newVote = new Vote(this.host_info);
 			// Add logic to not send to yourself
-			send(route.getIP(), route.getVotingPort(), newVote);
-		}
-		
-		// Create a ServerSocket listener to listen to Vote responses
-		ServerSocket listener = new ServerSocket(this.host.getVotingPort());
-		
-		// Process received votes
-		try {
-			// Run until all nodes have responded
-			while(messagesReceived != totalTableLength) {
-				Socket socket = listener.accept();
-				try {
-	            	final InputStream yourInputStream = socket.getInputStream();
-	                final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
-	                final Vote vote = (Vote) inputStream.readObject();
-	                boolean voteStatus = vote.getVoteStatus();
-	                
-	                // If voteStatus indicates the node has voted for you, the updated number of votesObtained
-	                messagesReceived += 1;
-	                if(voteStatus == true) {
-	                	votesObtained += 1;
-	                }
-	            } finally {
-	                socket.close();
-	            }
-			}
-		} finally {
-			listener.close();
+			if(this.host_info.matchRoute(route) == false) {
+			    try {
+                    send(route.getIP(), route.getVotingPort(), newVote);
+                } catch (ConnectException e) {
+			        System.out.println("[CANDIDATE]: Failed to Connect To " + route.getIP() + " at Voting Port " + route.getVotingPort());
+                    // do Nothing as non_response will be Handled by listener
+			    } catch (IOException e) {
+                    e.printStackTrace();
+                    break;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
+			} else {
+                this.votes_obtained = 1; // vote for yourself
+            }
+
 		}
 
-        System.out.println("[Candidate]: " + votesObtained + " votes obtained out of " + totalTableLength +  " hosts");
+        System.out.println("[CANDIDATE]: Listening for Responses to Vote Requests on port: " + this.host_info.getVotingPort());
+		
+		// Create a ServerSocket listener to listen to Vote responses
+		ServerSocket listener = new ServerSocket(this.host_info.getVotingPort());
+        listener.setSoTimeout(1000);
+
+
+        // Run until all nodes have responded
+        while(true) {
+            try {
+                Socket socket = listener.accept();
+                final InputStream yourInputStream = socket.getInputStream();
+                final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
+                final Vote vote = (Vote) inputStream.readObject();
+                boolean voteStatus = vote.getVoteStatus();
+
+                // If voteStatus indicates the node has voted for you, the updated number of votesObtained
+                messagesReceived += 1;
+                if(voteStatus == true) {
+                    this.votes_obtained += 1;
+                }
+                socket.close();
+            } catch (SocketTimeoutException s) {
+                if(messagesReceived != totalTableLength) {
+                    System.out.println("[CANDIDATE]: Failed to Receive Responses From All Nodes in Cluster");
+                }
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+
+        listener.close();
+
+        System.out.println("[CANDIDATE]: " + votes_obtained + " votes obtained out of " + totalTableLength +  " hosts");
 		
 		// Has obtained majority of votes? => if yes then return 1
-		return (votesObtained >= totalTableLength/2)? 1 : 0;		
+		return (this.votes_obtained >= totalTableLength/2)? 1 : 0;
 	}
 	
 	/**

@@ -58,7 +58,8 @@ public class RaftNode {
 	 * 
 	 */
 	public void runLeader() {
-		System.out.println("Entering Leader State");
+		System.out.println("[" + host.getState() + "]: Entering Leader State");
+
 		int result = leader.run();
 		if(result == 1) {
 			host.becomeFollower();
@@ -70,7 +71,7 @@ public class RaftNode {
 	 * 
 	 */
 	public void runCandidate() {
-		System.out.println("Entering Candidate State");
+        System.out.println("[" + host.getState() + "]: Entering Candidate State");
 		int result = candidate.run();
 		if(result == 1) {
 			host.becomeLeader();
@@ -84,7 +85,7 @@ public class RaftNode {
 	 * 
 	 */
 	public void runFollower() {
-		System.out.println("Entering Follower State");
+        System.out.println("[" + host.getState() + "]:Entering Follower State");
 		follower.run();
 		
 		/// increment the term before becoming a candidate

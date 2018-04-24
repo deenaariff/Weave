@@ -19,12 +19,12 @@ import java.util.concurrent.Callable;
 public class LeaderListenHeartBeatConfirm implements Callable<Void> {
 
     private Ledger ledger;
-    private HostInfo hostInfo;
+    private HostInfo host_info;
     private RoutingTable rt;
 
     public LeaderListenHeartBeatConfirm(Ledger ledger, HostInfo hostInfo, RoutingTable rt) {
         this.ledger = ledger;
-        this.hostInfo = hostInfo;
+        this.host_info = hostInfo;
         this.rt = rt;
     }
 
@@ -38,15 +38,15 @@ public class LeaderListenHeartBeatConfirm implements Callable<Void> {
      * @throws ClassNotFoundException
      */
     public Void call() throws IOException, ClassNotFoundException {
-        System.out.println("[Leader]: Listening for Returning Heartbeat Messages");
-        ServerSocket listener = new ServerSocket(hostInfo.getHeartBeatPort());
+        System.out.println("[" + this.host_info.getState() + "]: Listening for Returning Heartbeat Messages");
+        ServerSocket listener = new ServerSocket(host_info.getHeartBeatPort());
 
         try {
             // Always listen for incoming heartbeat messages
             while (true) {
                 Socket socket = listener.accept();
                 try {
-                    System.out.println("Received a Heartbeat");
+                    System.out.println("[" + this.host_info.getState() + "]: Received a Heartbeat");
 
                     // De-serialize the heartbeat object received
                     final InputStream yourInputStream = socket.getInputStream();
