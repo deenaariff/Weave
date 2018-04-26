@@ -3,7 +3,6 @@ package ledger;
 import messages.HeartBeat;
 import org.springframework.stereotype.Component;
 import routing.RoutingTable;
-import sun.plugin2.message.HeartbeatMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,10 +110,10 @@ public class Ledger {
 	 */
 	public List<Log> getUpdates() {
 		List<Log> updates = new ArrayList<Log>();
-		for(Log log : updateQueue) {
+		for(Log log : this.updateQueue) {
 			updates.add(log);
 		}
-		updateQueue = new ArrayList<Log>();  // clear entries
+		this.updateQueue.clear();  // clear entries
 		return updates;
 	}
 	

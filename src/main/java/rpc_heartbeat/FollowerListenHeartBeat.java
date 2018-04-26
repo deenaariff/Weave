@@ -71,6 +71,7 @@ public class FollowerListenHeartBeat implements Callable<Void> {
 
 				// Update the ledger based on the heartbeat received
 				ledger.update(hb);
+
 				// TODO: [Follower]: Received a new log:  ___
 
 				// Send this heartbeat back to the leader to acknowledge

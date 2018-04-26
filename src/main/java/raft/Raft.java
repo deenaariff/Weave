@@ -20,7 +20,7 @@ public class Raft {
 
 	public static void main(String[] args) {
 
-		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+	    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 		Ledger ledger = (Ledger) context.getBean("ledger");
 
 		/* Load the Routing Table Info from nodes.xml */

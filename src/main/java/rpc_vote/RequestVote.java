@@ -62,11 +62,11 @@ public class RequestVote implements Callable<Integer> {
 	 */
 	public Integer call() throws Exception {
 		int totalTableLength = this.rt.getTable().size();
-		int messagesReceived = 0;
 		
 		// Send New Vote Objects to all nodes in the routing Table.
         System.out.println("[" + this.host_info.getState() + "]: Requesting Votes from " + totalTableLength +  " Hosts");
 
+        int unresponsive_nodes = 0;
 
 		for (Route route : this.rt.getTable()) {
 			Vote newVote = new Vote(this.host_info);
@@ -96,6 +96,7 @@ public class RequestVote implements Callable<Integer> {
 		ServerSocket listener = new ServerSocket(this.host_info.getVotingPort());
         listener.setSoTimeout(1000);
 
+        int messagesReceived = 1; // will not be sending message to self
 
         // Run until all nodes have responded
         while(true) {
@@ -114,7 +115,7 @@ public class RequestVote implements Callable<Integer> {
                 socket.close();
             } catch (SocketTimeoutException s) {
                 if(messagesReceived != totalTableLength) {
-                    System.out.println("[" + this.host_info.getState() + "]: Failed to Receive Responses From All Nodes in Cluster");
+                    System.out.println("[" + this.host_info.getState() + "]: Failed to Receive Responses From " + (totalTableLength - messagesReceived) + " out of " + totalTableLength + " Nodes in Cluster");
                 }
                 break;
             } catch (IOException e) {

@@ -8,6 +8,9 @@ import routing.Route;
 import routing.RoutingTable;
 import state.State;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * This is the class that contains the implementation of the Raft Node and
  * for switching between states. This class passes essential information to 
@@ -16,6 +19,8 @@ import state.State;
  * @author deenaariff
  */
 public class RaftNode {
+
+    private final Integer THREAD_COUNT = 3;
 	
 	private Ledger ledger;
 	private HostInfo host;
@@ -23,18 +28,20 @@ public class RaftNode {
 	private State leader;
 	private State follower;
 	private State candidate;
+	private ExecutorService exec;
 	
 	/**
 	 * The constructor for the RaftNode Class
 	 * 
 	 */
 	public RaftNode(Ledger ledger, Route route) {
-		this.ledger = this.ledger;
+		this.ledger = ledger;
 		this.host = new HostInfo(route);
 		this.rt = new RoutingTable();
 		this.follower = new Follower(this.ledger,this.host);
 		this.candidate = new Candidate(this.ledger, this.rt, this.host);
 		this.leader = new Leader(this.ledger, this.rt, this.host);
+        this.exec = Executors.newFixedThreadPool(THREAD_COUNT);
 	}
 
 	/**
@@ -43,14 +50,14 @@ public class RaftNode {
 	 *
 	 */
 	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
-		this.ledger = this.ledger;
+		this.ledger = ledger;
 		this.host = new HostInfo(route);
 		this.rt = rt;
 		this.follower = new Follower(this.ledger,this.host);
 		this.candidate = new Candidate(this.ledger, this.rt, this.host);
 		this.leader = new Leader(this.ledger, this.rt, this.host);
+        this.exec = Executors.newFixedThreadPool(THREAD_COUNT);
 	}
-
 
 	
 	/**

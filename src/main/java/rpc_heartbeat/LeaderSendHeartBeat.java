@@ -82,15 +82,17 @@ public class LeaderSendHeartBeat implements Callable<Void> {
 
             List<Log> updates = ledger.getUpdates();
 
-			for (Route host : this.rt.getTable()) {
-				try {
-					send(createHeartBeat(updates), host.getIP(), host.getHeartbeatPort());
-                    System.out.println("[" + this.host_info.getState() + "]: Sending Updates to " + host.getIP() + ":" + host.getHeartbeatPort());
-				} catch (ConnectException e) {
-                    System.out.println("[" + this.host_info.getState() + "]: Error - Unable Connect to " + host.getIP() + ":" + host.getHeartbeatPort());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			for (Route route : this.rt.getTable()) {
+			    if(this.host_info.matchRoute(route) == false) {
+                    try {
+                        System.out.println("[" + this.host_info.getState() + "]: Attempting to Sending HeartBeat to " + route.getIP() + ":" + route.getHeartbeatPort());
+                        send(createHeartBeat(updates), route.getIP(), route.getHeartbeatPort());
+                    } catch (ConnectException e) {
+                        System.out.println("[" + this.host_info.getState() + "]: Error - Unable Connect to " + route.getIP() + ":" + route.getHeartbeatPort());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 			}
 		}
 	}
