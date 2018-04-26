@@ -42,12 +42,7 @@ public class Raft {
 		/*SpringApplication.run(Raft.class, args);*/
 		
 		// Run the State Machine
-		while (true) {
-			System.out.println(ledger.getUpdates());
-			if (node.getHostInfo().isLeader()) node.runLeader();				
-			else if (node.getHostInfo().isCandidate()) node.runCandidate();				
-			else if (node.getHostInfo().isFollower()) node.runFollower();								
-		}
+		node.run();
 		
 	}
 

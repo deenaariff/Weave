@@ -97,8 +97,8 @@
     var label = function(_id) {
         var identifier = '(' + _id + ')'
         var leader = 'Leader ' + identifier
-        var follower = 'Follower ' + identifier
-        return (isLeader(_id))? leader : follower;
+        var rpc = 'Follower ' + identifier
+        return (isLeader(_id))? leader : rpc;
     }
 
     var nodeColor = function(_id) {
@@ -106,11 +106,11 @@
             border: '#ff4d4d',
             background: '#ffb3b3'
         }
-        var follower = {
+        var rpc = {
             border: '#2B7CE9',
             background: '#D2E5FF'
         }
-        return (isLeader(_id))? leader : follower;
+        return (isLeader(_id))? leader : rpc;
     }
 
     function processData(allText) {

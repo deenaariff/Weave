@@ -3,12 +3,13 @@ package messages;
 import java.io.Serializable;
 
 import info.HostInfo;
+import routing.Route;
 
 /**
  * This class is designed to be serialized and sent across a network. Therefore, it implements Serializable.
  * 
  * The Vote Object will be instantiated and sent to all Nodes available in a Candidate's Routing Table. 
- * The Follower will then modify the Vote Object, to signify that a vote has been cast for a candidate. 
+ * The rpc will then modify the Vote Object, to signify that a vote has been cast for a candidate.
  * 
  * @author deenaariff
  *
@@ -21,6 +22,7 @@ public class Vote implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private boolean isVoteCast;
 	private HostInfo host;
+    private Route route;
 	
 	/**
 	 * The Constructor for the Vote Class.
@@ -30,10 +32,16 @@ public class Vote implements Serializable {
 	public Vote(HostInfo host) {
 		this.isVoteCast = false;
 		this.host = host;
+		this.route = host.getRoute();
 	}
-	
-	/**
-	 * The method a follower uses to cast a vote for a Candidate. 
+
+    public Route getRoute() {
+        return route;
+    }
+
+
+    /**
+	 * The method a rpc uses to cast a vote for a Candidate.
 	 */
 	public void castVote() {
 		this.isVoteCast = true;

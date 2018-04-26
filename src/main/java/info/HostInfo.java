@@ -1,6 +1,7 @@
 package info;
 
 
+import VotingBooth.VotingBooth;
 import routing.Route;
 
 import java.io.Serializable;
@@ -10,15 +11,23 @@ import java.io.Serializable;
  * 
  */
 public class HostInfo implements Serializable {
-	
-	// TODO: Save heartbeat_port and voting_port to env var. Read from env var on startup
+
+
+    // TODO: Save heartbeat_port and voting_port to env var. Read from env var on startup
 	private final Route route;
 	private Integer term;
-	private String state; 
-	
-	private final String FOLLOWER_TAG = "FOLLOWER";
+	private String state;
+
+	private Boolean hasVoted;
+	private Boolean initialized;
+    private final int HEARTBEAT_INTERVAL = 50;
+
+
+    private final String FOLLOWER_TAG = "FOLLOWER";
 	private final String CANDIDATE_TAG = "CANDIDATE";
 	private final String LEADER_TAG = "LEADER";
+
+	private VotingBooth vb;
 	
 	/**
 	 * Constructor for the HostInfo class
@@ -26,10 +35,13 @@ public class HostInfo implements Serializable {
 	 * @param route All Relevant routing information for the host
 	 *
 	 */
-	public HostInfo(Route route) {
+	public HostInfo(Route route, VotingBooth vb) {
 		this.route = route;
 		this.term = 0;
 		this.state = FOLLOWER_TAG;
+		this.hasVoted = false;
+		this.initialized = false;
+		this.vb = vb;
 	}
 
 	/**
@@ -38,10 +50,37 @@ public class HostInfo implements Serializable {
 	 * @param route
 	 * @param term
 	 */
-	public HostInfo(Route route, Integer term) {
+	public HostInfo(Route route, Integer term, VotingBooth vb) {
 		this.route = route;
 		this.term = term;
 		this.state = FOLLOWER_TAG;
+		this.hasVoted = false;
+		this.initialized = false;
+		this.vb = vb;
+	}
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public int getHeartbeatInterval() {
+        return HEARTBEAT_INTERVAL;
+    }
+
+	public boolean isInitialized() {
+	    return this.initialized;
+    }
+
+    public void hasBeenInitialized() {
+	    this.initialized = true;
+    }
+
+	public boolean getVote() {
+		return this.hasVoted;
+	}
+
+	public boolean setVote(boolean flag) {
+		return this.hasVoted = flag;
 	}
 
 	/**
@@ -130,12 +169,13 @@ public class HostInfo implements Serializable {
 	 */
 	public void becomeFollower() {
 	    this.state = FOLLOWER_TAG;
+	    this.initialized = false;
 	}
 	
 	/**
-	 * Checks if state is a follower
+	 * Checks if state is a rpc
 	 * 
-	 * @return true if follower
+	 * @return true if rpc
 	 */
 	public boolean isFollower() {
 	    return this.state == FOLLOWER_TAG;
@@ -147,6 +187,8 @@ public class HostInfo implements Serializable {
 	 */
 	public void becomeCandidate() {
 	    this.state = CANDIDATE_TAG;
+	    this.initialized = false;
+	    this.vb.startElection();
 	}
 	
 	/**
@@ -164,6 +206,7 @@ public class HostInfo implements Serializable {
 	 */
 	public void becomeLeader() {
 	    this.state = LEADER_TAG;
+	    this.initialized = false;
 	}
 	
 	/**

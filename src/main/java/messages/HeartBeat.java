@@ -77,7 +77,7 @@ public class HeartBeat implements Serializable {
  * Leader queues information up, and on the next interval,
  * sends information bundled up in a heartbeat
  *
- * Follower receives heartbeat, updates its own lists of commits and precommits,
+ * rpc receives heartbeat, updates its own lists of commits and precommits,
  * then sends the heartbeat back to the leader.
  *
  * Leader hashes serialized heartbeat to a commit map. Every time it sends out

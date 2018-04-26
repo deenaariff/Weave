@@ -73,8 +73,8 @@ public class Ledger {
 	 * This method is called to add a new log to the update queue.
 	 * During regular heartbeat intervals the queue is emptied
 	 * and all logs in the queue are sent over the network to
-	 * follower nodes. Confirmation messages are expected from
-	 * a majority of follower nodes before the log will be
+	 * rpc nodes. Confirmation messages are expected from
+	 * a majority of rpc nodes before the log will be
 	 * "commited" to the leader's data store.
 	 *
 	 */

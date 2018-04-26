@@ -23,13 +23,13 @@ public class TestRPCHeartbeat {
     private final String local = "127.0.0.1";
 
     /**
-     * This method runs both the leader and the follower locally. The follower
+     * This method runs both the leader and the rpc locally. The rpc
      * is placed into the routing table as local host. Then the executor service
-     * runs both the leader and the follower on separate threads.
+     * runs both the leader and the rpc on separate threads.
      */
     public void testHeartBeats() {
 
-        // Initialize Follower RPC Objects
+        // Initialize rpc RPC Objects
         Ledger f_ledger = new Ledger();
 
         Route local_route = new Route();
@@ -40,7 +40,7 @@ public class TestRPCHeartbeat {
 
         HostInfo follower = new HostInfo(local_route);
 
-        // Create the follower callable
+        // Create the rpc callable
         Callable<Void> f_callable = new FollowerListenHeartBeat(f_ledger,follower, 10);
 
         // Initialize leader RPC Objects

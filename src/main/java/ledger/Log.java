@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 
  * It represents an entry in a RaftNode's Ledger. New log's that a leader appends
  * to its ledger will be sent out in heartbeat messages to be appended
- * to the ledger's of follower nodes. 
+ * to the ledger's of rpc nodes.
  * 
  */
 public class Log implements Serializable {

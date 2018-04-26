@@ -1,15 +1,16 @@
 package node;
-import candidate.Candidate;
-import follower.Follower;
+import VotingBooth.VotingBooth;
+import ledger.Log;
+import rpc.rpc;
 import info.HostInfo;
-import leader.Leader;
 import ledger.Ledger;
 import routing.Route;
 import routing.RoutingTable;
-import state.State;
+import rpc_heartbeat.HeartbeatListener;
+import rpc_vote.VotingListener;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the class that contains the implementation of the Raft Node and
@@ -19,88 +20,65 @@ import java.util.concurrent.Executors;
  * @author deenaariff
  */
 public class RaftNode {
-
-    private final Integer THREAD_COUNT = 3;
 	
 	private Ledger ledger;
 	private HostInfo host;
 	private RoutingTable rt;
-	private State leader;
-	private State follower;
-	private State candidate;
-	private ExecutorService exec;
+	private VotingBooth vb;
 	
 	/**
 	 * The constructor for the RaftNode Class
 	 * 
 	 */
 	public RaftNode(Ledger ledger, Route route) {
+        this.rt = new RoutingTable();
+        this.vb = new VotingBooth(this.rt);
 		this.ledger = ledger;
-		this.host = new HostInfo(route);
-		this.rt = new RoutingTable();
-		this.follower = new Follower(this.ledger,this.host);
-		this.candidate = new Candidate(this.ledger, this.rt, this.host);
-		this.leader = new Leader(this.ledger, this.rt, this.host);
-        this.exec = Executors.newFixedThreadPool(THREAD_COUNT);
+		this.host = new HostInfo(route,this.vb);
 	}
 
 	/**
-	 * Second constructor for the RaftNode Class
+	 * Second constructor for the RaftNode Class.vb
      * Pass option Routing Table
 	 *
 	 */
 	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
-		this.ledger = ledger;
-		this.host = new HostInfo(route);
-		this.rt = rt;
-		this.follower = new Follower(this.ledger,this.host);
-		this.candidate = new Candidate(this.ledger, this.rt, this.host);
-		this.leader = new Leader(this.ledger, this.rt, this.host);
-        this.exec = Executors.newFixedThreadPool(THREAD_COUNT);
-	}
+        this.rt = rt;
+        this.vb = new VotingBooth(this.rt);
+        this.ledger = ledger;
+        this.host = new HostInfo(route, this.vb);
+    }
 
-	
-	/**
-	 * Runs the Node in the leader state
-	 * 
-	 */
-	public void runLeader() {
-		System.out.println("[" + host.getState() + "]: Entering Leader State");
+	public void run() {
 
-		int result = leader.run();
-		if(result == 1) {
-			host.becomeFollower();
-		} 
-	}
-	
-	/**
-	 * Runs the Node in the Candidate State
-	 * 
-	 */
-	public void runCandidate() {
-        System.out.println("[" + host.getState() + "]: Entering Candidate State");
-		int result = candidate.run();
-		if(result == 1) {
-			host.becomeLeader();
-		} else {
-			host.becomeFollower();
-		}
-	}
-	
-	/**
-	 * Runs the node in the Follower State
-	 * 
-	 */
-	public void runFollower() {
-        System.out.println("[" + host.getState() + "]:Entering Follower State");
-		follower.run();
-		
-		/// increment the term before becoming a candidate
-		host.incrementTerm();
-		host.becomeCandidate();
-	}
-	
-	
+        Thread hb_thread = new Thread(new HeartbeatListener(this.host,this.ledger,this.rt));
+        Thread voting_thread = new Thread(new VotingListener(this.host,this.rt,this.vb));
+
+        hb_thread.start();
+        voting_thread.start();
+
+        while(true) {
+            try {
+                if(host.isLeader()) {
+                    TimeUnit.MILLISECONDS.sleep(this.host.getHeartbeatInterval());
+                    List<Log> updates = ledger.getUpdates();
+                    rpc.broadcastHeartbeats(this.rt,updates,this.host);
+                } else if(host.isCandidate()) {
+                    if(!host.isInitialized()) {
+                        rpc.broadcastVotes(this.rt,this.host);
+                        host.hasBeenInitialized();
+                    }
+                } else if(host.isFollower()) {
+                    // Do Nothing For Now
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
 	/***
 	 * Returns the Node's Ledger
 	 * 
