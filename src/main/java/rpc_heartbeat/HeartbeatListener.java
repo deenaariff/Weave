@@ -49,7 +49,8 @@ public class HeartbeatListener implements Runnable {
 
                 if(this.host_info.isLeader()) {
 
-                    if(hb.isAcknowledged()) {
+                    // Heartbeat is acknowledged and is fro me
+                    if(hb.isAcknowledged() && this.host_info.matchRoute((hb.getRoute()))) {
                         ledger.receiveConfirmation(hb,this.rt);
                     } else {
                         // Implement Term based handling
@@ -63,13 +64,13 @@ public class HeartbeatListener implements Runnable {
 
                     if(hb.isAcknowledged()) {
                         // Handle this
-                    // This is from a leader
+                        // This is from a leader
                     } else {
                         // implement checking leader authencity
                         if(true) {
                             hb.setAcknowledged(true);
                             ledger.update(hb);
-                            rpc.returnHeartbeat(hb,socket);
+                            rpc.returnHeartbeat(hb);
                         } else {
                             // Implement if not our leader
                         }

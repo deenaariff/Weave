@@ -1,6 +1,7 @@
 package messages;
 
 import ledger.Log;
+import routing.Route;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,6 +23,7 @@ public class HeartBeat implements Serializable {
 	private List<Log> commits;  // The leader's committed logs
 	private boolean acknowledged;  // TODO: Is this still needed? Technically when a heartbeat is sent back, it is acknowledged
 	private static final long serialVersionUID = 1L;  // TODO: Double check what this does
+	private Route route;
 
 	/**
 	 * Constructor for the Heartbeat class
@@ -29,10 +31,15 @@ public class HeartBeat implements Serializable {
 	 * @param term The term of the Heartbeat being instantiated.
 	 * @param commits The list of logs that have been committed on this node
 	 */
-	public HeartBeat(int term, List<Log> commits) {
+	public HeartBeat(int term, List<Log> commits, Route route) {
 		this.term = term;
 		this.commits = commits;
 		this.acknowledged = false;
+		this.route = route;
+	}
+
+	public Route getRoute() {
+		return route;
 	}
 
 	/**

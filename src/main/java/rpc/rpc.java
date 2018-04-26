@@ -59,7 +59,7 @@ public class rpc {
     }
 
     public static HeartBeat createHeartBeat(List<Log> updates, HostInfo host_info) {
-        HeartBeat hb = new HeartBeat(host_info.getTerm(), updates);
+        HeartBeat hb = new HeartBeat(host_info.getTerm(), updates, host_info.getRoute());
         return hb;
     }
 
@@ -79,16 +79,14 @@ public class rpc {
         socket.close();
     }
 
-	public static void returnHeartbeat(HeartBeat hb, Socket socket) throws IOException {
-        final OutputStream outputStream = socket.getOutputStream();
-        final ObjectOutputStream output = new ObjectOutputStream(outputStream);
-        output.writeObject(hb);
+	public static void returnHeartbeat(HeartBeat hb) throws IOException {
+        Route hb_route = hb.getRoute();
+        sendHeartbeat(hb,hb_route.getIP(),hb_route.getHeartbeatPort());
 	}
 
-    public static void returnVote(Vote vote, Socket socket) throws IOException {
-        final OutputStream outputStream = socket.getOutputStream();
-        final ObjectOutputStream output = new ObjectOutputStream(outputStream);
-        output.writeObject(vote);
+    public static void returnVote(Vote vote) throws IOException {
+        Route vote_route = vote.getRoute();
+        sendVote(vote,vote_route.getIP(),vote_route.getVotingPort());
     }
 
 

@@ -75,9 +75,10 @@ public class VotingListener implements Runnable {
                         }
 
                     } else {
+
                         if(true) {
                             // TODO: move returnVote to non-state dependent class
-                            rpc.returnVote(vote,socket);
+                            rpc.returnVote(vote);
                         } else {
                             // handle term based cased
                         }
@@ -91,7 +92,7 @@ public class VotingListener implements Runnable {
                             vote.castVote();
                             this.host_info.setVote(true);
                         }
-                        rpc.returnVote(vote,socket);
+                        rpc.returnVote(vote);
                     } else {
                         // handle term based cased
                     }

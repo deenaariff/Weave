@@ -170,6 +170,7 @@ public class HostInfo implements Serializable {
 	public void becomeFollower() {
 	    this.state = FOLLOWER_TAG;
 	    this.initialized = false;
+	    this.hasVoted = false;
 	}
 	
 	/**
