@@ -32,7 +32,7 @@ public class RaftNode {
 	 */
 	public RaftNode(Ledger ledger, Route route) {
         this.rt = new RoutingTable();
-        this.vb = new VotingBooth(this.rt);
+        this.vb = new VotingBooth(this.rt,HostInfo.getElectionInterval());
 		this.ledger = ledger;
 		this.host = new HostInfo(route,this.vb);
 	}
@@ -44,7 +44,7 @@ public class RaftNode {
 	 */
 	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
         this.rt = rt;
-        this.vb = new VotingBooth(this.rt);
+        this.vb = new VotingBooth(this.rt,HostInfo.getElectionInterval());
         this.ledger = ledger;
         this.host = new HostInfo(route, this.vb);
     }
@@ -57,27 +57,37 @@ public class RaftNode {
         hb_thread.start();
         voting_thread.start();
 
+        try{
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         while(true) {
-            try {
-                if(host.isLeader()) {
+            //System.out.println(this.host.getState());
+            if(this.host.isLeader()) {
+                System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers");
+                try{
                     TimeUnit.MILLISECONDS.sleep(this.host.getHeartbeatInterval());
-                    List<Log> updates = ledger.getUpdates();
-                    rpc.broadcastHeartbeats(this.rt,updates,this.host);
-                } else if(host.isCandidate()) {
-                    if(!host.isInitialized()) {
-                        rpc.broadcastVotes(this.rt,this.host);
-                        host.hasBeenInitialized();
-                    }
-                } else if(host.isFollower()) {
-                    // Do Nothing For Now
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                List<Log> updates = ledger.getUpdates();
+                rpc.broadcastHeartbeats(this.rt,updates,this.host);
+            } else if(this.host.isCandidate()) {
+                if(!host.isInitialized()) {
+                    System.out.println("[" + this.host.getState() + "]: Requesting Votes from Followers");
+                    rpc.broadcastVotes(this.rt,this.host);
+                    host.hasBeenInitialized();
+                }
+            } else if(this.host.isFollower()) {
+                //System.out.println("[" + this.host.getState() + "]: Break 1");
             }
 
         }
-    }
 
+    }
 
 	/***
 	 * Returns the Node's Ledger

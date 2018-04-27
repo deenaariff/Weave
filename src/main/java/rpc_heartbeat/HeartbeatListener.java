@@ -16,7 +16,6 @@ public class HeartbeatListener implements Runnable {
     private HostInfo host_info;
     private Ledger ledger;
     private RoutingTable rt;
-    private Integer timeout_interval;
     private ServerSocket listener;
 
     public HeartbeatListener(HostInfo host_info, Ledger ledger, RoutingTable rt) {
@@ -30,11 +29,11 @@ public class HeartbeatListener implements Runnable {
 
         try {
             this.listener = new ServerSocket(this.host_info.getHeartBeatPort());
+            listener.setSoTimeout(this.host_info.getHeartbeatTimeoutInterval());
+            System.out.println("[" + this.host_info.getState() + "]: Heartbeat Timeout Interval (" + this.host_info.getHeartbeatTimeoutInterval() + "ms )");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //listener.setSoTimeout(this.random_interval);
 
         // Listen for the heartbeat until the waiting time interval has elapsed
         while (true) {
@@ -80,8 +79,10 @@ public class HeartbeatListener implements Runnable {
                 socket.close();
 
             } catch (SocketTimeoutException s) {
-                System.out.println("[" + this.host_info.getState() + "]: Interval for Heart Beat Listener Elapsed : (" + this.timeout_interval + ")");
-                break;
+                if(this.host_info.isFollower()) {
+                    System.out.println("[" + this.host_info.getState() + "]: Interval for Heart Beat Listener Elapsed : (" + this.host_info.getHeartbeatTimeoutInterval() + ")");
+                    host_info.becomeCandidate();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 break;

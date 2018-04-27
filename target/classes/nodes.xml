@@ -11,4 +11,10 @@
         <heartbeat>8091</heartbeat>
         <voting>8092</voting>
     </node>
+    <node id="3">
+        <ip>127.0.0.1</ip>
+        <client>9000</client>
+        <heartbeat>9001</heartbeat>
+        <voting>9002</voting>
+    </node>
 </nodes>

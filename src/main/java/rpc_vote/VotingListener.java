@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class VotingListener implements Runnable {
 
@@ -33,7 +34,8 @@ public class VotingListener implements Runnable {
         int totalTableLength = rt.getTable().size();
 
         try {
-            this.listener = new ServerSocket(this.host_info.getHeartBeatPort());
+            this.listener = new ServerSocket(this.host_info.getVotingPort());
+            listener.setSoTimeout(HostInfo.getElectionInterval());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +45,7 @@ public class VotingListener implements Runnable {
             try {
 
                 Socket socket = listener.accept();
-                System.out.println("[" + this.host_info.getState() + "]: Received a Heartbeat");
+                System.out.println("[" + this.host_info.getState() + "]: Received a Vote Object");
 
                 final InputStream yourInputStream = socket.getInputStream();
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
@@ -100,6 +102,17 @@ public class VotingListener implements Runnable {
 
                 socket.close();
 
+            } catch (SocketTimeoutException s) {
+                if(this.host_info.isCandidate() && vb.isElectionOver()) {
+                    int state_change = vb.endElection(host_info);
+                    if(state_change == 1) {
+                        System.out.println("[" + this.host_info.getState() + "]: Election Won, becoming Leader");
+                        host_info.becomeLeader();
+                    } else if(state_change == 0) {
+                        System.out.println("[" + this.host_info.getState() + "]: Election Lost, becoming Follower");
+                        host_info.becomeFollower();
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 break;

@@ -20,8 +20,13 @@ public class HostInfo implements Serializable {
 
 	private Boolean hasVoted;
 	private Boolean initialized;
-    private final int HEARTBEAT_INTERVAL = 50;
 
+    private final static int HEARTBEAT_INTERVAL = 50;
+    private final static int ELECTION_INTERVAL = 200;
+    private final static int HEARTBEAT_TIMEOUT_MIN = 50;
+    private final static int HEARTBEAT_TIMEOUT_MAX = 300;
+
+    private int hearbeat_timeout_interval;
 
     private final String FOLLOWER_TAG = "FOLLOWER";
 	private final String CANDIDATE_TAG = "CANDIDATE";
@@ -38,10 +43,10 @@ public class HostInfo implements Serializable {
 	public HostInfo(Route route, VotingBooth vb) {
 		this.route = route;
 		this.term = 0;
-		this.state = FOLLOWER_TAG;
 		this.hasVoted = false;
 		this.initialized = false;
 		this.vb = vb;
+        this.becomeFollower();
 	}
 
 	/**
@@ -53,18 +58,26 @@ public class HostInfo implements Serializable {
 	public HostInfo(Route route, Integer term, VotingBooth vb) {
 		this.route = route;
 		this.term = term;
-		this.state = FOLLOWER_TAG;
 		this.hasVoted = false;
 		this.initialized = false;
 		this.vb = vb;
+		this.becomeFollower();
 	}
 
     public Route getRoute() {
         return route;
     }
 
-    public int getHeartbeatInterval() {
+    public static int getHeartbeatInterval() {
         return HEARTBEAT_INTERVAL;
+    }
+
+    public static int getElectionInterval() {
+	    return ELECTION_INTERVAL;
+    }
+
+    public int getHeartbeatTimeoutInterval() {
+	    return this.hearbeat_timeout_interval;
     }
 
 	public boolean isInitialized() {
@@ -168,9 +181,11 @@ public class HostInfo implements Serializable {
 	 * 
 	 */
 	public void becomeFollower() {
+	    this.hearbeat_timeout_interval = HEARTBEAT_TIMEOUT_MIN + (int)(Math.random() * HEARTBEAT_TIMEOUT_MAX);
 	    this.state = FOLLOWER_TAG;
 	    this.initialized = false;
 	    this.hasVoted = false;
+        System.out.println("[" + this.state + "]: Entered Follower State");
 	}
 	
 	/**
@@ -190,6 +205,7 @@ public class HostInfo implements Serializable {
 	    this.state = CANDIDATE_TAG;
 	    this.initialized = false;
 	    this.vb.startElection();
+        System.out.println("[" + this.state + "]: Entered Candidate State");
 	}
 	
 	/**
@@ -208,6 +224,7 @@ public class HostInfo implements Serializable {
 	public void becomeLeader() {
 	    this.state = LEADER_TAG;
 	    this.initialized = false;
+        System.out.println("[" + this.state + "]: Entered Leader State");
 	}
 	
 	/**

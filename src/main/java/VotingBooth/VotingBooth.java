@@ -7,11 +7,13 @@ public class VotingBooth {
 
     private int votes_obtained = 0;
     private long start_election;
+    private int election_interval;
 
     private RoutingTable rt;
 
-    public VotingBooth(RoutingTable rt) {
+    public VotingBooth(RoutingTable rt, int election_interval) {
         this.rt = rt;
+        this.election_interval = election_interval * 1000;
     }
 
     public void reset() {
@@ -32,8 +34,7 @@ public class VotingBooth {
     }
 
     public boolean isElectionOver() {
-        long interval = 30000;
-        return (System.nanoTime() - this.start_election) > interval;
+        return (System.nanoTime() - this.start_election) > this.election_interval;
     }
 
     public int endElection(HostInfo hostInfo) {
