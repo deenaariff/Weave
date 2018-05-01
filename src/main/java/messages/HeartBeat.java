@@ -1,7 +1,10 @@
 package messages;
 
+import info.HostInfo;
+import ledger.Ledger;
 import ledger.Log;
 import routing.Route;
+import routing.RoutingTable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,61 +22,65 @@ import java.util.List;
  */
 public class HeartBeat implements Serializable {
 
-	private int term;  // The leader's term
-	private List<Log> commits;  // The leader's committed logs
-	private boolean acknowledged;  // TODO: Is this still needed? Technically when a heartbeat is sent back, it is acknowledged
+	private int term;  // The term of the sender of the heartbeat
+    private int leaderCommitIndex;
+
+    private int prevLogIndex;
+    private Log prevLog;
+
+	private List<Log> entries;  // The leader's committed logs
+    
+	private Boolean reply;  // TODO: Is this still needed? Technically when a heartbeat is sent back, it is acknowledged
 	private static final long serialVersionUID = 1L;  // TODO: Double check what this does
 	private Route route;
 
-	/**
-	 * Constructor for the Heartbeat class
-	 * 
-	 * @param term The term of the Heartbeat being instantiated.
-	 * @param commits The list of logs that have been committed on this node
-	 */
-	public HeartBeat(int term, List<Log> commits, Route route) {
-		this.term = term;
-		this.commits = commits;
-		this.acknowledged = false;
-		this.route = route;
+
+    /**
+     *
+     * @param hostInfo
+     * @param commits
+     * @param destination
+     * @param rt
+     * @param ledger
+     */
+	public HeartBeat(HostInfo hostInfo, List<Log> commits, Route destination, RoutingTable rt, Ledger ledger) {
+		this.term = hostInfo.getTerm();
+		this.entries = commits;
+		this.reply = null;
+		this.route = hostInfo.getRoute();
+        this.prevLogIndex = rt.getNextIndex(destination);
+        this.prevLog = ledger.getLogbyIndex(this.prevLogIndex);
+        this.leaderCommitIndex = ledger.getCommitIndex();
 	}
 
-	public Route getRoute() {
-		return route;
-	}
+	public Route getRoute() { return route; }
 
-	/**
-	 * Return the current term of heartbeat message
-	 *
-	 * @return The term member variable of the heartbeat
-	 */
+	public void setRoute(Route route) { this.route = route; }
+
 	public int getTerm() { return term; }
 
-	/**
-	 * Return the current list of commited logs contained in this heartbeat
-	 * message
-	 *
-	 * @return List of committed logs
-	 */
-	public List<Log> getCommits() { return commits; }
+    public int getLeaderCommitIndex() { return leaderCommitIndex; }
 
-	/**
-	 *
-	 * @return
-	 */
+    public void setTerm(int new_term) { this.term = new_term; }
+
+	public List<Log> getEntries() { return entries; }
+
 	public static long getSerialVersionUID() { return serialVersionUID; }
 
-	/**
-	 *
-	 * @return
-	 */
-	public boolean isAcknowledged() { return acknowledged; }
+    public int getPrevLogIndex() { return prevLogIndex; }
 
-	/**
-	 *
-	 * @param acknowledged
-	 */
-	public void setAcknowledged(boolean acknowledged) { this.acknowledged = acknowledged; }
+    public void setPrevLogIndex(int prevLogIndex) { this.prevLogIndex = prevLogIndex; }
+
+    public Log getPrevLog() { return prevLog; }
+
+    public void setPrevLog(Log prevLog) { this.prevLog = prevLog; }
+
+    public boolean hasReplied() { return this.reply != null; }
+
+	public Boolean getReply () { return this.reply; }
+
+	public void setReply(boolean response) { this.reply = response; }
+
 }
 
 /**
@@ -84,7 +91,7 @@ public class HeartBeat implements Serializable {
  * Leader queues information up, and on the next interval,
  * sends information bundled up in a heartbeat
  *
- * rpc receives heartbeat, updates its own lists of commits and precommits,
+ * rpc receives heartbeat, updates its own lists of entries and precommits,
  * then sends the heartbeat back to the leader.
  *
  * Leader hashes serialized heartbeat to a commit map. Every time it sends out
@@ -92,7 +99,7 @@ public class HeartBeat implements Serializable {
  * have been received.
  *
  * Once majority have sent back the heartbeat the leader initially sent, the
- * leader commits this message from the third-party client.
+ * leader entries this message from the third-party client.
  *
  * Leader then sends an acknowledgement to the third-party client
  */

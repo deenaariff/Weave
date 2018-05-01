@@ -1,5 +1,5 @@
 package node;
-import VotingBooth.VotingBooth;
+import voting_booth.VotingBooth;
 import ledger.Log;
 import rpc.rpc;
 import info.HostInfo;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This is the class that contains the implementation of the Raft Node and
  * for switching between states. This class passes essential information to 
- * each class that implements various state's logic.
+ * each class that implements various state_helpers's logic.
  * 
  * @author deenaariff
  */
@@ -32,9 +32,10 @@ public class RaftNode {
 	 */
 	public RaftNode(Ledger ledger, Route route) {
         this.rt = new RoutingTable();
-        this.vb = new VotingBooth(this.rt,HostInfo.getElectionInterval());
+        this.host = new HostInfo(route);
+        this.vb = new VotingBooth(this.rt,this.host);
+        this.host.setVotingBooth(this.vb);
 		this.ledger = ledger;
-		this.host = new HostInfo(route,this.vb);
 	}
 
 	/**
@@ -44,9 +45,10 @@ public class RaftNode {
 	 */
 	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
         this.rt = rt;
-        this.vb = new VotingBooth(this.rt,HostInfo.getElectionInterval());
+        this.host = new HostInfo(route);
+        this.vb = new VotingBooth(this.rt,this.host);
+        this.host.setVotingBooth(this.vb);
         this.ledger = ledger;
-        this.host = new HostInfo(route, this.vb);
     }
 
 	public void run() {
@@ -73,8 +75,7 @@ public class RaftNode {
                     e.printStackTrace();
                     break;
                 }
-                List<Log> updates = ledger.getUpdates();
-                rpc.broadcastHeartbeats(this.rt,updates,this.host);
+                rpc.broadcastHeartbeatUpdates(this.rt,this.ledger,this.host);
             } else if(this.host.isCandidate()) {
                 if(!host.isInitialized()) {
                     System.out.println("[" + this.host.getState() + "]: Requesting Votes from Followers");
@@ -99,7 +100,7 @@ public class RaftNode {
 	}
 	
 	/**
-	 * Return's the nodes current state
+	 * Return's the nodes current state_helpers
 	 * 
 	 * @return
 	 */

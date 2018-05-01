@@ -1,5 +1,7 @@
 package ledger;
 
+import routing.Route;
+
 import java.io.Serializable;
 
 /**
@@ -20,8 +22,7 @@ public class Log implements Serializable {
 	private String value;
 	
 	/**
-	 * This is the constructor for the Log class. 
-	 * 
+	 * This is the constructor for the Log class.
 	 * @param term The term of the Log being instantiated.
 	 * @param index The index of the Log being instantiated.
 	 * @param key The key-lookup value of the Log being created.
@@ -35,26 +36,7 @@ public class Log implements Serializable {
 	}
 	
 	/**
-	 * Return the current term of the Log Object. 
-	 * 
-	 * @return The term member variable of the Log. 
-	 */
-	public int getTerm() {
-		return this.term;
-	}
-		
-	/**
-	 * Returns index of the Log.
-	 * 
-	 * @return The index member variable of the log. 
-	 */
-	public int getIndex() {
-		return this.index;
-	}
-	
-	/**
 	 * Update the key-value entry for a Log.
-	 * 
 	 * @param key The lookup key value of the key-value pair. 
 	 * @param value The value to be paired to a lookup key. 
 	 */
@@ -62,23 +44,47 @@ public class Log implements Serializable {
 		this.key = key;
 		this.value = value;
 	}
-	
-	/**
-	 * Returns the lookup key value of the current Log.
-	 * 
-	 * @return The value of key member variable. 
-	 */
+
+
+
+	public int getTerm() {
+		return this.term;
+	}
+
+	public int getIndex() {
+		return this.index;
+	}
+
 	public String getKey() {
 		return this.key;
 	}
-	
-	/**
-	 * Returns the value of the key-value pair of the log. 
-	 * 
-	 * @return The value of the value member variable. 
-	 */
+
 	public String getValue() {
 		return this.value;
+	}
+
+
+
+	@Override
+	/**
+	 * Override equals to determine equivalence based of key, value, and index
+	 *
+	 */
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!Log.class.isAssignableFrom(obj.getClass())) {
+			return false;
+		}
+		final Log to_be_matched = (Log) obj;
+
+		boolean matchKey =  this.key == to_be_matched.getKey();
+		boolean matchValue = this.value == to_be_matched.getValue();
+		boolean matchIndex = this.index == to_be_matched.getIndex();
+
+		return matchKey && matchValue && matchIndex;
+
 	}
 
 }

@@ -1,7 +1,7 @@
 package info;
 
 
-import VotingBooth.VotingBooth;
+import voting_booth.VotingBooth;
 import routing.Route;
 
 import java.io.Serializable;
@@ -19,11 +19,12 @@ public class HostInfo implements Serializable {
 	private String state;
 
 	private Boolean hasVoted;
+	private Route votedFor;
 	private Boolean initialized;
 
     private final static int HEARTBEAT_INTERVAL = 50;
     private final static int ELECTION_INTERVAL = 200;
-    private final static int HEARTBEAT_TIMEOUT_MIN = 50;
+    private final static int HEARTBEAT_TIMEOUT_MIN = 150;
     private final static int HEARTBEAT_TIMEOUT_MAX = 300;
 
     private int hearbeat_timeout_interval;
@@ -40,10 +41,10 @@ public class HostInfo implements Serializable {
 	 * @param route All Relevant routing information for the host
 	 *
 	 */
-	public HostInfo(Route route, VotingBooth vb) {
+	public HostInfo(Route route) {
 		this.route = route;
 		this.term = 0;
-		this.hasVoted = false;
+		this.votedFor = null;
 		this.initialized = false;
 		this.vb = vb;
         this.becomeFollower();
@@ -58,42 +59,10 @@ public class HostInfo implements Serializable {
 	public HostInfo(Route route, Integer term, VotingBooth vb) {
 		this.route = route;
 		this.term = term;
-		this.hasVoted = false;
+		this.votedFor = null;
 		this.initialized = false;
 		this.vb = vb;
 		this.becomeFollower();
-	}
-
-    public Route getRoute() {
-        return route;
-    }
-
-    public static int getHeartbeatInterval() {
-        return HEARTBEAT_INTERVAL;
-    }
-
-    public static int getElectionInterval() {
-	    return ELECTION_INTERVAL;
-    }
-
-    public int getHeartbeatTimeoutInterval() {
-	    return this.hearbeat_timeout_interval;
-    }
-
-	public boolean isInitialized() {
-	    return this.initialized;
-    }
-
-    public void hasBeenInitialized() {
-	    this.initialized = true;
-    }
-
-	public boolean getVote() {
-		return this.hasVoted;
-	}
-
-	public boolean setVote(boolean flag) {
-		return this.hasVoted = flag;
 	}
 
 	/**
@@ -177,7 +146,7 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Sets state to a leader
+	 * Sets state_helpers to a leader
 	 * 
 	 */
 	public void becomeFollower() {
@@ -189,7 +158,7 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Checks if state is a rpc
+	 * Checks if state_helpers is a rpc
 	 * 
 	 * @return true if rpc
 	 */
@@ -198,7 +167,7 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Sets state to candidate
+	 * Sets state_helpers to candidate
 	 * 
 	 */
 	public void becomeCandidate() {
@@ -209,7 +178,7 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Checks if state is candidate
+	 * Checks if state_helpers is candidate
 	 * 
 	 * @return true if candidate
 	 */
@@ -218,7 +187,7 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Sets state to leader
+	 * Sets state_helpers to leader
 	 * 
 	 */
 	public void becomeLeader() {
@@ -228,7 +197,7 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Checks if state is in leader
+	 * Checks if state_helpers is in leader
 	 * 
 	 * @return true if leader
 	 */
@@ -237,13 +206,32 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Returns the current state;
+	 * Returns the current state_helpers;
 	 * 
-	 * @return the current state 
+	 * @return the current state_helpers
 	 */
 	public String getState() {
 		return this.state;
 	}
+
+    public void setVotingBooth(VotingBooth vb) { this.vb = vb; }
+
+    public Route getRoute() { return route; }
+
+    public static int getHeartbeatInterval() { return HEARTBEAT_INTERVAL; }
+
+    public static int getElectionInterval() { return ELECTION_INTERVAL; }
+
+    public int getHeartbeatTimeoutInterval() { return this.hearbeat_timeout_interval; }
+
+    public boolean isInitialized() { return this.initialized; }
+
+    public void hasBeenInitialized() { this.initialized = true; }
+
+    public boolean hasVoted() { return this.votedFor != null; }
+
+    public void setVote(Route route) { this.votedFor = route; }
+
 }
 
 

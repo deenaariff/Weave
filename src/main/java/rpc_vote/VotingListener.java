@@ -1,6 +1,6 @@
 package rpc_vote;
 
-import VotingBooth.VotingBooth;
+import voting_booth.VotingBooth;
 import rpc.rpc;
 import info.HostInfo;
 import messages.Vote;
@@ -20,13 +20,11 @@ public class VotingListener implements Runnable {
     private RoutingTable rt;
     private VotingBooth vb;
 
-
     public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb) {
         this.host_info = host_info;
         this.rt = rt;
         this.vb = vb;
     }
-
 
     @Override
     public void run() {
@@ -79,7 +77,7 @@ public class VotingListener implements Runnable {
                     } else {
 
                         if(true) {
-                            // TODO: move returnVote to non-state dependent class
+                            // TODO: move returnVote to non-state_helpers dependent class
                             rpc.returnVote(vote);
                         } else {
                             // handle term based cased
@@ -90,9 +88,9 @@ public class VotingListener implements Runnable {
 
                     // Candidate requesting Vote should have higher term than rpc
                     if(true) {
-                        if (this.host_info.getVote() == false) {
+                        if (this.host_info.hasVoted() == false) {
                             vote.castVote();
-                            this.host_info.setVote(true);
+                            this.host_info.setVote(vote.getRoute());
                         }
                         rpc.returnVote(vote);
                     } else {
@@ -109,8 +107,8 @@ public class VotingListener implements Runnable {
                         System.out.println("[" + this.host_info.getState() + "]: Election Won, becoming Leader");
                         host_info.becomeLeader();
                     } else if(state_change == 0) {
-                        System.out.println("[" + this.host_info.getState() + "]: Election Lost, becoming Follower");
-                        host_info.becomeFollower();
+                        System.out.println("[" + this.host_info.getState() + "]: Election Lost, restarting election");
+                        vb.startElection();
                     }
                 }
             } catch (IOException e) {

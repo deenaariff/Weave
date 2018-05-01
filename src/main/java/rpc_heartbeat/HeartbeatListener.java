@@ -1,10 +1,12 @@
 package rpc_heartbeat;
 
-import rpc.rpc;
 import info.HostInfo;
 import ledger.Ledger;
 import messages.HeartBeat;
 import routing.RoutingTable;
+import state_helpers.Candidate;
+import state_helpers.Follower;
+import state_helpers.Leader;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -40,6 +42,7 @@ public class HeartbeatListener implements Runnable {
             try {
 
                 Socket socket = listener.accept();
+
                 System.out.println("[" + this.host_info.getState() + "]: Received a Heartbeat");
 
                 final InputStream yourInputStream = socket.getInputStream();
@@ -47,33 +50,11 @@ public class HeartbeatListener implements Runnable {
                 final HeartBeat hb = (HeartBeat) inputStream.readObject();
 
                 if(this.host_info.isLeader()) {
-
-                    // Heartbeat is acknowledged and is fro me
-                    if(hb.isAcknowledged() && this.host_info.matchRoute((hb.getRoute()))) {
-                        ledger.receiveConfirmation(hb,this.rt);
-                    } else {
-                        // Implement Term based handling
-                    }
-
+                    Leader.HandleHeartBeat(hb, this.ledger, this.host_info, this.rt);
                 } else if(this.host_info.isCandidate()) {
-
-                    // Term based handling
-
+                    Candidate.HandleHeartBeat();
                 } else if(this.host_info.isFollower()) {
-
-                    if(hb.isAcknowledged()) {
-                        // Handle this
-                        // This is from a leader
-                    } else {
-                        // implement checking leader authencity
-                        if(true) {
-                            hb.setAcknowledged(true);
-                            ledger.update(hb);
-                            rpc.returnHeartbeat(hb);
-                        } else {
-                            // Implement if not our leader
-                        }
-                    }
+                    Follower.HandleHeartBeat(hb, this.ledger, this.host_info);
                 }
 
                 socket.close();

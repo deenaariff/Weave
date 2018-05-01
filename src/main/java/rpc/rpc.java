@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.List;
 
 import info.HostInfo;
+import ledger.Ledger;
 import ledger.Log;
 import messages.HeartBeat;
 import messages.Vote;
@@ -16,11 +17,13 @@ import routing.RoutingTable;
 
 public class rpc {
 
-    public static void broadcastHeartbeats(RoutingTable rt, List<Log> updates, HostInfo host_info) {
+    public static void broadcastHeartbeatUpdates(RoutingTable rt, Ledger ledger, HostInfo host_info) {
+        List<Log> updates = ledger.getUpdates();
         for (Route route : rt.getTable()) {
             if (host_info.matchRoute(route) == false) {
                 try {
-                    sendHeartbeat(createHeartBeat(updates, host_info), route.getIP(), route.getHeartbeatPort());
+                    HeartBeat hb = new HeartBeat(host_info, updates, route, rt, ledger);
+                    sendHeartbeat(hb, route.getIP(), route.getHeartbeatPort());
                     System.out.println("[" + host_info.getState() + "]: Sending Updates to " + route.getIP() + ":" + route.getHeartbeatPort());
                 } catch (ConnectException e) {
                     System.out.println("[" + host_info.getState() + "]: Error - Unable Connect to " + route.getIP() + ":" + route.getHeartbeatPort());
@@ -58,10 +61,6 @@ public class rpc {
         }
     }
 
-    public static HeartBeat createHeartBeat(List<Log> updates, HostInfo host_info) {
-        HeartBeat hb = new HeartBeat(host_info.getTerm(), updates, host_info.getRoute());
-        return hb;
-    }
 
     public static void sendHeartbeat(HeartBeat hb, String hostName, Integer portNumber) throws IOException {
         Socket socket = new Socket(hostName, portNumber);
@@ -79,9 +78,8 @@ public class rpc {
         socket.close();
     }
 
-	public static void returnHeartbeat(HeartBeat hb) throws IOException {
-        Route hb_route = hb.getRoute();
-        sendHeartbeat(hb,hb_route.getIP(),hb_route.getHeartbeatPort());
+	public static void returnHeartbeat(HeartBeat hb, Route destination) throws IOException {
+        sendHeartbeat(hb,destination.getIP(),destination.getHeartbeatPort());
 	}
 
     public static void returnVote(Vote vote) throws IOException {

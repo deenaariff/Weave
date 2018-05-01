@@ -13,11 +13,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class RoutingTable {
 
 	private List<Route> table;
 	private HashMap<Integer,Route> id_map;
+
+	/* Only Necessary for Leaders */
+    private HashMap<Route,Integer> matchIndex;
+    private HashMap<Route,Integer> nextIndex;
 	
 	public RoutingTable() {
         this.id_map = new HashMap<Integer, Route>();
@@ -33,6 +38,24 @@ public class RoutingTable {
 	public List<Route> getTable() {
 		return this.table;
 	}
+
+	public int getNextIndex(Route route) {
+	    try {
+            return nextIndex.get(route);
+        } catch (NoSuchElementException e) {
+	        e.printStackTrace();
+	        System.exit(1);
+        }
+        return -1;
+    }
+
+    public void setNextIndex(Route route, int index) throws NoSuchElementException {
+        try {
+            nextIndex.put(route,index);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * This method returns the number of nodes it would take to specify the

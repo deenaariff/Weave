@@ -20,22 +20,6 @@ public class Route implements Serializable {
         this.voting_port = voting_port;
     }
 
-    @Override
-    /**
-     * Override equals to determine equivalence based on id member variable
-     *
-     */
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!Route.class.isAssignableFrom(obj.getClass())) {
-            return false;
-        }
-        final Route param_route = (Route) obj;
-        return this.id == param_route.getId();
-    }
-
     public Integer getId() {
         return id;
     }
@@ -64,9 +48,7 @@ public class Route implements Serializable {
         this.heartbeat_port = heartbeat_port;
     }
 
-    public int getHeartbeatPort() {
-        return heartbeat_port;
-    }
+    public int getHeartbeatPort() { return heartbeat_port; }
 
     public int getVotingPort() {
         return voting_port;
@@ -75,6 +57,31 @@ public class Route implements Serializable {
     public void setVotingPort(int voting_port) {
         this.voting_port = voting_port;
     }
+
+
+
+
+    @Override
+    /**
+     * Override equals to determine equivalence based on id member variable
+     *
+     */
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!Route.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final Route param_route = (Route) obj;
+        return this.id == param_route.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
 
 
 }

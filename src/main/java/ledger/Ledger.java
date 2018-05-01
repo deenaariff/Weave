@@ -20,15 +20,18 @@ import java.util.Map;
 @Component
 public class Ledger {
 
-    // TODO: Many of the references to this object's variables were not referenced using the 'this' keyword. Need to fix.
-
+	// Necessary to all states
 	private Map<String,String> keyStore; // Map all keys to values
-	private List<Log> logs; // Store A Growing List of Log Values
-	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
+	private List<Log> logs; // Store A Growing List of Log Values, equivalent to log[] in RAFT paper
+
+	// Volatile to all states
+	private int commitIndex;
+	private int lastApplied;
 	private HashMap<HeartBeat,Integer> commitMap;
-	private RoutingTable rt;
-	private final int MAJORITYPLACEHOLDER = 7;
-	
+
+	// Volatile for leader
+	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
+
 	/**
 	 * The Constructor for the Ledger Class
 	 * 
@@ -40,23 +43,17 @@ public class Ledger {
 		this.commitMap = new HashMap<HeartBeat,Integer>();
 	}
 
-    /**
-     * This method is called once a majority of heartbeats have been received
-     * by the leader.
-     *
-     * This method commits all logs that are stored inside the heartbeat.
-     *
-     * @param hb
-     */
-	public void commitToLogs(HeartBeat hb) {
-        for (Log log : hb.getCommits()) {
-            logs.add(log);
-            updateKeyStore(log.getKey(),log.getValue());
-        }
-    }
+	/**
+	 * Update the HashMap Data structure representing the Key-Value store
+	 * @param key The lookup key of the data to be entered.
+	 * @param value The value mapped to the lookup key of the data being entered.
+	 */
+	private void updateKeyStore(String key, String value) {
+		this.keyStore.put(key, value);
+	}
+
 
 	/**
-	 * Obtain commited data from the internal key-value store
 	 *
 	 * @param key
 	 * @return
@@ -70,42 +67,37 @@ public class Ledger {
 	}
 
 	/**
-	 * This method is called to add a new log to the update queue.
-	 * During regular heartbeat intervals the queue is emptied
-	 * and all logs in the queue are sent over the network to
-	 * rpc nodes. Confirmation messages are expected from
-	 * a majority of rpc nodes before the log will be
-	 * "commited" to the leader's data store.
-	 *
+	 * This method is called by client to add new log to the list of logs.
+	 * This will be replicated to followers.
+	 * @param value
 	 */
-	public void addToQueue(Log value) {
-		updateQueue.add(value);
+	public void addToLog (Log value) {
+		this.logs.add(value);
+		this.lastApplied = this.logs.size() - 1;
 	}
 
-    /**
-     * This method maintains the commit map which is updated every time a
-     * heartbeat is received by the leader.
-     *
-     * @param hb
-     */
-    public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
-        if (commitMap.containsKey(hb)) {
-            Integer value = commitMap.get(hb);
-            if (value == 1) {  // The last heartbeat to fulfill majority
-                commitMap.remove(hb);
-                commitToLogs(hb);
-            } else {
-                commitMap.put(hb, value-1);
-            }
-        } else {
-            commitMap.put(hb, rt.getMajority());
-        }
-    }
-	
+	/**
+	 * Receive a Heartbeat Message from a Follower and update Ledger accordingly
+	 * @param hb
+	 * @param rt
+	 */
+	public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
+		if (commitMap.containsKey(hb)) {
+			Integer value = commitMap.get(hb);
+			if (value == 1) {  // The last heartbeat to fulfill majority
+				commitMap.remove(hb);
+				commitToLogs(hb);
+			} else {
+				commitMap.put(hb, value-1);
+			}
+		} else {
+			commitMap.put(hb, rt.getMajority());
+		}
+	}
+
 	/**
 	 * A method to return all new logs entries that have been queued in updateQueue List.
-	 * Clears all entries from the updateQueue List. 
-	 * 
+	 * Clears all entries from the updateQueue List.
 	 * @return All logs that are stored in the member updateQueue Object.
 	 */
 	public List<Log> getUpdates() {
@@ -116,34 +108,57 @@ public class Ledger {
 		this.updateQueue.clear();  // clear entries
 		return updates;
 	}
-	
+
+
 	/**
-	 * Update the HashMap Data structure representing the Key-Value store
-	 * 
-	 * @param key The lookup key of the data to be entered.
-	 * @param value The value mapped to the lookup key of the data being entered.
+	 * Confirms whether a Log at a given index matches the equivalent Log in the ledger
+	 * @param index
+	 * @param term
+	 * @return
 	 */
-	private void updateKeyStore(String key, String value) {
-        this.keyStore.put(key, value);
+	public Boolean confirmMatch(int index, Log term) {
+		return logs.get(index).equals(term);
 	}
 
-    /**
-     * This method is used by followers, and updates the ledger based on the
-     * heartbeat. It iterates through all of the new commits sent from the
-     * leader, and adds it to the logs and key store
-     *
-     * @param hb The heartbeat message sent from the leader
-     */
-    public void update(HeartBeat hb) {
-        for(Log log : hb.getCommits()) {
-            this.logs.add(log);
-            updateKeyStore(log.getKey(), log.getValue());
-        }
-    }
-	
+	/**
+	 * Given the commit Index from a Leader, update the commit index to be the min
+	 * of the last applied log to our ledger and the leader's commit index.
+	 * @param leader_commit_index
+	 */
+	public void syncCommitIndex(int leader_commit_index) {
+		if(leader_commit_index > this.commitIndex) {
+			this.commitIndex = (int) Math.min(leader_commit_index,this.lastApplied);
+		}
+	}
+
+	/**
+	 * This method is used by followers, and updates the ledger based on the
+	 * heartbeat. It iterates through all of the new commits sent from the
+	 * leader, and adds it to the logs and key store
+	 *
+	 * @param hb The heartbeat message sent from the leader
+	 */
+	public void update(HeartBeat hb) {
+		for(Log log : hb.getEntries()) {
+			this.logs.add(log);
+			updateKeyStore(log.getKey(), log.getValue());
+		}
+	}
+
+	/**
+	 * This method is called once a majority of heartbeats have been received
+	 * by the leader. This method commits all logs that are stored inside the heartbeat.
+	 * @param hb
+	 */
+	public void commitToLogs(HeartBeat hb) {
+		for (Log log : hb.getEntries()) {
+			logs.add(log);
+			updateKeyStore(log.getKey(),log.getValue());
+		}
+	}
+
 	/**
 	 * This members prints all current logs that have been stored in the ledger.
-	 * 
 	 */
 	public void printLogs() {
 		System.out.println("Logs:");
@@ -155,10 +170,19 @@ public class Ledger {
 			System.out.println("  " + key + " - " + keyStore.get(key));
 		}
 	}
-	
+
+	public int getCommitIndex() { return commitIndex; }
+
+	public int getLastApplied() { return lastApplied; }
+
+	public void setLastApplied(int lastApplied) { this.lastApplied = lastApplied; }
+
+    public Log getLogbyIndex(int index) { return logs.get(index); }
+
+
 	/**
-	 * Tests for the Ledger class. 
-	 * 
+	 * Tests for the Ledger class.
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
