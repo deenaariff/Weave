@@ -70,6 +70,17 @@ public class RoutingTable {
     }
 
     /**
+     * Update the matchIndex and nextIndex simulataneously
+     * by a given amount
+     */
+    public void updateServerIndex(Route route, int increment) {
+        int new_mi = this.matchIndex.get(route) + increment;
+        int new_ni = this.nextIndex.get(route) + increment;
+        this.matchIndex.put(route,new_mi);
+        this.nextIndex.put(route,new_ni);
+    }
+
+    /**
      * For each server, index of the next log entry to send to that
      * server (initialized to leader last log index + 1)
      */

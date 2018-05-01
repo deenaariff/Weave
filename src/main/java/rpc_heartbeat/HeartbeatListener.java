@@ -20,6 +20,12 @@ public class HeartbeatListener implements Runnable {
     private RoutingTable rt;
     private ServerSocket listener;
 
+    /**
+     * Constructor
+     * @param host_info
+     * @param ledger
+     * @param rt
+     */
     public HeartbeatListener(HostInfo host_info, Ledger ledger, RoutingTable rt) {
         this.host_info = host_info;
         this.ledger = ledger;
@@ -27,6 +33,10 @@ public class HeartbeatListener implements Runnable {
     }
 
     @Override
+    /**
+     *
+     *
+     */
     public void run() {
 
         try {
@@ -37,8 +47,7 @@ public class HeartbeatListener implements Runnable {
             e.printStackTrace();
         }
 
-        // Listen for the heartbeat until the waiting time interval has elapsed
-        while (true) {
+        while (true) { // Listen for the heartbeat until the waiting time interval has elapsed
             try {
 
                 Socket socket = listener.accept();
@@ -49,11 +58,11 @@ public class HeartbeatListener implements Runnable {
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final HeartBeat hb = (HeartBeat) inputStream.readObject();
 
-                if(this.host_info.isLeader()) {
+                if(this.host_info.isLeader()) { // Handle HB in leader state
                     Leader.HandleHeartBeat(hb, this.ledger, this.host_info, this.rt);
-                } else if(this.host_info.isCandidate()) {
+                } else if(this.host_info.isCandidate()) { // Handle HB in Candidate state
                     Candidate.HandleHeartBeat();
-                } else if(this.host_info.isFollower()) {
+                } else if(this.host_info.isFollower()) { // Handle HB in Follower State
                     Follower.HandleHeartBeat(hb, this.ledger, this.host_info);
                 }
 

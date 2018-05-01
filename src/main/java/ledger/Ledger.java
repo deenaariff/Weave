@@ -2,6 +2,7 @@ package ledger;
 
 import messages.HeartBeat;
 import org.springframework.stereotype.Component;
+import routing.Route;
 import routing.RoutingTable;
 
 import java.util.ArrayList;
@@ -20,38 +21,39 @@ import java.util.Map;
 @Component
 public class Ledger {
 
-	// Necessary to all states
+	/** Necessary to all states **/
 	private Map<String,String> keyStore; // Map all keys to values
 	private List<Log> logs; // Store A Growing List of Log Values, equivalent to log[] in RAFT paper
+	private List<Integer> appendMatch; // Keep track how many servers have appended for a given index
 
-	// Volatile to all states
+	/** Volatile to all states **/
 	private int commitIndex;
 	private int lastApplied;
 	private HashMap<HeartBeat,Integer> commitMap;
 
-	// Volatile for leader
+	/** Volatile for leader **/
 	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
 
 	/**
 	 * The Constructor for the Ledger Class
-	 * 
 	 */
 	public Ledger() {
 		this.keyStore = new HashMap<String,String>();
 		this.logs = new ArrayList<Log>();
+		this.appendMatch = new ArrayList<Integer>();
 		this.updateQueue = new ArrayList<Log>();
 		this.commitMap = new HashMap<HeartBeat,Integer>();
 	}
 
 	/**
 	 * Update the HashMap Data structure representing the Key-Value store
+	 *
 	 * @param key The lookup key of the data to be entered.
 	 * @param value The value mapped to the lookup key of the data being entered.
 	 */
 	private void updateKeyStore(String key, String value) {
 		this.keyStore.put(key, value);
 	}
-
 
 	/**
 	 *
@@ -66,6 +68,13 @@ public class Ledger {
 		}
 	}
 
+	/**
+	 * Get the Logs in that are in the interval of a given start index, to the # num_logs after that
+	 *
+	 * @param start_index
+	 * @param num_logs
+	 * @return
+	 */
 	public List<Log> getLogs(int start_index, int num_logs) {
 		List<Log> updates = new ArrayList<Log>();
 		for(int i = 0; i < num_logs; i++) {
@@ -79,35 +88,58 @@ public class Ledger {
 	/**
 	 * This method is called by client to add new log to the list of logs.
 	 * This will be replicated to followers.
+	 *
 	 * @param value
 	 */
-	public void addToLog (Log value) {
+	public void addToLogs(Log value) {
 		this.logs.add(value);
+		this.appendMatch.add(0);
 		this.lastApplied = this.logs.size() - 1;
 	}
 
 	/**
-	 * Receive a Heartbeat Message from a Follower and update Ledger accordingly
+	 * Receive a Heartbeat Message from a Follower and update Ledger accordingly.
+	 * Will Update nextIndex[] and matchIndex[] in the Routing table based off number of entries in hb.
+	 * Will update the commitIndex if a majority of servers have committed at a given index
+	 * by calling updateCommitIndex()
+	 *
 	 * @param hb
 	 * @param rt
 	 */
 	public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
-		if (commitMap.containsKey(hb)) {
-			Integer value = commitMap.get(hb);
-			if (value == 1) {  // The last heartbeat to fulfill majority
-				commitMap.remove(hb);
-				commitToLogs(hb);
-			} else {
-				commitMap.put(hb, value-1);
+
+		Route origin = hb.getRoute();
+		int num_entries = hb.getEntries().size();
+		int start = rt.getNextIndex(origin);
+
+		for(int i = 0; i < num_entries; i++) { // Increment the number of nodes acknowledged at a given index
+			int new_value = appendMatch.get(start+i) + 1;
+			appendMatch.set(start + i, new_value);
+			if(new_value >= rt.getMajority()) {
+				updateCommitIndex(new_value);
 			}
-		} else {
-			commitMap.put(hb, rt.getMajority());
 		}
+
+		rt.updateServerIndex(origin,num_entries); // update matchIndex[] and nextIndex[]
 	}
 
 	/**
-	 * A method to return all new logs entries that have been queued in updateQueue List.
+	 * Given a majority of nodes have acknowledged a Log at a given index
+	 * update the commitIndex accordingly
+	 *
+	 * @param new_index
+	 */
+	private void updateCommitIndex(int new_index) {
+		for(int i = commitIndex; i <= new_index; i++) {
+			commitToLogs(i);
+		}
+		this.commitIndex = Math.max(this.commitIndex, new_index);
+	}
+
+	/**
+	 * A method to return all new logs entries thart have been queued in updateQueue List.
 	 * Clears all entries from the updateQueue List.
+	 *
 	 * @return All logs that are stored in the member updateQueue Object.
 	 */
 	public List<Log> getUpdates() {
@@ -119,9 +151,9 @@ public class Ledger {
 		return updates;
 	}
 
-
 	/**
 	 * Confirms whether a Log at a given index matches the equivalent Log in the ledger
+	 *
 	 * @param index
 	 * @param term
 	 * @return
@@ -133,6 +165,7 @@ public class Ledger {
 	/**
 	 * Given the commit Index from a Leader, update the commit index to be the min
 	 * of the last applied log to our ledger and the leader's commit index.
+	 *
 	 * @param leader_commit_index
 	 */
 	public void syncCommitIndex(int leader_commit_index) {
@@ -142,29 +175,13 @@ public class Ledger {
 	}
 
 	/**
-	 * This method is used by followers, and updates the ledger based on the
-	 * heartbeat. It iterates through all of the new commits sent from the
-	 * leader, and adds it to the logs and key store
+	 * Commit a Log at a given index in the logs to the keyStore
 	 *
-	 * @param hb The heartbeat message sent from the leader
+	 * @param index
 	 */
-	public void update(HeartBeat hb) {
-		for(Log log : hb.getEntries()) {
-			this.logs.add(log);
-			updateKeyStore(log.getKey(), log.getValue());
-		}
-	}
-
-	/**
-	 * This method is called once a majority of heartbeats have been received
-	 * by the leader. This method commits all logs that are stored inside the heartbeat.
-	 * @param hb
-	 */
-	public void commitToLogs(HeartBeat hb) {
-		for (Log log : hb.getEntries()) {
-			logs.add(log);
-			updateKeyStore(log.getKey(),log.getValue());
-		}
+	private void commitToLogs(int index) {
+		Log log = logs.get(index);
+		updateKeyStore(log.getKey(),log.getValue());
 	}
 
 	/**
@@ -184,8 +201,6 @@ public class Ledger {
 	public int getCommitIndex() { return commitIndex; }
 
 	public int getLastApplied() { return lastApplied; }
-
-	public void setLastApplied(int lastApplied) { this.lastApplied = lastApplied; }
 
     public Log getLogbyIndex(int index) { return logs.get(index); }
 
