@@ -167,7 +167,11 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Sets state_helpers to candidate
+	 * Transitions state of node to become a Candidate. It also sets the
+	 * intialize flag to false which will allow it to execute its initialization
+	 * code only once later.
+	 *
+	 * This method will also trigger the voting booth's startElection() method.
 	 * 
 	 */
 	public void becomeCandidate() {

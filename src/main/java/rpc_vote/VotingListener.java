@@ -1,5 +1,6 @@
 package rpc_vote;
 
+import state_helpers.Candidate;
 import voting_booth.VotingBooth;
 import rpc.rpc;
 import info.HostInfo;
@@ -29,11 +30,8 @@ public class VotingListener implements Runnable {
     @Override
     public void run() {
 
-        int totalTableLength = rt.getTable().size();
-
         try {
             this.listener = new ServerSocket(this.host_info.getVotingPort());
-            listener.setSoTimeout(HostInfo.getElectionInterval());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,45 +47,16 @@ public class VotingListener implements Runnable {
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final Vote vote = (Vote) inputStream.readObject();
 
-                if(this.host_info.isLeader()) {
+                if (this.host_info.isLeader()) {
 
                     // term based handling
 
-                } else if(this.host_info.isCandidate()) {
-
-                    if(this.host_info.matchRoute(vote.getRoute())) {
-
-                        boolean voteStatus = vote.getVoteStatus();
-
-                        // If voteStatus indicates the node has voted for you, the updated number of votesObtained
-
-                        if(voteStatus == true) {
-                            vb.incrementVotes();
-                        }
-
-                        if(vb.isElectionOver()) {
-                            int state_change = vb.endElection(host_info);
-                            if(state_change == 1) {
-                                host_info.becomeLeader();
-                            } else if(state_change == 0) {
-                                host_info.becomeFollower();
-                            }
-                        }
-
-                    } else {
-
-                        if(true) {
-                            // TODO: move returnVote to non-state_helpers dependent class
-                            rpc.returnVote(vote);
-                        } else {
-                            // handle term based cased
-                        }
-                    }
-
-                } else if(this.host_info.isFollower()) {
+                } else if (this.host_info.isCandidate()) {
+                    Candidate.HandleVote(vote, vb, host_info);
+                } else if (this.host_info.isFollower()) {
 
                     // Candidate requesting Vote should have higher term than rpc
-                    if(true) {
+                    if (true) {
                         if (this.host_info.hasVoted() == false) {
                             vote.castVote();
                             this.host_info.setVote(vote.getRoute());
@@ -100,21 +69,10 @@ public class VotingListener implements Runnable {
 
                 socket.close();
 
-            } catch (SocketTimeoutException s) {
-                if(this.host_info.isCandidate() && vb.isElectionOver()) {
-                    int state_change = vb.endElection(host_info);
-                    if(state_change == 1) {
-                        System.out.println("[" + this.host_info.getState() + "]: Election Won, becoming Leader");
-                        host_info.becomeLeader();
-                    } else if(state_change == 0) {
-                        System.out.println("[" + this.host_info.getState() + "]: Election Lost, restarting election");
-                        vb.startElection();
-                    }
-                }
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
-            }  catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 break;
             }
