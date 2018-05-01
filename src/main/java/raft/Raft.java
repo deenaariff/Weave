@@ -24,7 +24,7 @@ public class Raft {
 		Ledger ledger = (Ledger) context.getBean("ledger");
 
 		/* Load the Routing Table Info from nodes.xml */
-        RoutingTable rt = new RoutingTable("nodes.xml");
+        RoutingTable rt = new RoutingTable("nodes.xml", ledger);
 
         /* Get this Nodes Routing Info */
         Route route = rt.getRouteById(Integer.parseInt(args[0]));
