@@ -22,6 +22,8 @@ import java.util.List;
  */
 public class HeartBeat implements Serializable {
 
+    private static final int HEARTBEAT_CAPACITY = 2;
+
 	private int term;  // The term of the sender of the heartbeat
     private int leaderCommitIndex;
 
@@ -53,7 +55,9 @@ public class HeartBeat implements Serializable {
         this.leaderCommitIndex = ledger.getCommitIndex();
 	}
 
-	public Route getRoute() { return route; }
+    public static int getHeartbeatCapacity() { return HEARTBEAT_CAPACITY; }
+
+    public Route getRoute() { return route; }
 
 	public void setRoute(Route route) { this.route = route; }
 

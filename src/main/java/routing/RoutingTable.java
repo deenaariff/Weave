@@ -55,6 +55,21 @@ public class RoutingTable {
     }
 
     /**
+     * Get the next Index for a particular Route
+     * @param route
+     * @return
+     */
+    public int getMatchIndex(Route route) {
+        try {
+            return matchIndex.get(route);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return -1;
+    }
+
+    /**
      * For each server, index of the next log entry to send to that
      * server (initialized to leader last log index + 1)
      */
@@ -124,11 +139,11 @@ public class RoutingTable {
                     this.id_map.put(id,new_route);
                 }
 
-                // intialize nextIndex and match index
+                // Intialize nextIndex and match index
                 this.matchIndex.put(new_route,0);
                 this.nextIndex.put(new_route,0);
 
-                // add to the routing table
+                // Add to the routing table
                 this.table.add(new_route);
             }
 
@@ -159,6 +174,8 @@ public class RoutingTable {
     public List<Route> getTable() {
         return this.table;
     }
+
+
 
 
 }

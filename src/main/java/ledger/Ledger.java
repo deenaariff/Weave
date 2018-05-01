@@ -66,6 +66,16 @@ public class Ledger {
 		}
 	}
 
+	public List<Log> getLogs(int start_index, int num_logs) {
+		List<Log> updates = new ArrayList<Log>();
+		for(int i = 0; i < num_logs; i++) {
+			if(start_index + i < this.logs.size() - 1) {
+				updates.add(this.logs.get(start_index+i));
+			}
+		}
+		return updates;
+	}
+
 	/**
 	 * This method is called by client to add new log to the list of logs.
 	 * This will be replicated to followers.

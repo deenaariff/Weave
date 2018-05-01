@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import info.HostInfo;
@@ -17,13 +18,24 @@ import routing.RoutingTable;
 
 public class rpc {
 
+
     public static void broadcastHeartbeatUpdates(RoutingTable rt, Ledger ledger, HostInfo host_info) {
-        List<Log> updates = ledger.getUpdates();
         for (Route route : rt.getTable()) {
             if (host_info.matchRoute(route) == false) {
                 try {
+
+                    // determine whether the follower is up to date with the leader's log entries
+                    boolean followerSynced = (rt.getMatchIndex(route) == ledger.getLastApplied());
+
+                    int start_index = rt.getNextIndex(route);
+                    int num_logs = HeartBeat.getHeartbeatCapacity();
+
+                    // Set the number of updates to send to the follower
+                    List<Log> updates = (followerSynced)? new ArrayList<Log>() : ledger.getLogs(start_index,num_logs);
+
                     HeartBeat hb = new HeartBeat(host_info, updates, route, rt, ledger);
                     sendHeartbeat(hb, route.getIP(), route.getHeartbeatPort());
+
                     System.out.println("[" + host_info.getState() + "]: Sending Updates to " + route.getIP() + ":" + route.getHeartbeatPort());
                 } catch (ConnectException e) {
                     System.out.println("[" + host_info.getState() + "]: Error - Unable Connect to " + route.getIP() + ":" + route.getHeartbeatPort());
