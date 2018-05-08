@@ -1,7 +1,5 @@
 package ledger;
 
-import routing.Route;
-
 import java.io.Serializable;
 
 /**
@@ -46,7 +44,6 @@ public class Log implements Serializable {
 	}
 
 
-
 	public int getTerm() {
 		return this.term;
 	}
@@ -62,7 +59,6 @@ public class Log implements Serializable {
 	public String getValue() {
 		return this.value;
 	}
-
 
 
 	@Override

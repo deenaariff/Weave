@@ -11,6 +11,13 @@ import java.io.IOException;
 
 public class Follower {
 
+    /**
+     *
+     * @param hb
+     * @param ledger
+     * @param host_info
+     * @throws IOException
+     */
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info) throws IOException {
         // ensure this is a heartbeat from a leader, yet to be acknowledged
         if(!hb.hasReplied()) {

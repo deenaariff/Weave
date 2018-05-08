@@ -52,7 +52,7 @@ public class ClientController {
     public String updateKV(@PathVariable("key") String key,
                                  @PathVariable("value") String value) {
         Log update = new Log(0,0,key,value);
-        this.ledger.addToQueue(update);
+        this.ledger.addToLogs(update);
         System.out.println("Hit");
         System.out.println(Arrays.toString(this.ledger.getUpdates().toArray()));
         return "Update Queued for Replication";

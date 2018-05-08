@@ -25,27 +25,15 @@ public class RaftNode {
 	private HostInfo host;
 	private RoutingTable rt;
 	private VotingBooth vb;
-	
-	/**
-	 * The constructor for the RaftNode Class
-	 * 
-	 */
-	public RaftNode(Ledger ledger, Route route) {
-        this.rt = new RoutingTable();
-        this.host = new HostInfo(route);
-        this.vb = new VotingBooth(this.rt,this.host);
-        this.host.setVotingBooth(this.vb);
-		this.ledger = ledger;
-	}
 
 	/**
-	 * Second constructor for the RaftNode Class.vb
+	 * Constructor for the RaftNode Class.vb
      * Pass option Routing Table
 	 *
 	 */
 	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
         this.rt = rt;
-        this.host = new HostInfo(route);
+        this.host = new HostInfo(route, this.rt);
         this.vb = new VotingBooth(this.rt,this.host);
         this.host.setVotingBooth(this.vb);
         this.ledger = ledger;

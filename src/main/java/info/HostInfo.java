@@ -1,6 +1,7 @@
 package info;
 
 
+import routing.RoutingTable;
 import voting_booth.VotingBooth;
 import routing.Route;
 
@@ -34,6 +35,7 @@ public class HostInfo implements Serializable {
 	private final String LEADER_TAG = "LEADER";
 
 	private VotingBooth vb;
+	private RoutingTable rt;
 	
 	/**
 	 * Constructor for the HostInfo class
@@ -41,28 +43,13 @@ public class HostInfo implements Serializable {
 	 * @param route All Relevant routing information for the host
 	 *
 	 */
-	public HostInfo(Route route) {
+	public HostInfo(Route route, RoutingTable rt) {
 		this.route = route;
 		this.term = 0;
 		this.votedFor = null;
 		this.initialized = false;
-		this.vb = vb;
+		this.rt = rt;
         this.becomeFollower();
-	}
-
-	/**
-	 * Second constructor for the HostInfo class
-	 * 
-	 * @param route
-	 * @param term
-	 */
-	public HostInfo(Route route, Integer term, VotingBooth vb) {
-		this.route = route;
-		this.term = term;
-		this.votedFor = null;
-		this.initialized = false;
-		this.vb = vb;
-		this.becomeFollower();
 	}
 
 	/**
@@ -200,6 +187,7 @@ public class HostInfo implements Serializable {
 	public void becomeLeader() {
 	    this.state = LEADER_TAG;
 	    this.initialized = false;
+	    //this.rt.syncNextIndex();
         System.out.println("[" + this.state + "]: Entered Leader State");
 	}
 	
