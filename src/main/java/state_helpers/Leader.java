@@ -43,13 +43,16 @@ public class Leader {
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info, RoutingTable rt) {
         if(hb.hasReplied() && host_info.matchRoute((hb.getRoute()))) {  // Heartbeat is acknowledged and is from me (From a Follower)
             System.out.println("[" + host_info.getState() + "]: Received Response From Follower " + hb.getRoute().getIP() + ":" + hb.getRoute().getHeartbeatPort());
-            if(hb.getReply()) {
+            if(hb.getReply()) { // Checks if Follower Response is True
                 System.out.println("[" + host_info.getState() + "]: Follower Replied True!");
                 ledger.receiveConfirmation(hb,rt); // this should update the commitMap
-            } else if(hb.getTerm() > host_info.getTerm()) {
+            } else if(hb.getTerm() > host_info.getTerm()) { // Checks if Follower Response is False
                 System.out.println("[" + host_info.getState() + "]: Follower Replied False!");
                 host_info.becomeFollower();
             }
+        } else if (hb.getTerm() > host_info.getTerm()) { // Received Response from another leader
+            System.out.println("[" + host_info.getState() + "]: Received Heartbeat From Another Follower with Greater Term");
+            host_info.becomeFollower();
         }
     }
 }
