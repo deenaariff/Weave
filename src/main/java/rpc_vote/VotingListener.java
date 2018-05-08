@@ -1,6 +1,7 @@
 package rpc_vote;
 
 import state_helpers.Candidate;
+import state_helpers.Follower;
 import voting_booth.VotingBooth;
 import rpc.rpc;
 import info.HostInfo;
@@ -54,17 +55,7 @@ public class VotingListener implements Runnable {
                 } else if (this.host_info.isCandidate()) {
                     Candidate.HandleVote(vote, vb, host_info);
                 } else if (this.host_info.isFollower()) {
-
-                    // Candidate requesting Vote should have higher term than rpc
-                    if (true) {
-                        if (this.host_info.hasVoted() == false) {
-                            vote.castVote();
-                            this.host_info.setVote(vote.getRoute());
-                        }
-                        rpc.returnVote(vote);
-                    } else {
-                        // handle term based cased
-                    }
+                    Follower.HandleVote(vote, vb, host_info);
                 }
 
                 socket.close();
