@@ -69,13 +69,13 @@ public class RaftNode {
             //System.out.println(this.host.getState());
             if(this.host.isLeader()) {
                 System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers");
-                try{
+                rpc.broadcastHeartbeatUpdates(this.rt,this.ledger,this.host);
+                try {
                     TimeUnit.MILLISECONDS.sleep(this.host.getHeartbeatInterval());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     break;
                 }
-                rpc.broadcastHeartbeatUpdates(this.rt,this.ledger,this.host);
             } else if(this.host.isCandidate()) {
                 if(!host.isInitialized()) {
                     System.out.println("[" + this.host.getState() + "]: Requesting Votes from Followers");

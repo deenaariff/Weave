@@ -17,6 +17,14 @@ import routing.RoutingTable;
 
 public class rpc {
 
+    /**
+     * This method broadcasts a heartbeat (which carries a list of updates)
+     * to all nodes in the distributed system.
+     *
+     * @param rt routing table with all host info
+     * @param ledger ledger which maintains key-value store
+     * @param host_info info about this node
+     */
     public static void broadcastHeartbeatUpdates(RoutingTable rt, Ledger ledger, HostInfo host_info) {
         List<Log> updates = ledger.getUpdates();
         for (Route route : rt.getTable()) {

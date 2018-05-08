@@ -82,24 +82,3 @@ public class HeartBeat implements Serializable {
 	public void setReply(boolean response) { this.reply = response; }
 
 }
-
-/**
- * Notes:
- *
- * Third party client sends message to leader.
- *
- * Leader queues information up, and on the next interval,
- * sends information bundled up in a heartbeat
- *
- * rpc receives heartbeat, updates its own lists of entries and precommits,
- * then sends the heartbeat back to the leader.
- *
- * Leader hashes serialized heartbeat to a commit map. Every time it sends out
- * another heartbeat, it checks to see whether a majority of previous messages
- * have been received.
- *
- * Once majority have sent back the heartbeat the leader initially sent, the
- * leader entries this message from the third-party client.
- *
- * Leader then sends an acknowledgement to the third-party client
- */

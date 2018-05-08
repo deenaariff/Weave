@@ -40,9 +40,6 @@ public class Candidate {
             if (vb.isElectionOver()) {  // Check election timeout
                 System.out.println("[" + host_info.getState() + "]: Election Lost, restarting election");
                 vb.startElection();
-
-                // TODO: If we automatically restart the election, will all nodes be able to vote for us again?
-                // TODO: Will the above comment lead us in an infinite election?
             }
 
         } else {  // Other nodes are requesting a vote

@@ -168,11 +168,10 @@ public class HostInfo implements Serializable {
 	
 	/**
 	 * Transitions state of node to become a Candidate. It also sets the
-	 * intialize flag to false which will allow it to execute its initialization
-	 * code only once later.
+	 * intialized flag to false which will allow it to execute its
+     * initialization code only once later.
 	 *
 	 * This method will also trigger the voting booth's startElection() method.
-	 * 
 	 */
 	public void becomeCandidate() {
 	    this.state = CANDIDATE_TAG;
@@ -191,8 +190,12 @@ public class HostInfo implements Serializable {
 	}
 	
 	/**
-	 * Sets state_helpers to leader
-	 * 
+	 * Transitions state of node to become a Leader. It also sets the
+     * initialized flag to false which will allow it to execute its
+     * initialization code only once later.
+	 *
+     * Once the state has changed, the main thread will recognize the node to be
+     * a leader and begin broadcasting AppendEntries RPCs.
 	 */
 	public void becomeLeader() {
 	    this.state = LEADER_TAG;
