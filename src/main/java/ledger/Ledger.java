@@ -161,6 +161,9 @@ public class Ledger {
 	 * @return
 	 */
 	public Boolean confirmMatch(int index, Log term) {
+		if(index < 0) {
+			return term == null;
+		}
 		return logs.get(index).equals(term);
 	}
 

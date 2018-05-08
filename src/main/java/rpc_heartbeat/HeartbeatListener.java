@@ -52,8 +52,6 @@ public class HeartbeatListener implements Runnable {
 
                 Socket socket = listener.accept();
 
-                System.out.println("[" + this.host_info.getState() + "]: Received a Heartbeat");
-
                 final InputStream yourInputStream = socket.getInputStream();
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final HeartBeat hb = (HeartBeat) inputStream.readObject();
