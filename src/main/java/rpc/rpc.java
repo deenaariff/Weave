@@ -27,7 +27,7 @@ public class rpc {
      */
     public static void broadcastHeartbeatUpdates(RoutingTable rt, Ledger ledger, HostInfo host_info) {
         for (Route route : rt.getTable()) {
-            if (host_info.matchRoute(route) == false) { // Ensure you don't send messages to yourself
+            if (!host_info.matchRoute(route)) { // Ensure you don't send messages to yourself
                 try {
                     List<Log> updates = Leader.determineUpdates(route, rt, ledger);
                     HeartBeat hb = new HeartBeat(host_info, updates, route, rt, ledger); // create a new heartbeat

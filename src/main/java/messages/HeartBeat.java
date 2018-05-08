@@ -50,7 +50,8 @@ public class HeartBeat implements Serializable {
 		this.entries = commits;
 		this.reply = null;
 		this.route = hostInfo.getRoute();
-        this.prevLogIndex = rt.getNextIndex(destination);
+        this.prevLogIndex = rt.getNextIndex(destination) - 1;
+        System.out.println("PrevLogIndex := " + prevLogIndex);
         this.prevLog = ledger.getLogbyIndex(this.prevLogIndex);
         this.leaderCommitIndex = ledger.getCommitIndex();
 	}

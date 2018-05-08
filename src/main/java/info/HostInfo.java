@@ -180,7 +180,7 @@ public class HostInfo implements Serializable {
 	public void becomeLeader() {
 	    this.state = LEADER_TAG;
 	    this.initialized = false;
-	    this.rt.syncNextIndex();
+	    //this.rt.syncNextIndex();
         System.out.println("[" + this.state + "]: Entered Leader State");
 	}
 	

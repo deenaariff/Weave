@@ -81,16 +81,6 @@ public class RoutingTable {
     }
 
     /**
-     * For each server, index of the next log entry to send to that
-     * server (initialized to leader last log index + 1)
-     */
-    public void syncNextIndex() {
-	    for(Route route : this.table) {
-            nextIndex.put(route, this.ledger.getLastApplied() + 1);
-        }
-    }
-
-    /**
      * This method returns the number of nodes it would take to specify the
      * majority of the cluster.
      * @return

@@ -43,6 +43,8 @@ public class Ledger {
 		this.appendMatch = new ArrayList<Integer>();
 		this.updateQueue = new ArrayList<Log>();
 		this.commitMap = new HashMap<HeartBeat,Integer>();
+		this.commitIndex = 0;
+		this.lastApplied = 0;
 	}
 
 	/**
@@ -170,7 +172,21 @@ public class Ledger {
 	 */
 	public void syncCommitIndex(int leader_commit_index) {
 		if(leader_commit_index > this.commitIndex) {
-			this.commitIndex = (int) Math.min(leader_commit_index,this.lastApplied);
+			this.commitIndex = Math.min(leader_commit_index,this.lastApplied);
+		}
+	}
+
+	/**
+	 * This method is used by followers, and updates the ledger based on the
+	 * heartbeat. It iterates through all of the new commits sent from the
+	 * leader, and adds it to the logs and key store
+	 *
+	 * @param hb The heartbeat message sent from the leader
+	 */
+	public void update(HeartBeat hb) {
+		for(Log log : hb.getEntries()) {
+			this.logs.add(log);
+			updateKeyStore(log.getKey(), log.getValue());
 		}
 	}
 
@@ -202,7 +218,12 @@ public class Ledger {
 
 	public int getLastApplied() { return lastApplied; }
 
-    public Log getLogbyIndex(int index) { return logs.get(index); }
+    public Log getLogbyIndex(int index) {
+		if(index < 0) {
+			return null;
+		}
+		return logs.get(index);
+	}
 
 
 	/**
