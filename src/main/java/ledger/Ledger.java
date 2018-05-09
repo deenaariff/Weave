@@ -96,7 +96,7 @@ public class Ledger {
 	public void addToLogs(Log value) {
 		this.logs.add(value);
 		this.appendMatch.add(0);
-		this.lastApplied = this.logs.size() - 1;
+		this.lastApplied = this.logs.size();
 	}
 
 	/**

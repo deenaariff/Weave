@@ -1,51 +1,35 @@
 package node;
-import voting_booth.VotingBooth;
-import ledger.Log;
 import rpc.rpc;
 import info.HostInfo;
 import ledger.Ledger;
-import routing.Route;
 import routing.RoutingTable;
-import rpc_heartbeat.HeartbeatListener;
-import rpc_vote.VotingListener;
-
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This is the class that contains the implementation of the Raft Node and
+ * This is the class that contains the implementation of the Weave Node and
  * for switching between states. This class passes essential information to 
  * each class that implements various state_helpers's logic.
  * 
  * @author deenaariff
  */
-public class RaftNode {
+public class RaftNode implements Runnable {
 	
 	private Ledger ledger;
 	private HostInfo host;
 	private RoutingTable rt;
-	private VotingBooth vb;
 
 	/**
 	 * Constructor for the RaftNode Class.vb
      * Pass option Routing Table
 	 *
 	 */
-	public RaftNode(RoutingTable rt,  Ledger ledger, Route route) {
+	public RaftNode(RoutingTable rt, Ledger ledger, HostInfo host) {
         this.rt = rt;
-        this.host = new HostInfo(route, this.rt);
-        this.vb = new VotingBooth(this.rt,this.host);
-        this.host.setVotingBooth(this.vb);
+        this.host = host;
         this.ledger = ledger;
     }
 
 	public void run() {
-
-        Thread hb_thread = new Thread(new HeartbeatListener(this.host,this.ledger,this.rt));
-        Thread voting_thread = new Thread(new VotingListener(this.host,this.rt,this.vb));
-
-        hb_thread.start();
-        voting_thread.start();
 
         try{
             TimeUnit.SECONDS.sleep(1);
@@ -56,6 +40,8 @@ public class RaftNode {
         while(true) {
             //System.out.println(this.host.getState());
             if(this.host.isLeader()) {
+                System.out.println("[" + this.host.getState() + "]: Last Index Committed: " + this.ledger.getCommitIndex());
+                System.out.println("[" + this.host.getState() + "]: Logs in Ledger: " + this.ledger.getLastApplied());
                 System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers");
                 try{
                     TimeUnit.MILLISECONDS.sleep(this.host.getHeartbeatInterval());

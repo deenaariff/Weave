@@ -1,80 +1,46 @@
 package raft;
 
+import info.HostInfo;
 import ledger.Ledger;
 import ledger.Log;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Arrays;
+import routing.Route;
+import spark.Request;
+import spark.Response;
 
+import static spark.Spark.*;
 
-/**
- * This class needs to be used by the Leader to listen to incoming client messages
- *
- * @author thomasnguyen
- */
-@Controller
 public class ClientController {
 
-    private Ledger ledger; // Stateful ledger to be shared by all RAFT node states
+    private HostInfo host;
+    private Ledger ledger;
+    private Route route;
 
-    public ClientController() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        this.ledger = (Ledger) context.getBean("ledger");
+    public ClientController(HostInfo host, Ledger ledger, Route route) {
+        this.host = host;
+        this.ledger = ledger;
+        this.route = route;
     }
 
-    /**
-     * Handler for default path
-     *
-     */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ResponseBody
-    public String home() {
-        return "This is the RAFT Consensus Algorithm";
+    public void listen() {
+        // Start embedded server at this port
+        port(this.route.getEndpointPort());
+
+        // Main Page
+        get("/", (Request request, Response response) -> {
+            String info = this.route.getIP() + ":" + this.route.getEndpointPort();
+            return "[" + host.getState() + "]: " + info;
+        });
+
+        // GET - Update the Key Value Store
+        get("update/:key/:value", (Request request, Response response) -> {
+            String key = request.params(":key");
+            String value = request.params(":value");
+            Log update = new Log(host.getTerm(),ledger.getLastApplied()+1,key,value);
+            ledger.addToLogs(update);
+            return "[" + host.getState() + "]: Logs in Ledger: " + ledger.getLastApplied();
+        });
     }
 
-    /**
-     * This is a request handler to enable a client to update Data in the
-     * key-value store
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    @RequestMapping(value = "/update/{key}/{value}",
-            method = RequestMethod.GET)
-    @ResponseBody
-    public String updateKV(@PathVariable("key") String key,
-                                 @PathVariable("value") String value) {
-        Log update = new Log(0,0,key,value);
-        this.ledger.addToLogs(update);
-        System.out.println("Hit");
-        System.out.println(Arrays.toString(this.ledger.getUpdates().toArray()));
-        return "Update Queued for Replication";
-    }
-
-    /**
-     * This is a request handler method to return commited data from the key-value
-     * store from a third party client that requests the data
-     *
-     * @param key
-     * @return
-     */
-    @RequestMapping(value = "/retrieve/{key}",
-            method = RequestMethod.GET)
-    @ResponseBody
-    public String getValue(@PathVariable("key") String key) {
-        try {
-            String result = this.ledger.getData(key);
-            return result;
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
 
 }
