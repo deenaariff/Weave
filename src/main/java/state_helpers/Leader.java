@@ -57,6 +57,4 @@ public class Leader {
             host_info.becomeFollower();
         }
     }
-
-
 }
