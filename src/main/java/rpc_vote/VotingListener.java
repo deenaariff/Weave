@@ -1,5 +1,6 @@
 package rpc_vote;
 
+import Logger.Logger;
 import voting_booth.VotingBooth;
 import rpc.rpc;
 import info.HostInfo;
@@ -9,9 +10,7 @@ import routing.RoutingTable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
 
 public class VotingListener implements Runnable {
 
@@ -19,17 +18,17 @@ public class VotingListener implements Runnable {
     private HostInfo host_info;
     private RoutingTable rt;
     private VotingBooth vb;
+    private Logger logger;
 
-    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb) {
+    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Logger logger) {
         this.host_info = host_info;
         this.rt = rt;
         this.vb = vb;
+        this.logger = logger;
     }
 
     @Override
     public void run() {
-
-        int totalTableLength = rt.getTable().size();
 
         try {
             this.listener = new ServerSocket(this.host_info.getVotingPort());
@@ -43,11 +42,16 @@ public class VotingListener implements Runnable {
             try {
 
                 Socket socket = listener.accept();
-                System.out.println("[" + this.host_info.getState() + "]: Received a Vote Object");
 
                 final InputStream yourInputStream = socket.getInputStream();
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final Vote vote = (Vote) inputStream.readObject();
+
+                if(vote.getVoteStatus()) {
+                    logger.log("Received Acknowledged Vote w/ Origin : " + vote.getHostName() + ":" + vote.getEndpointPort());
+                } else {
+                    logger.log("Received Request Vote w/ Origin : " + vote.getHostName() + ":" + vote.getEndpointPort());
+                }
 
                 if(this.host_info.isLeader()) {
 
@@ -65,37 +69,33 @@ public class VotingListener implements Runnable {
                             vb.incrementVotes();
                         }
 
-                        if(vb.isElectionOver()) {
-                            int state_change = vb.endElection(host_info);
-                            if(state_change == 1) {
-                                host_info.becomeLeader();
-                            } else if(state_change == 0) {
-                                host_info.becomeFollower();
-                            }
-                        }
-
                     } else {
+                        logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
+                        rpc.sendVote(vote,vote.getHostName(),vote.getVotingPort());
+                    }
 
-                        if(true) {
-                            // TODO: move returnVote to non-state_helpers dependent class
-                            rpc.returnVote(vote);
-                        } else {
-                            // handle term based cased
+                    if(vb.isElectionOver()) {
+                        int state_change = vb.endElection(host_info);
+                        if(state_change == 1) {
+                            logger.log("Election Won, becoming Leader");
+                            host_info.becomeLeader();
+                        } else if(state_change == 0) {
+                            logger.log("Election Lost");
+                            host_info.becomeFollower();
                         }
                     }
 
                 } else if(this.host_info.isFollower()) {
 
                     // Candidate requesting Vote should have higher term than rpc
-                    if(true) {
+                    if(this.host_info.getTerm() > vote.getTerm()) {
                         if (this.host_info.hasVoted() == false) {
                             vote.castVote();
                             this.host_info.setVote(vote.getRoute());
                         }
-                        rpc.returnVote(vote);
-                    } else {
-                        // handle term based cased
                     }
+                    logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
+                    rpc.sendVote(vote,vote.getHostName(),vote.getVotingPort());
                 }
 
                 socket.close();
@@ -104,27 +104,30 @@ public class VotingListener implements Runnable {
                 if(this.host_info.isCandidate() && vb.isElectionOver()) {
                     int state_change = vb.endElection(host_info);
                     if(state_change == 1) {
-                        System.out.println("[" + this.host_info.getState() + "]: Election Won, becoming Leader");
+                        logger.log("Election Won, becoming Leader");
                         host_info.becomeLeader();
                     } else if(state_change == 0) {
-                        System.out.println("[" + this.host_info.getState() + "]: Election Lost, restarting election");
-                        vb.startElection();
+                        logger.log("Election Lost");
+                        host_info.becomeFollower();
                     }
                 }
+            } catch(ConnectException e) {
+                e.printStackTrace();
+                System.exit(1);
             } catch (IOException e) {
                 e.printStackTrace();
-                break;
-            }  catch (ClassNotFoundException e) {
+                System.exit(1);
+            } catch (Exception e) {
                 e.printStackTrace();
-                break;
+                System.exit(1);
             }
         }
 
-        try {
+        /*try {
             this.listener.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 

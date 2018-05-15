@@ -1,5 +1,6 @@
 package rpc_heartbeat;
 
+import Logger.Logger;
 import info.HostInfo;
 import ledger.Ledger;
 import messages.HeartBeat;
@@ -7,6 +8,7 @@ import routing.RoutingTable;
 import state_helpers.Candidate;
 import state_helpers.Follower;
 import state_helpers.Leader;
+import voting_booth.VotingBooth;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -19,6 +21,8 @@ public class HeartbeatListener implements Runnable {
     private Ledger ledger;
     private RoutingTable rt;
     private ServerSocket listener;
+    private VotingBooth vb;
+    private Logger logger;
 
     /**
      * Constructor
@@ -26,10 +30,12 @@ public class HeartbeatListener implements Runnable {
      * @param ledger
      * @param rt
      */
-    public HeartbeatListener(HostInfo host_info, Ledger ledger, RoutingTable rt) {
+    public HeartbeatListener(HostInfo host_info, Ledger ledger, RoutingTable rt, VotingBooth vb, Logger logger) {
         this.host_info = host_info;
         this.ledger = ledger;
         this.rt = rt;
+        this.vb = vb;
+        this.logger = logger;
     }
 
     @Override
@@ -42,7 +48,7 @@ public class HeartbeatListener implements Runnable {
         try {
             this.listener = new ServerSocket(this.host_info.getHeartBeatPort());
             listener.setSoTimeout(this.host_info.getHeartbeatTimeoutInterval());
-            System.out.println("[" + this.host_info.getState() + "]: Heartbeat Timeout Interval (" + this.host_info.getHeartbeatTimeoutInterval() + "ms )");
+            logger.log("Heartbeat Timeout Interval (" + this.host_info.getHeartbeatTimeoutInterval() + "ms )");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,7 +65,7 @@ public class HeartbeatListener implements Runnable {
                 if(this.host_info.isLeader()) { // Handle HB in leader state
                     Leader.HandleHeartBeat(hb, this.ledger, this.host_info, this.rt);
                 } else if(this.host_info.isCandidate()) { // Handle HB in Candidate state
-                    Candidate.HandleHeartBeat();
+                    Candidate.HandleHeartBeat(hb, this.host_info);
                 } else if(this.host_info.isFollower()) { // Handle HB in Follower State
                     Follower.HandleHeartBeat(hb, this.ledger, this.host_info);
                 }
@@ -68,8 +74,8 @@ public class HeartbeatListener implements Runnable {
 
             } catch (SocketTimeoutException s) {
                 if(this.host_info.isFollower()) {
-                    System.out.println("[" + this.host_info.getState() + "]: Interval for Heart Beat Listener Elapsed : (" + this.host_info.getHeartbeatTimeoutInterval() + ")");
-                    host_info.becomeCandidate();
+                    logger.log("Interval for Heart Beat Listener Elapsed : (" + this.host_info.getHeartbeatTimeoutInterval() + ")");
+                    host_info.becomeCandidate(this.vb);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

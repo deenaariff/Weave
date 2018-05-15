@@ -5,7 +5,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 import info.HostInfo;
@@ -55,8 +54,9 @@ public class rpc {
         System.out.println("[" + host_info.getState() + "]: Requesting Votes from " + totalTableLength +  " Hosts");
 
         for (Route route : rt.getTable()) {
-            Vote newVote = new Vote(host_info);
             if (host_info.matchRoute(route) == false) {  // Add logic to not send to yourself
+                Vote newVote = new Vote(host_info);
+                System.out.println("--------" + route.getIP() + ":" +  route.getEndpointPort() + "--------------");
                 try {
                     sendVote(newVote, route.getIP(), route.getVotingPort());
                 } catch (ConnectException e) { // do Nothing as non_response will be Handled by listener
@@ -111,16 +111,6 @@ public class rpc {
 	public static void returnHeartbeat(HeartBeat hb, Route destination) throws IOException {
         sendHeartbeat(hb,destination.getIP(),destination.getHeartbeatPort());
 	}
-
-    /**
-     *
-     * @param vote
-     * @throws IOException
-     */
-    public static void returnVote(Vote vote) throws IOException {
-        Route vote_route = vote.getRoute();
-        sendVote(vote,vote_route.getIP(),vote_route.getVotingPort());
-    }
 
 
 }

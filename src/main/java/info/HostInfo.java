@@ -1,7 +1,5 @@
 package info;
 
-
-import routing.RoutingTable;
 import voting_booth.VotingBooth;
 import routing.Route;
 
@@ -34,8 +32,7 @@ public class HostInfo implements Serializable {
 	private final String CANDIDATE_TAG = "CANDIDATE";
 	private final String LEADER_TAG = "LEADER";
 
-	private VotingBooth vb;
-	private RoutingTable rt;
+	private int votes_obtained;
 	
 	/**
 	 * Constructor for the HostInfo class
@@ -43,13 +40,13 @@ public class HostInfo implements Serializable {
 	 * @param route All Relevant routing information for the host
 	 *
 	 */
-	public HostInfo(Route route, RoutingTable rt) {
+	public HostInfo(Route route) {
 		this.route = route;
 		this.term = 0;
 		this.votedFor = null;
 		this.initialized = false;
-		this.rt = rt;
         this.becomeFollower();
+        this.votes_obtained = 0;
 	}
 
 	/**
@@ -80,12 +77,14 @@ public class HostInfo implements Serializable {
 	    return this.route.getIP();
 	}
 
+	public int getEndPointPort() { return this.route.getEndpointPort(); }
+
 	/**
 	 * Obtain the heartBeat listening port of the node
 	 * 
 	 * @return the HEARTBEAT_PORT value
 	 */
-	public Integer getHeartBeatPort() {
+	public int getHeartBeatPort() {
 	    return this.route.getHeartbeatPort();
 	}
 	
@@ -94,7 +93,7 @@ public class HostInfo implements Serializable {
 	 * 
 	 * @return the VOTING_PORT value
 	 */
-	public Integer getVotingPort() {
+	public int getVotingPort() {
 		return this.route.getVotingPort();
 	}
 
@@ -157,10 +156,10 @@ public class HostInfo implements Serializable {
 	 * Sets state_helpers to candidate
 	 * 
 	 */
-	public void becomeCandidate() {
+	public void becomeCandidate(VotingBooth vb) {
 	    this.state = CANDIDATE_TAG;
 	    this.initialized = false;
-	    this.vb.startElection();
+	    vb.startElection();
         System.out.println("[" + this.state + "]: Entered Candidate State");
 	}
 	
@@ -180,7 +179,6 @@ public class HostInfo implements Serializable {
 	public void becomeLeader() {
 	    this.state = LEADER_TAG;
 	    this.initialized = false;
-	    //this.rt.syncNextIndex();
         System.out.println("[" + this.state + "]: Entered Leader State");
 	}
 	
@@ -202,9 +200,7 @@ public class HostInfo implements Serializable {
 		return this.state;
 	}
 
-    public void setVotingBooth(VotingBooth vb) { this.vb = vb; }
-
-    public Route getRoute() { return route; }
+    public Route getRoute() { return this.route; }
 
     public static int getHeartbeatInterval() { return HEARTBEAT_INTERVAL; }
 
@@ -219,6 +215,10 @@ public class HostInfo implements Serializable {
     public boolean hasVoted() { return this.votedFor != null; }
 
     public void setVote(Route route) { this.votedFor = route; }
+
+    public void setVotesObtained(int votes) { this.votes_obtained = votes; }
+
+    public Integer getVotesObtained () { return this.votes_obtained; }
 
 }
 

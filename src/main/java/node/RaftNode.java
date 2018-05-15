@@ -37,14 +37,17 @@ public class RaftNode implements Runnable {
             e.printStackTrace();
         }
 
-        while(true) {
-            //System.out.println(this.host.getState());
+        int loops = 0;
+
+        while(!Thread.currentThread().isInterrupted()) {
+            loops += 1;
             if(this.host.isLeader()) {
+                System.out.println("Loops: " + loops);
                 System.out.println("[" + this.host.getState() + "]: Last Index Committed: " + this.ledger.getCommitIndex());
                 System.out.println("[" + this.host.getState() + "]: Logs in Ledger: " + this.ledger.getLastApplied());
-                System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers");
+                System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers ");
                 try{
-                    TimeUnit.MILLISECONDS.sleep(this.host.getHeartbeatInterval());
+                    Thread.sleep(this.host.getHeartbeatInterval());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     break;
@@ -56,10 +59,7 @@ public class RaftNode implements Runnable {
                     rpc.broadcastVotes(this.rt,this.host);
                     host.hasBeenInitialized();
                 }
-            } else if(this.host.isFollower()) {
-                //System.out.println("[" + this.host.getState() + "]: Break 1");
             }
-
         }
 
     }

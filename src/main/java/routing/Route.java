@@ -20,7 +20,7 @@ public class Route implements Serializable {
         this.voting_port = voting_port;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -57,8 +57,6 @@ public class Route implements Serializable {
     public void setVotingPort(int voting_port) {
         this.voting_port = voting_port;
     }
-
-
 
 
     @Override

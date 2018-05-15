@@ -21,8 +21,11 @@ public class Vote implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private boolean isVoteCast;
-	private HostInfo host;
+	private String ip;
+	private int voting_port;
+	private int endpoint_port;
     private Route route;
+    private int term;
 	
 	/**
 	 * The Constructor for the Vote Class.
@@ -31,14 +34,16 @@ public class Vote implements Serializable {
 	 */
 	public Vote(HostInfo host) {
 		this.isVoteCast = false;
-		this.host = host;
+		this.ip = host.getHostName();
+		this.voting_port = host.getVotingPort();
+		this.endpoint_port = host.getEndPointPort();
 		this.route = host.getRoute();
+		this.term = host.getTerm();
 	}
 
     public Route getRoute() {
         return route;
     }
-
 
     /**
 	 * The method a rpc uses to cast a vote for a Candidate.
@@ -53,19 +58,26 @@ public class Vote implements Serializable {
 	public boolean getVoteStatus () {
 		return this.isVoteCast;
 	}
+
+	public int getEndpointPort() { return this.endpoint_port; };
 	
 	/**
 	 * This returns the vote's origin host
 	 */
-	public String getHost() {
-		return this.host.getHostName();
+	public String getHostName() {
+		return this.ip;
 	}
-	
+
 	/**
 	 * This return's the vote's origin hosts' port that is being listened on
 	 */
-	public int getHostPort() {
-		return this.host.getVotingPort();
+	public int getVotingPort() {
+		return this.voting_port;
 	}
+
+    /**
+     *
+     */
+    public int getTerm() { return this.term; }
 
 }

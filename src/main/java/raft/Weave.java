@@ -1,14 +1,17 @@
 package raft;
+import Logger.Logger;
 import info.HostInfo;
 import ledger.Ledger;
 import node.RaftNode;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import routing.Route;
 import routing.RoutingTable;
 import rpc_heartbeat.HeartbeatListener;
 import rpc_vote.VotingListener;
 import voting_booth.VotingBooth;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -16,7 +19,6 @@ import voting_booth.VotingBooth;
  * 
  * @author deenaariff
  */
-@SpringBootApplication
 public class Weave {
 
 	public static void main(String[] args) {
@@ -27,30 +29,31 @@ public class Weave {
         RoutingTable rt = new RoutingTable("nodes.xml", ledger); //Load the Routing Table Info from nodes.xml
         Route route = rt.getRouteById(Integer.parseInt(args[0])); // Get this Nodes Routing Info
 
-        HostInfo host = new HostInfo(route, rt);
-        VotingBooth vb = new VotingBooth(rt,host);
-        host.setVotingBooth(vb);
+        HostInfo host = new HostInfo(route);
+        Logger logger = new Logger(host);
+        VotingBooth vb = new VotingBooth(rt,host, logger);
+
 
         // Initializer Method
-        System.out.println("IP Address: " + route.getIP());
-        System.out.println("Listening on PORT: " + route.getEndpointPort());
-        System.out.println("HeartBeat PORT: " + route.getHeartbeatPort());
-        System.out.println("Voting PORT: " + route.getVotingPort());
-		System.out.println("Starting Weave Consensus Algorithm");
+        logger.log("IP Address: " + route.getIP());
+        logger.log("Listening on PORT: " + route.getEndpointPort());
+        logger.log("HeartBeat PORT: " + route.getHeartbeatPort());
+        logger.log("Voting PORT: " + route.getVotingPort());
+		logger.log("Starting Weave Consensus Algorithm");
 
 
 		// Create all Threads
-        Thread hb_thread = new Thread(new HeartbeatListener(host,ledger,rt));
-        Thread voting_thread = new Thread(new VotingListener(host,rt,vb));
+        Thread hb_thread = new Thread(new HeartbeatListener(host,ledger,rt,vb, logger));
+        Thread voting_thread = new Thread(new VotingListener(host,rt,vb, logger));
         Thread main_thread = new Thread(new RaftNode(rt,ledger,host));
 
-        hb_thread.start();
-        voting_thread.start();
-        main_thread.start();
-
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        executor.execute(hb_thread);
+        executor.execute(voting_thread);
+        executor.execute(main_thread);
 
         // Start the Spark Java Listener
-        ClientController server = new ClientController(host, ledger, route);
+        ClientController server = new ClientController(host, ledger, route, rt);
         server.listen();
 
 	}

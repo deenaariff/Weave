@@ -1,5 +1,6 @@
 package state_helpers;
 
+import Logger.Logger;
 import info.HostInfo;
 import ledger.Ledger;
 import ledger.Log;
@@ -30,7 +31,7 @@ public class Follower {
 
                 // Ensure prevLog Term matches at given index
                 if(ledger.confirmMatch(prevIndex, prevLogTerm) == true) {
-                    System.out.println("[" + host_info.getState() + "]: PrevLogTerm in HeartBeat Matches");
+                    new Logger(host_info).log("PrevLogTerm in HeartBeat Matches");
                     ledger.update(hb);
                     hb.setReply(true);
                 } else {
