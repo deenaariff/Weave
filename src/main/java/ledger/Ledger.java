@@ -1,7 +1,6 @@
 package ledger;
 
 import messages.HeartBeat;
-import org.springframework.stereotype.Component;
 import routing.Route;
 import routing.RoutingTable;
 
@@ -18,7 +17,6 @@ import java.util.Map;
  * @author deenaariff
  *
  */
-@Component
 public class Ledger {
 
 	/** Necessary to all states **/
@@ -96,7 +94,7 @@ public class Ledger {
 	public void addToLogs(Log value) {
 		this.logs.add(value);
 		this.appendMatch.add(0);
-		this.lastApplied = this.logs.size() - 1;
+		this.lastApplied = this.logs.size();
 	}
 
 	/**

@@ -2,6 +2,7 @@ package rpc_vote;
 
 import state_helpers.Candidate;
 import state_helpers.Follower;
+import Logger.Logger;
 import voting_booth.VotingBooth;
 import rpc.rpc;
 import info.HostInfo;
@@ -11,9 +12,7 @@ import routing.RoutingTable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
 
 public class VotingListener implements Runnable {
 
@@ -21,11 +20,13 @@ public class VotingListener implements Runnable {
     private HostInfo host_info;
     private RoutingTable rt;
     private VotingBooth vb;
+    private Logger logger;
 
-    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb) {
+    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Logger logger) {
         this.host_info = host_info;
         this.rt = rt;
         this.vb = vb;
+        this.logger = logger;
     }
 
     @Override
@@ -42,16 +43,19 @@ public class VotingListener implements Runnable {
             try {
 
                 Socket socket = listener.accept();
-                System.out.println("[" + this.host_info.getState() + "]: Received a Vote Object");
 
                 final InputStream yourInputStream = socket.getInputStream();
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final Vote vote = (Vote) inputStream.readObject();
 
+                if (vote.getVoteStatus()) {
+                    logger.log("Received Acknowledged Vote w/ Origin : " + vote.getHostName() + ":" + vote.getEndpointPort());
+                } else {
+                    logger.log("Received Request Vote w/ Origin : " + vote.getHostName() + ":" + vote.getEndpointPort());
+                }
+
                 if (this.host_info.isLeader()) {
-
                     // term based handling
-
                 } else if (this.host_info.isCandidate()) {
                     Candidate.HandleVote(vote, vb, host_info);
                 } else if (this.host_info.isFollower()) {
@@ -62,20 +66,11 @@ public class VotingListener implements Runnable {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                break;
+                System.exit(1);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                break;
+                System.exit(1);
             }
         }
-
-        try {
-            this.listener.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
-
-
 }

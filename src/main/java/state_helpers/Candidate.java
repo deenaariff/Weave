@@ -2,14 +2,32 @@ package state_helpers;
 
 import info.HostInfo;
 import messages.Vote;
-import rpc.rpc;
 import voting_booth.VotingBooth;
+import messages.HeartBeat;
+import routing.Route;
+import rpc.rpc;
+import Logger.Logger;
+
+import java.io.IOException;
 
 public class Candidate {
 
+    public static void HandleHeartBeat(HeartBeat hb, HostInfo host_info) throws IOException {
+        if (hb.getTerm() >= host_info.getTerm()) {
+            host_info.setVote(hb.getRoute());
+            host_info.becomeFollower();
+        }  else {
+            hb.setReply(false);
 
-    public static void HandleHeartBeat() {
+            Route origin = hb.getRoute();
 
+            // update the origin info for the heartbeat on response
+            hb.setTerm(host_info.getTerm());
+            hb.setRoute(host_info.getRoute());
+
+            // return heartbeat to the destination
+            rpc.returnHeartbeat(hb, origin);
+        }
     }
 
     /**
@@ -25,6 +43,7 @@ public class Candidate {
      * @param host_info info of the current host
      */
     public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info) {
+        Logger logger = new Logger(host_info);
 
         if (host_info.matchRoute(vote.getRoute())) {  // Received response to our RequestVote RPC
 
@@ -33,12 +52,12 @@ public class Candidate {
             }
 
             if (vb.checkIfWonElection()) {  // Have we received majority votes yet?
-                System.out.println("[" + host_info.getState() + "]: Election Won, becoming Leader");
+                logger.log("[" + host_info.getState() + "]: Election Won, becoming Leader");
                 host_info.becomeLeader();
             }
 
             if (vb.isElectionOver()) {  // Check election timeout
-                System.out.println("[" + host_info.getState() + "]: Election Lost, restarting election");
+                logger.log("[" + host_info.getState() + "]: Election Lost, restarting election");
                 vb.startElection();
             }
 

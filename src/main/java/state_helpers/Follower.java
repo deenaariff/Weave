@@ -1,5 +1,6 @@
 package state_helpers;
 
+import Logger.Logger;
 import info.HostInfo;
 import ledger.Ledger;
 import ledger.Log;
@@ -31,8 +32,9 @@ public class Follower {
                 int prevIndex = hb.getPrevLogIndex();
                 Log prevLogTerm = hb.getPrevLog();
 
-                if (ledger.confirmMatch(prevIndex, prevLogTerm)) {  // Ensure prevLog Term matches at given index
-                    System.out.println("[" + host_info.getState() + "]: PrevLogTerm in HeartBeat Matches");
+                // Ensure prevLog Term matches at given index
+                if(ledger.confirmMatch(prevIndex, prevLogTerm) == true) {
+                    new Logger(host_info).log("PrevLogTerm in HeartBeat Matches");
                     ledger.update(hb);
                     hb.setReply(true);
                 } else {
@@ -69,10 +71,14 @@ public class Follower {
      * @param host_info
      */
     public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info) throws IOException {
-        if ((vote.getHostTerm() >= host_info.getTerm()) && !host_info.hasVoted()) {  // Check if valid candidate
+        Logger logger = new Logger(host_info);
+
+        if ((vote.getTerm() >= host_info.getTerm()) && !host_info.hasVoted()) {  // Check if valid candidate
             vote.castVote();
             host_info.setVote(vote.getRoute());
+            logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
+            rpc.returnVote(vote);  // Send vote back
         }
-        rpc.returnVote(vote);  // Send vote back
+
     }
 }

@@ -1,5 +1,6 @@
 package voting_booth;
 
+import Logger.Logger;
 import info.HostInfo;
 import routing.RoutingTable;
 
@@ -9,13 +10,14 @@ public class VotingBooth {
     private long start_election;
     private int election_interval;
     private HostInfo host_info;
+    private Logger logger;
 
     private RoutingTable rt;
 
-    public VotingBooth(RoutingTable rt, HostInfo host_info) {
+    public VotingBooth(RoutingTable rt, HostInfo host_info, Logger logger) {
         this.rt = rt;
-        this.election_interval = host_info.getElectionInterval() * 1000;
         this.host_info = host_info;
+        this.logger = logger;
     }
 
     public void reset() {
@@ -40,6 +42,7 @@ public class VotingBooth {
      */
     public void startElection() {
         this.host_info.incrementTerm();
+        this.election_interval = 200 * 1000;
         this.start_election = System.nanoTime();
         this.votes_obtained = 1;
     }
@@ -63,7 +66,9 @@ public class VotingBooth {
      */
     public boolean checkIfWonElection() {
         int totalTableLength = this.rt.getTable().size();
-        return (this.votes_obtained >= totalTableLength/2);
+        this.host_info.setVotesObtained(this.votes_obtained);
+        this.logger.log("Votes received: " + this.votes_obtained);
+        return (this.votes_obtained >= totalTableLength/2 + 1);
     }
 
 }
