@@ -1,6 +1,7 @@
 from helpers.inputHelper import InputHelper as IH
 from helpers.cluster import Cluster as Cluster
 
+from threading import Thread
 import helpers.clientMessageHelper as um
 import helpers.dataHelper as dh
 import sys,time
@@ -8,10 +9,12 @@ import sys,time
 run_client = True  # Run Client in Loop Until User Quits
 
 print "Initializing Cluster..."
-dh.start_cluster(3)
+thread = Thread(target = dh.start_cluster, args = (3, ))
+thread.start()
 
 print "Waiting for Startup..."
 time.sleep(2);
+print "Initializing Request for Routes"
 
 
 ip = sys.argv[1]
@@ -54,5 +57,5 @@ while run_client:
         print um.INVALID_CMD
 
 
-
+thread.join()
 

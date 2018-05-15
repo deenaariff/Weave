@@ -70,7 +70,7 @@ public class VotingListener implements Runnable {
                         }
 
                     } else {
-                        logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
+                        logger.log("Returning w/o Vote to: " + vote.getHostName() + ":" + vote.getVotingPort());
                         rpc.sendVote(vote,vote.getHostName(),vote.getVotingPort());
                     }
 
@@ -88,14 +88,14 @@ public class VotingListener implements Runnable {
                 } else if(this.host_info.isFollower()) {
 
                     // Candidate requesting Vote should have higher term than rpc
-                    if(this.host_info.getTerm() > vote.getTerm()) {
+                    if(this.host_info.getTerm() > vote.getTerm() && vote.getVoteStatus() == false) {
                         if (this.host_info.hasVoted() == false) {
                             vote.castVote();
                             this.host_info.setVote(vote.getRoute());
                         }
+                        logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
+                        rpc.sendVote(vote,vote.getHostName(),vote.getVotingPort());
                     }
-                    logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
-                    rpc.sendVote(vote,vote.getHostName(),vote.getVotingPort());
                 }
 
                 socket.close();
