@@ -19,10 +19,12 @@ import state_helpers.Leader;
 public class rpc {
 
     /**
+     * This method broadcasts a heartbeat (which carries a list of updates)
+     * to all nodes in the distributed system.
      *
-     * @param rt
-     * @param ledger
-     * @param host_info
+     * @param rt routing table with all host info
+     * @param ledger ledger which maintains key-value store
+     * @param host_info info about this node
      */
     public static void broadcastHeartbeatUpdates(RoutingTable rt, Ledger ledger, HostInfo host_info) {
         for (Route route : rt.getTable()) {
@@ -112,5 +114,13 @@ public class rpc {
         sendHeartbeat(hb,destination.getIP(),destination.getHeartbeatPort());
 	}
 
-
+    /**
+     *
+     * @param vote
+     * @throws IOException
+     */
+    public static void returnVote(Vote vote) throws IOException {
+        Route vote_route = vote.getRoute();
+        sendVote(vote,vote_route.getIP(),vote_route.getVotingPort());
+    }
 }

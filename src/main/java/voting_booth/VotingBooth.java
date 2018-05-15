@@ -32,6 +32,14 @@ public class VotingBooth {
         this.votes_obtained += 1;
     }
 
+    /**
+     * This starts an election by incrementing the term, recording the start
+     * time of the election, and then initializing the number of votes it has
+     * obtained starting with its own vote for itself.
+     *
+     * Then in the main RaftNode thread, a RequestVote RPC will be broadcasted
+     * to all other nodes the system.
+     */
     public void startElection() {
         this.host_info.incrementTerm();
         this.election_interval = 200 * 1000;
@@ -39,15 +47,28 @@ public class VotingBooth {
         this.votes_obtained = 1;
     }
 
+    /**
+     * This method checks to see whether the duration of the election has
+     * surpassed the random time interval for the election.
+     *
+     * @return boolean value describing whether election has timed out
+     */
     public boolean isElectionOver() {
         return (System.nanoTime() - this.start_election) > this.election_interval;
     }
 
-    public int endElection(HostInfo hostInfo) {
+    /**
+     * This method will check to see whether this node has received a majority
+     * of votes.
+     *
+     * @return if majority received, return true
+     *          if majority not received, return false
+     */
+    public boolean checkIfWonElection() {
         int totalTableLength = this.rt.getTable().size();
         this.host_info.setVotesObtained(this.votes_obtained);
         this.logger.log("Votes received: " + this.votes_obtained);
-        return (this.votes_obtained >= totalTableLength/2 + 1)? 1 : 0;
+        return (this.votes_obtained >= totalTableLength/2 + 1);
     }
 
 }

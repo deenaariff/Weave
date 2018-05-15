@@ -76,7 +76,7 @@ public class Vote implements Serializable {
 	}
 
     /**
-     *
+     * This returns the vote's origin host's term
      */
     public int getTerm() { return this.term; }
 
