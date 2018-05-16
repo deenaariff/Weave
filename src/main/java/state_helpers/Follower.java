@@ -75,6 +75,7 @@ public class Follower {
 
         if ((vote.getTerm() >= host_info.getTerm()) && !host_info.hasVoted()) {  // Check if valid candidate
             vote.castVote();
+            host_info.setVoteFlag(true);
             host_info.setVote(vote.getRoute());
             logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
             rpc.returnVote(vote);  // Send vote back

@@ -13,8 +13,8 @@ class InputHelper:
         print
         data = [
             ['1','list','node # (optional)','<>','Display Info From Each Node in the Cluster'],
-            ['2','update','key','value','Update the key-value store'],
-            ['3','logs','node # (optional','<>','Show the last 200 logs entries for a given node'],
+            ['2','data','<>','<>','Show the Data Store Across all Nodes'],
+            ['3','update','key','value','Update the key-value store'],
             ['4','crash','node #','<>','Virtually Crash a Given Node in the Cluster'],
             ['5','kill','node # (optional)','<>', 'Completely kill a node or cluster']
         ]
@@ -25,6 +25,20 @@ class InputHelper:
     def handle_list(self):
         self.cluster.print_cluster()
 
+      # Format response if user sends command 'download'
+    def handle_get_data(self):
+
+        for ip in self.cluster.urls:
+
+            rsp = dataHelper.make_request(ip,"getKeyStore")
+
+            keys = ["Endpoint","Term","Commit Index","Data"]
+
+            for key in keys:
+                print key + ":", rsp[key]
+        
+            print
+    
     def handle_logs(self):
         print "Implement this"
 

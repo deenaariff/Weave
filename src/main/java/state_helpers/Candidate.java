@@ -14,6 +14,7 @@ public class Candidate {
 
     public static void HandleHeartBeat(HeartBeat hb, HostInfo host_info) throws IOException {
         if (hb.getTerm() >= host_info.getTerm()) {
+            System.out.println("Leader with Term >= current Term Detected. Becoming Follower");
             host_info.setVote(hb.getRoute());
             host_info.becomeFollower();
         }  else {

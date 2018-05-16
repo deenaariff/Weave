@@ -1,5 +1,7 @@
 package info;
 
+import routing.RoutingTable;
+import rpc.rpc;
 import voting_booth.VotingBooth;
 import routing.Route;
 
@@ -47,6 +49,7 @@ public class HostInfo implements Serializable {
 		this.initialized = false;
         this.becomeFollower();
         this.votes_obtained = 0;
+        this.hasVoted = false;
 	}
 
 	/**
@@ -159,11 +162,13 @@ public class HostInfo implements Serializable {
 	 *
 	 * This method will also trigger the voting booth's startElection() method.
 	 */
-	public void becomeCandidate(VotingBooth vb) {
+	public void becomeCandidate(VotingBooth vb, RoutingTable rt) {
 	    this.state = CANDIDATE_TAG;
 	    this.initialized = false;
 	    vb.startElection();
-        System.out.println("[" + this.state + "]: Entered Candidate State");
+		System.out.println("[" + this.state + "]: Entered Candidate State");
+		System.out.println("[" + this.getState() + "]: Requesting Votes from Followers");
+		rpc.broadcastVotes(rt,this);
 	}
 	
 	/**
@@ -220,6 +225,10 @@ public class HostInfo implements Serializable {
     public void hasBeenInitialized() { this.initialized = true; }
 
     public boolean hasVoted() { return this.votedFor != null; }
+
+    public boolean voteFlag() { return this.hasVoted; };
+
+	public void setVoteFlag(boolean flag) { this.hasVoted = flag; }
 
     public void setVote(Route route) { this.votedFor = route; }
 
