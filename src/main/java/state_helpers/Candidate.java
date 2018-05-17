@@ -12,11 +12,24 @@ import java.io.IOException;
 
 public class Candidate {
 
+    /**
+     * This method handles heartbeats received from a leader while the node is
+     * currently in a candidate state.
+     *
+     * If the heartbeat received is from a legitimate new leader, reset and
+     * become a follower.
+     *
+     * Else, respond to the heartbeat without the acknowledgement.
+     *
+     * @param hb
+     * @param host_info
+     * @throws IOException
+     */
     public static void HandleHeartBeat(HeartBeat hb, HostInfo host_info) throws IOException {
         if (hb.getTerm() >= host_info.getTerm()) {
             host_info.setVote(hb.getRoute());
             host_info.becomeFollower();
-        }  else {
+        } else {
             hb.setReply(false);
 
             Route origin = hb.getRoute();
