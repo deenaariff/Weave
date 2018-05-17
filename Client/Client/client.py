@@ -13,7 +13,7 @@ thread = Thread(target = dh.start_cluster, args = (3, ))
 thread.start()
 
 print "Waiting for Startup..."
-time.sleep(2);
+time.sleep(3);
 print "Initializing Request for Routes"
 
 
@@ -47,6 +47,8 @@ while run_client:
         run_client = False
     elif cmd == 'list':
         ih.handle_list()
+    elif cmd == 'data':
+        ih.handle_get_data()
     elif cmd == 'update':
         ih.handle_update(tokens)
     elif cmd == 'logs':

@@ -55,6 +55,15 @@ public class Ledger {
 		this.keyStore.put(key, value);
 	}
 
+    /**
+     * Get the Key Store as HashMaps
+     *
+     * @return
+     */
+	public Map<String,String> getKeyStore() {
+	    return this.keyStore;
+    }
+
 	/**
 	 *
 	 * @param key

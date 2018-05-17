@@ -54,12 +54,6 @@ public class RaftNode implements Runnable {
                         break;
                     }
                     rpc.broadcastHeartbeatUpdates(this.rt,this.ledger,this.host);
-                } else if(this.host.isCandidate()) {
-                    if(!host.isInitialized()) {
-                        System.out.println("[" + this.host.getState() + "]: Requesting Votes from Followers");
-                        rpc.broadcastVotes(this.rt,this.host);
-                        host.hasBeenInitialized();
-                    }
                 }
             }
         }

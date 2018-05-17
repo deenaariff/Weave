@@ -61,7 +61,6 @@ public class HeartbeatListener implements Runnable {
                 final InputStream yourInputStream = socket.getInputStream();
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final HeartBeat hb = (HeartBeat) inputStream.readObject();
-
                 if(this.host_info.isLeader()) { // Handle HB in leader state
                     Leader.HandleHeartBeat(hb, this.ledger, this.host_info, this.rt);
                 } else if(this.host_info.isCandidate()) { // Handle HB in Candidate state
@@ -73,9 +72,11 @@ public class HeartbeatListener implements Runnable {
                 socket.close();
 
             } catch (SocketTimeoutException s) {
-                if(this.host_info.isFollower()) {
+                if(this.host_info.isFollower() && this.host_info.voteFlag() == false) {
                     logger.log("Interval for Heart Beat Listener Elapsed : (" + this.host_info.getHeartbeatTimeoutInterval() + ")");
-                    host_info.becomeCandidate(this.vb);
+                    host_info.becomeCandidate(this.vb, this.rt);
+                } else {
+                    this.host_info.setVoteFlag(false);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -4,7 +4,6 @@ import state_helpers.Candidate;
 import state_helpers.Follower;
 import Logger.Logger;
 import voting_booth.VotingBooth;
-import rpc.rpc;
 import info.HostInfo;
 import messages.Vote;
 import routing.RoutingTable;

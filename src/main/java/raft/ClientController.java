@@ -34,7 +34,7 @@ public class ClientController {
 
         // Main Page
         get("/", (Request request, Response response) -> {
-            HashMap<String, Object> rsp = new HashMap<String,Object>();
+            HashMap<String, Object> rsp = new HashMap<String, Object>();
 
             rsp.put("IP Address", this.route.getIP());
             rsp.put("Endpoint Port", this.route.getEndpointPort());
@@ -51,7 +51,7 @@ public class ClientController {
 
         // Get All routes
         get("/routes", (Request request, Response response) -> {
-            HashMap<String, Object> rsp = new HashMap<String,Object>();
+            HashMap<String, Object> rsp = new HashMap<String, Object>();
 
             rsp.put("IP Address", this.route.getIP());
             rsp.put("Endpoint Port", this.route.getEndpointPort());
@@ -64,11 +64,11 @@ public class ClientController {
 
         // GET - Update the Key Value Store
         get("update/:key/:value", (Request request, Response response) -> {
-            HashMap<String, Object> rsp = new HashMap<String,Object>();
+            HashMap<String, Object> rsp = new HashMap<String, Object>();
 
             String key = request.params(":key");
             String value = request.params(":value");
-            Log update = new Log(host.getTerm(),ledger.getLastApplied()+1,key,value);
+            Log update = new Log(host.getTerm(), ledger.getLastApplied() + 1, key, value);
             ledger.addToLogs(update);
 
             rsp.put("Total Logs", ledger.getLastApplied());
@@ -79,7 +79,17 @@ public class ClientController {
 
             return JsonUtil.toJson(rsp);
         });
-    }
 
+        get("/getKeyStore", (Request request, Response response) -> {
+            HashMap<String, Object> rsp = new HashMap<String, Object>();
+
+            rsp.put("Endpoint", this.host.getEndPointPort());
+            rsp.put("Term", this.host.getTerm());
+            rsp.put("Commit Index", this.ledger.getCommitIndex());
+            rsp.put("Data", this.ledger.getKeyStore());
+
+            return JsonUtil.toJson(rsp);
+        });
+    }
 
 }
