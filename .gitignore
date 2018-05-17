@@ -1,13 +1,21 @@
+# Meta Information
 .idea/
 .settings
 .classpath
 .project
 Raft.iml
 Distributed-Value-Key-Store.iml
+src/main/java/META-INF/
+src/main/resources/META-INF/
+.DS_Store
+
+# Binaries
 tmp/
 target/
 bin/
 out/
-src/main/java/META-INF/
-src/main/resources/META-INF/
-start.sh
+*.class
+*.pyc
+
+# Notes
+notes.txt
