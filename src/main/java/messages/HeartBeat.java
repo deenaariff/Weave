@@ -32,7 +32,7 @@ public class HeartBeat implements Serializable {
 
 	private List<Log> entries;  // The leader's committed logs
     
-	private Boolean reply;  // TODO: Is this still needed? Technically when a heartbeat is sent back, it is acknowledged
+	private Boolean reply;
 	private static final long serialVersionUID = 1L;  // TODO: Double check what this does
 	private Route route;
 
