@@ -34,7 +34,8 @@ public class HeartBeat implements Serializable {
     
 	private Boolean reply;
 	private static final long serialVersionUID = 1L;  // TODO: Double check what this does
-	private Route route;
+	private Route originRoute;
+	private Route responderRoute;
 
 
     /**
@@ -49,7 +50,7 @@ public class HeartBeat implements Serializable {
 		this.term = hostInfo.getTerm();
 		this.entries = commits;
 		this.reply = null;
-		this.route = hostInfo.getRoute();
+		this.originRoute = hostInfo.getRoute();
         this.prevLogIndex = rt.getNextIndex(destination) - 1;
         this.prevLog = ledger.getLogbyIndex(this.prevLogIndex);
         this.leaderCommitIndex = ledger.getCommitIndex();
@@ -57,11 +58,7 @@ public class HeartBeat implements Serializable {
 
     public static int getHeartbeatCapacity() { return HEARTBEAT_CAPACITY; }
 
-    public Route getRoute() { return route; }
-
-	public void setRoute(Route route) { this.route = route; }
-
-	public int getTerm() { return term; }
+    public int getTerm() { return term; }
 
     public int getLeaderCommitIndex() { return leaderCommitIndex; }
 
@@ -85,4 +82,11 @@ public class HeartBeat implements Serializable {
 
 	public void setReply(boolean response) { this.reply = response; }
 
+    public Route getOriginRoute() { return originRoute; }
+
+    public void setOriginRoute(Route originRoute) { this.originRoute = originRoute; }
+
+    public Route getResponderRoute() { return responderRoute; }
+
+    public void setResponderRoute(Route responderRoute) { this.responderRoute = responderRoute; }
 }

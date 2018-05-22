@@ -45,10 +45,8 @@ public class Leader {
      */
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info, RoutingTable rt) {
         Logger logger = new Logger(host_info);
-
-        if(hb.hasReplied() && host_info.matchRoute((hb.getRoute()))) {  // Heartbeat is acknowledged and is from me (From a Follower)
-
-            logger.log("Received Response From Follower " + hb.getRoute().getIP() + ":" + hb.getRoute().getHeartbeatPort());
+        if (hb.hasReplied() && host_info.matchRoute((hb.getOriginRoute()))) {  // Heartbeat is acknowledged and is from me (From a Follower)
+            logger.log("Received Response From Follower " + hb.getResponderRoute().getIP() + ":" + hb.getResponderRoute().getHeartbeatPort());
             if (hb.getReply()) { // Checks if Follower Response is True
                 logger.log("Follower Replied True!");
                 ledger.receiveConfirmation(hb,rt); // this should update the commitMap
@@ -56,7 +54,7 @@ public class Leader {
                 logger.log("Follower Replied False!");
                 host_info.becomeFollower();
             }
-        } else if (!hb.hasReplied() && host_info.matchRoute((hb.getRoute()))) {  // Heartbeat is not acknowledged and is from me (From a Follower)
+        } else if (!hb.hasReplied() && host_info.matchRoute((hb.getOriginRoute()))) {  // Heartbeat is not acknowledged and is from me (From a Follower)
             // Follower is not synced (prevLog does not match)
 
             // rt.updateServerIndex(__, -1);  // Decrement the nextIndex value for this route
