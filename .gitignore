@@ -16,6 +16,10 @@ bin/
 out/
 *.class
 *.pyc
+*.jar
+
+# Logs
+*.txt
 
 # Notes
 notes.txt

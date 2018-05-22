@@ -1,63 +1,486 @@
 [FOLLOWER]: Entered Follower State
-[FOLLOWER (0) | 1527030517101 ]:IP Address: localhost
-[FOLLOWER (0) | 1527030517101 ]:Listening on PORT: 8080
-[FOLLOWER (0) | 1527030517101 ]:HeartBeat PORT: 8081
-[FOLLOWER (0) | 1527030517101 ]:Voting PORT: 8082
-[FOLLOWER (0) | 1527030517102 ]:Starting Weave - A Learning Environment for the RAFT Consensus Algorithm
-[Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @386ms to org.eclipse.jetty.util.log.Slf4jLog
-[FOLLOWER (0) | 1527030517373 ]:Heartbeat Timeout Interval (1598ms )
+[FOLLOWER (0) | 1527032782436 ]:IP Address: localhost
+[FOLLOWER (0) | 1527032782436 ]:Listening on PORT: 8080
+[FOLLOWER (0) | 1527032782436 ]:HeartBeat PORT: 8081
+[FOLLOWER (0) | 1527032782436 ]:Voting PORT: 8082
+[FOLLOWER (0) | 1527032782436 ]:Starting Weave - A Learning Environment for the RAFT Consensus Algorithm
+[Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @358ms to org.eclipse.jetty.util.log.Slf4jLog
+[FOLLOWER (0) | 1527032782666 ]:Heartbeat Timeout Interval (384ms )
 [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - == Spark has ignited ...
 [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - >> Listening on 0.0.0.0:8080
 [Thread-0] INFO org.eclipse.jetty.server.Server - jetty-9.4.z-SNAPSHOT, build timestamp: 2017-11-21T13:27:37-08:00, git hash: 82b8fb23f757335bb3329d540ce37a2a2615f0a8
 [Thread-0] INFO org.eclipse.jetty.server.session - DefaultSessionIdManager workerName=node0
 [Thread-0] INFO org.eclipse.jetty.server.session - No SessionScavenger set, using defaults
 [Thread-0] INFO org.eclipse.jetty.server.session - Scavenging every 600000ms
-[Thread-0] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@8dd2426{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
-[Thread-0] INFO org.eclipse.jetty.server.Server - Started @644ms
-[FOLLOWER (0) | 1527030518544 ]:Received Request Vote w/ Origin : localhost:9000
-[FOLLOWER (0) | 1527030518545 ]:Returning vote - localhost:9002
-[FOLLOWER (0) | 1527030518650 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030518708 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030518758 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030518812 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030518865 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030518918 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030518972 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519027 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519084 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519140 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519196 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519254 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519308 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519364 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519421 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519474 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519531 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519586 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519641 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519697 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519754 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519811 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519865 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519922 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030519979 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030520034 ]:PrevLogTerm in HeartBeat Matches
-[FOLLOWER (0) | 1527030520091 ]:PrevLogTerm in HeartBeat Matches
-java.net.ConnectException: Operation timed out (Connection timed out)
-	at java.net.PlainSocketImpl.socketConnect(Native Method)
-	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
-	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
-	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
-	at java.net.Socket.connect(Socket.java:589)
-	at java.net.Socket.connect(Socket.java:538)
-	at java.net.Socket.<init>(Socket.java:434)
-	at java.net.Socket.<init>(Socket.java:211)
-	at rpc.rpc.sendHeartbeat(rpc.java:85)
-	at rpc.rpc.returnHeartbeat(rpc.java:114)
-	at state_helpers.Follower.HandleHeartBeat(Follower.java:56)
-	at rpc_heartbeat.HeartbeatListener.run(HeartbeatListener.java:70)
-	at java.lang.Thread.run(Thread.java:745)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
+[Thread-0] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@2c7fafe3{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+[Thread-0] INFO org.eclipse.jetty.server.Server - Started @609ms
+[FOLLOWER (0) | 1527032783054 ]:Interval for Heart Beat Listener Elapsed : (384)
+[CANDIDATE]: Entered Candidate State
+[CANDIDATE]: Requesting Votes from Followers
+[CANDIDATE]: Requesting Votes from 3 Hosts
+--------localhost:8090--------------
+--------localhost:9000--------------
+[CANDIDATE (1) | 1527032783095 ]:Received Acknowledged Vote w/ Origin : localhost:8080
+[CANDIDATE (1) | 1527032783101 ]:Votes received: 2
+[CANDIDATE (1) | 1527032783101 ]:Election Won, becoming Leader
+[CANDIDATE (1) | 1527032783101 ]:[CANDIDATE]: Received 2 votes
+[CANDIDATE (1) | 1527032783101 ]:[CANDIDATE]: Received Vote From: Node 1 (localhost|8080|8081|8082)
+[CANDIDATE (1) | 1527032783101 ]:[CANDIDATE]: Received Vote From: Node 2 (localhost|8090|8091|8092)
+[LEADER]: Entered Leader State
+[LEADER (1) | 1527032783104 ]:Received Acknowledged Vote w/ Origin : localhost:8080
+[LEADER]: Last Index Committed: 0
+[LEADER]: Logs in Ledger: 0
+[LEADER]: Broadcasting Messages to Followers 
+[LEADER (1) | 1527032783700 ]:Received Request Vote w/ Origin : localhost:8090
+[LEADER (1) | 1527032783706 ]:Received Request Vote w/ Origin : localhost:8090
+[LEADER]: Sending Updates to localhost:8091
+[LEADER]: Sending Updates to localhost:9001
+[LEADER]: Last Index Committed: 0
+[LEADER]: Logs in Ledger: 0
+[LEADER]: Broadcasting Messages to Followers 
+[LEADER (1) | 1527032783717 ]:Received Request Vote w/ Origin : localhost:8090
+[LEADER (1) | 1527032783723 ]:Received Heartbeat From Another Follower with Greater Term
+[FOLLOWER]: Entered Follower State
+[FOLLOWER (1) | 1527032783729 ]:Received Request Vote w/ Origin : localhost:8090
+[FOLLOWER (1) | 1527032783729 ]:Returning vote - localhost:8092
+[FOLLOWER]: Sending Updates to localhost:8091
+[FOLLOWER]: Sending Updates to localhost:9001
+[FOLLOWER (1) | 1527032783788 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032783843 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032783900 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032783957 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784017 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784077 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784130 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784185 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784237 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784295 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784350 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784405 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784464 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784521 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784574 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784630 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784685 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784739 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784795 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784849 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784903 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032784959 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785012 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785065 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785120 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785180 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785232 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785288 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785340 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785393 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785448 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785500 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785556 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785611 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785663 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785717 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785770 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785823 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785875 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785926 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032785981 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786035 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786090 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786144 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786197 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786250 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786305 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786359 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786413 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786469 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786522 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786575 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786629 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786682 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786734 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786791 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786846 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786902 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032786954 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787007 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787059 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787114 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787165 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787221 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787277 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787328 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787381 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787436 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787489 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787544 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787597 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787650 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787705 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787759 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787810 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787863 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787918 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032787974 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788026 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788079 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788134 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788189 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788242 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788297 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788352 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788407 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788461 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788515 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788571 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788625 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788680 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788734 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788788 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788842 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788898 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032788952 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789004 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789061 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789114 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789166 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789220 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789273 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789328 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789384 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789439 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789493 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789547 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789601 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789654 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789709 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789763 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789817 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789872 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789926 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032789980 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790034 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790086 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790142 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790199 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790253 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790309 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790364 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790420 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790475 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790530 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790586 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790640 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790694 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790750 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790802 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790855 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790910 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032790964 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791019 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791071 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791126 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791179 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791230 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791283 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791338 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791392 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791445 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791499 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791552 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791607 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791663 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791716 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791772 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791826 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791881 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791936 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032791990 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792046 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792102 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792153 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792209 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792260 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792312 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792367 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792421 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792474 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792529 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792582 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792636 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792692 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792744 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792800 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792856 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792908 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032792962 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793014 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793069 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793121 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793174 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793227 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793282 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793338 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793392 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793444 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793495 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793548 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793605 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793659 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793712 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793767 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793821 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793872 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793927 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032793982 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794033 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794086 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794142 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794197 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794252 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794304 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794359 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794412 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794463 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794518 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794571 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794622 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794677 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794732 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794784 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794839 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794892 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794943 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032794997 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795049 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795102 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795155 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795209 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795260 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795313 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795369 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795421 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795478 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795533 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795587 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795642 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795697 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795751 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795803 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795859 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795915 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032795970 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796026 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796078 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796132 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796187 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796243 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796295 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796350 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796404 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796458 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796512 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796567 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796622 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796678 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796732 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796783 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796839 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796893 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796946 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032796998 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797052 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797109 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797166 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797220 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797273 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797328 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797380 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797433 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797484 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797543 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797597 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797650 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797706 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797762 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797817 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797871 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797923 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032797978 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798029 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798084 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798138 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798194 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798250 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798302 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798354 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798409 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798463 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798515 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798569 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798623 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798678 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798732 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798786 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798839 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798893 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798944 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032798996 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799052 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799107 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799158 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799214 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799266 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799322 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799374 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799428 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799485 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799540 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799595 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799646 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799698 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799752 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799803 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799859 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799915 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032799967 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800018 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800074 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800131 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800184 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800238 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800293 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800347 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800402 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800454 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800506 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800557 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800609 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800660 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800714 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800767 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800819 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800871 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800926 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032800980 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801033 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801087 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801143 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801196 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801249 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801303 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801359 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801412 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801467 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801521 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801572 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801629 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801684 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801736 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801789 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801842 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801894 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801946 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032801999 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802067 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802121 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802172 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802229 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802284 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802339 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802395 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802447 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802501 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802554 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802609 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802662 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802713 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802769 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802820 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802876 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802931 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032802983 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803038 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803092 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803146 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803199 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803252 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803306 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803362 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803417 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803472 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803527 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803581 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803635 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803690 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803745 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803802 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803853 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803909 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032803966 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804020 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804077 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804130 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804186 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804238 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804291 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804342 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804395 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804448 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804501 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804555 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804607 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804662 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804715 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804767 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804823 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804879 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804931 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032804986 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805041 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805094 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805148 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805202 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805253 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805306 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805361 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805415 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805468 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805521 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805573 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805626 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805681 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805733 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805788 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805843 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805898 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032805954 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806009 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806063 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806119 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806173 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806225 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806277 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806331 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806385 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806439 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806491 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806542 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806594 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806646 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806701 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806752 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806805 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806859 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806914 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (1) | 1527032806973 ]:PrevLogTerm in HeartBeat Matches
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed
+Retry Heartbeat Failed

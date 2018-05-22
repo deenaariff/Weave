@@ -11,6 +11,7 @@ import rpc.rpc;
 import voting_booth.VotingBooth;
 
 import java.io.IOException;
+import java.net.ConnectException;
 
 public class Follower {
 
@@ -53,7 +54,19 @@ public class Follower {
                 ledger.syncCommitIndex(hb.getLeaderCommitIndex());
             }
 
-            rpc.returnHeartbeat(hb, origin);  // Return heartbeat to the destination
+            RetryReturnHeartbeat(hb, origin);
+        }
+    }
+
+    private static void RetryReturnHeartbeat(HeartBeat hb, Route origin) throws IOException {
+        for (int i = 0; i < 3; i++) {
+            try {
+                rpc.returnHeartbeat(hb, origin);  // Return heartbeat to the destination
+                break;
+            } catch (ConnectException e) {
+                System.out.println("Retry Heartbeat Failed");
+                // Do nothing
+            }
         }
     }
 
@@ -82,7 +95,25 @@ public class Follower {
             logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
         }
 
-        rpc.returnVote(vote);  // Send vote back
-
+        RetryVote(vote);
     }
+
+    /**
+     *
+     *
+     * @param vote
+     * @throws IOException
+     */
+    private static void RetryVote(Vote vote) throws IOException {
+        for (int i = 0; i < 3; i++) {
+            try {
+                rpc.returnVote(vote);  // Send vote back
+                break;
+            } catch (ConnectException e) {
+                System.out.println("Retry Vote Failed");
+                // Do nothing
+            }
+        }
+    }
+
 }
