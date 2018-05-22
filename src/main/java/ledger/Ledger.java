@@ -215,7 +215,11 @@ public class Ledger {
      * @return
      */
     public Log getLastLog() {
-        return logs.get(logs.size()-1);
+        if(logs.size() > 0) {
+			return logs.get(logs.size()-1);
+		} else {
+        	return null;
+		}
     }
 
     /**
@@ -226,6 +230,11 @@ public class Ledger {
      * @return
      */
     public boolean validateVote(Vote vote) {
+
+    	if(logs.size() == 0) {
+    		return true;
+		}
+
         Log my_last_log = getLastLog();
         if (my_last_log.getTerm() < vote.getLastLogTerm()) {
             return true;

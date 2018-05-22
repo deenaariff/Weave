@@ -37,15 +37,22 @@ public class Vote implements Serializable {
 	 * 
 	 * @param host The host of the origin that is requesting the Vote.
 	 */
-	public Vote(HostInfo host, Log last_log) {
+	public Vote(HostInfo host, Ledger ledger) {
 		this.isVoteCast = false;
 		this.ip = host.getHostName();
 		this.voting_port = host.getVotingPort();
 		this.endpoint_port = host.getEndPointPort();
 		this.route = host.getRoute();
 		this.term = host.getTerm();
-		this.last_log_index = last_log.getIndex();
-		this.last_log_term = last_log.getTerm();
+		Log last_log = ledger.getLastLog();
+
+		if(last_log == null) {
+			this.last_log_index = 0;
+			this.last_log_term = host.getTerm();
+		} else {
+			this.last_log_index = last_log.getIndex();
+			this.last_log_term = last_log.getTerm();
+		}
 	}
 
     public Route getRoute() {

@@ -87,7 +87,7 @@ public class HostInfo implements Serializable {
 	    vb.startElection();
 		System.out.println("[" + this.state + "]: Entered Candidate State");
 		System.out.println("[" + this.getState() + "]: Requesting Votes from Followers");
-		rpc.broadcastVotes(rt,this, ledger.getLastLog());
+		rpc.broadcastVotes(rt,this, ledger);
 	}
 
 	/**

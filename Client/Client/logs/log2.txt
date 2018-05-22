@@ -1,64 +1,62 @@
 [FOLLOWER]: Entered Follower State
-[FOLLOWER (0) | 1527027635826 ]:IP Address: localhost
-[FOLLOWER (0) | 1527027635826 ]:Listening on PORT: 8090
-[FOLLOWER (0) | 1527027635826 ]:HeartBeat PORT: 8091
-[FOLLOWER (0) | 1527027635826 ]:Voting PORT: 8092
-[FOLLOWER (0) | 1527027635826 ]:Starting Weave - A Learning Environment for the RAFT Consensus Algorithm
-[Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @740ms to org.eclipse.jetty.util.log.Slf4jLog
-java.net.BindException: Address already in use
-	at java.net.PlainSocketImpl.socketBind(Native Method)
-	at java.net.AbstractPlainSocketImpl.bind(AbstractPlainSocketImpl.java:387)
-	at java.net.ServerSocket.bind(ServerSocket.java:375)
-	at java.net.ServerSocket.<init>(ServerSocket.java:237)
-	at java.net.ServerSocket.<init>(ServerSocket.java:128)
-	at rpc_vote.VotingListener.run(VotingListener.java:38)
-	at java.lang.Thread.run(Thread.java:745)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-java.net.BindException: Address already in use
-	at java.net.PlainSocketImpl.socketBind(Native Method)
-	at java.net.AbstractPlainSocketImpl.bind(AbstractPlainSocketImpl.java:387)
-	at java.net.ServerSocket.bind(ServerSocket.java:375)
-	at java.net.ServerSocket.<init>(ServerSocket.java:237)
-	at java.net.ServerSocket.<init>(ServerSocket.java:128)
-	at rpc_heartbeat.HeartbeatListener.run(HeartbeatListener.java:49)
-	at java.lang.Thread.run(Thread.java:745)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-Exception in thread "pool-1-thread-2" java.lang.NullPointerException
-	at rpc_vote.VotingListener.run(VotingListener.java:53)
-	at java.lang.Thread.run(Thread.java:745)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-Exception in thread "pool-1-thread-1" java.lang.NullPointerException
-	at rpc_heartbeat.HeartbeatListener.run(HeartbeatListener.java:59)
-	at java.lang.Thread.run(Thread.java:745)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
+[FOLLOWER (0) | 1527030517113 ]:IP Address: localhost
+[FOLLOWER (0) | 1527030517113 ]:Listening on PORT: 8090
+[FOLLOWER (0) | 1527030517113 ]:HeartBeat PORT: 8091
+[FOLLOWER (0) | 1527030517113 ]:Voting PORT: 8092
+[FOLLOWER (0) | 1527030517113 ]:Starting Weave - A Learning Environment for the RAFT Consensus Algorithm
+[FOLLOWER (0) | 1527030517317 ]:Heartbeat Timeout Interval (1609ms )
+[Thread-0] INFO org.eclipse.jetty.util.log - Logging initialized @392ms to org.eclipse.jetty.util.log.Slf4jLog
 [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - == Spark has ignited ...
 [Thread-0] INFO spark.embeddedserver.jetty.EmbeddedJettyServer - >> Listening on 0.0.0.0:8090
 [Thread-0] INFO org.eclipse.jetty.server.Server - jetty-9.4.z-SNAPSHOT, build timestamp: 2017-11-21T13:27:37-08:00, git hash: 82b8fb23f757335bb3329d540ce37a2a2615f0a8
 [Thread-0] INFO org.eclipse.jetty.server.session - DefaultSessionIdManager workerName=node0
 [Thread-0] INFO org.eclipse.jetty.server.session - No SessionScavenger set, using defaults
-[Thread-0] INFO org.eclipse.jetty.server.session - Scavenging every 660000ms
-[Thread-0] ERROR spark.Spark - ignite failed
-java.net.BindException: Address already in use
-	at sun.nio.ch.Net.bind0(Native Method)
-	at sun.nio.ch.Net.bind(Net.java:433)
-	at sun.nio.ch.Net.bind(Net.java:425)
-	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223)
-	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74)
-	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:334)
-	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:302)
-	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80)
-	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:238)
-	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68)
-	at org.eclipse.jetty.server.Server.doStart(Server.java:397)
-	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68)
-	at spark.embeddedserver.jetty.EmbeddedJettyServer.ignite(EmbeddedJettyServer.java:149)
-	at spark.Service.lambda$init$2(Service.java:549)
+[Thread-0] INFO org.eclipse.jetty.server.session - Scavenging every 600000ms
+[Thread-0] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@1c8e1a65{HTTP/1.1,[http/1.1]}{0.0.0.0:8090}
+[Thread-0] INFO org.eclipse.jetty.server.Server - Started @641ms
+[FOLLOWER (0) | 1527030518560 ]:Received Request Vote w/ Origin : localhost:9000
+[FOLLOWER (0) | 1527030518561 ]:Returning vote - localhost:9002
+[FOLLOWER (0) | 1527030518654 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030518708 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030518759 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030518814 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030518869 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030518921 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030518974 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519030 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519086 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519142 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519198 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519254 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519309 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519366 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519423 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519476 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519533 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519587 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519643 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519699 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519755 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519813 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519867 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519923 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030519980 ]:PrevLogTerm in HeartBeat Matches
+[FOLLOWER (0) | 1527030520036 ]:PrevLogTerm in HeartBeat Matches
+java.net.ConnectException: Operation timed out (Connection timed out)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at rpc.rpc.sendHeartbeat(rpc.java:85)
+	at rpc.rpc.returnHeartbeat(rpc.java:114)
+	at state_helpers.Follower.HandleHeartBeat(Follower.java:56)
+	at rpc_heartbeat.HeartbeatListener.run(HeartbeatListener.java:70)
+	at java.lang.Thread.run(Thread.java:745)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
 	at java.lang.Thread.run(Thread.java:745)

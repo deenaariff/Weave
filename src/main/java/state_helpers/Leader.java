@@ -56,15 +56,7 @@ public class Leader {
             }
         } else if (!hb.hasReplied() && host_info.matchRoute((hb.getOriginRoute()))) {  // Heartbeat is not acknowledged and is from me (From a Follower)
             // Follower is not synced (prevLog does not match)
-
-            // rt.updateServerIndex(__, -1);  // Decrement the nextIndex value for this route
-
-            // In the next heartbeat, we will check the value of the decremented index in the list of logs
-
-            // Once we finally match values and indices, we should update the follower's nextIndex and matchIndex
-
-            // Once those are updated, heartbeats will be acknowledged and updated properly
-
+            rt.updateServerIndex(hb.getResponderRoute(), -1);  // Decrement the nextIndex value for this route
         } else if (hb.getTerm() > host_info.getTerm()) { // Received Response from another leader
             logger.log("Received Heartbeat From Another Follower with Greater Term");
             host_info.becomeFollower();
