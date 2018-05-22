@@ -1,6 +1,7 @@
 package ledger;
 
 import messages.HeartBeat;
+import messages.Vote;
 import routing.Route;
 import routing.RoutingTable;
 
@@ -27,20 +28,14 @@ public class Ledger {
 	/** Volatile to all states **/
 	private int commitIndex;
 	private int lastApplied;
-	private HashMap<HeartBeat,Integer> commitMap;
-
-	/** Volatile for leader **/
-	private List<Log> updateQueue; // a Queue storing all new Logs entries between Heartbeat broadcasts
 
 	/**
 	 * The Constructor for the Ledger Class
 	 */
 	public Ledger() {
-		this.keyStore = new HashMap<String,String>();
-		this.logs = new ArrayList<Log>();
-		this.appendMatch = new ArrayList<Integer>();
-		this.updateQueue = new ArrayList<Log>();
-		this.commitMap = new HashMap<HeartBeat,Integer>();
+		this.keyStore = new HashMap<>();
+		this.logs = new ArrayList<>();
+		this.appendMatch = new ArrayList<>();
 		this.commitIndex = 0;
 		this.lastApplied = 0;
 	}
@@ -52,17 +47,8 @@ public class Ledger {
 	 * @param value The value mapped to the lookup key of the data being entered.
 	 */
 	private void updateKeyStore(String key, String value) {
-		this.keyStore.put(key, value);
+	    this.keyStore.put(key, value);
 	}
-
-    /**
-     * Get the Key Store as HashMaps
-     *
-     * @return
-     */
-	public Map<String,String> getKeyStore() {
-	    return this.keyStore;
-    }
 
 	/**
 	 *
@@ -107,7 +93,7 @@ public class Ledger {
 	}
 
 	/**
-	 * Receive a Heartbeat Message from a Follower and update Ledger accordingly.
+	 * Receive a 'True' Heartbeat Message from a Follower and update Ledger accordingly.
 	 * Will Update nextIndex[] and matchIndex[] in the Routing table based off number of entries in hb.
 	 * Will update the commitIndex if a majority of servers have committed at a given index
 	 * by calling updateCommitIndex()
@@ -145,20 +131,6 @@ public class Ledger {
 		this.commitIndex = Math.max(this.commitIndex, new_index);
 	}
 
-	/**
-	 * A method to return all new logs entries thart have been queued in updateQueue List.
-	 * Clears all entries from the updateQueue List.
-	 *
-	 * @return All logs that are stored in the member updateQueue Object.
-	 */
-	public List<Log> getUpdates() {
-		List<Log> updates = new ArrayList<Log>();
-		for(Log log : this.updateQueue) {
-			updates.add(log);
-		}
-		this.updateQueue.clear();  // clear entries
-		return updates;
-	}
 
 	/**
 	 * Confirms whether a Log at a given index matches the equivalent Log in the ledger
@@ -224,28 +196,49 @@ public class Ledger {
 		}
 	}
 
-	public int getCommitIndex() { return commitIndex; }
+    /**
+     * Get the Log at a Given Index
+     *
+     * @param index
+     * @return
+     */
+    public Log getLogbyIndex(int index) {
+        if(index < 0) {
+            return null;
+        }
+        return logs.get(index);
+    }
 
+    /**
+     * Get the last log in the ledger
+     *
+     * @return
+     */
+    public Log getLastLog() {
+        return logs.get(logs.size()-1);
+    }
+
+    /**
+     * Method for follower to validate Candidate's vote
+     * If Candidate's log is at least as up to date as receiver's log grant vote
+     *
+     * @param vote
+     * @return
+     */
+    public boolean validateVote(Vote vote) {
+        Log my_last_log = getLastLog();
+        if (my_last_log.getTerm() < vote.getLastLogTerm()) {
+            return true;
+        } else if (my_last_log.getTerm() == vote.getLastLogTerm()) {
+            return my_last_log.getIndex() <= vote.getLastLogIndex();
+        }
+        return false;
+    }
+
+
+    /** Standard Getters and Setters **/
+    public Map<String,String> getKeyStore() { return this.keyStore; }
+	public int getCommitIndex() { return commitIndex; }
 	public int getLastApplied() { return lastApplied; }
 
-    public Log getLogbyIndex(int index) {
-		if(index < 0) {
-			return null;
-		}
-		return logs.get(index);
-	}
-
-
-	/**
-	 * Tests for the Ledger class.
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-//		Ledger ledger = new Ledger();
-//		ledger.commitToLogs(new Log(1,2,"password","goats"));
-//		ledger.commitToLogs(new Log(2,3,"fire","hot"));
-//		ledger.printLogs();
-	}
-	
 }

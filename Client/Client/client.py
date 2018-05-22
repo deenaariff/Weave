@@ -9,22 +9,22 @@ import sys,time
 run_client = True  # Run Client in Loop Until User Quits
 
 print "Initializing Cluster..."
-thread = Thread(target = dh.start_cluster, args = (3, ))
-thread.start()
 
-print "Waiting for Startup..."
-time.sleep(3);
-print "Initializing Request for Routes"
+cluster = Cluster(3)
 
+print "Giving Time for Processes to Startup..."
+time.sleep(3)
+
+print "Initializing Request for Routes..."
 
 ip = sys.argv[1]
 port = sys.argv[2]
-init_url = "http://" + ip + ":" + port
 
+init_url = "http://" + ip + ":" + port
 rsp = dh.make_request(init_url, "routes")
 routes = rsp['Routes']
 
-cluster = Cluster(routes)
+cluster.initialize_routes(routes)
 ih = IH(cluster)
 
 while run_client:
@@ -59,5 +59,5 @@ while run_client:
         print um.INVALID_CMD
 
 
-thread.join()
+cluster.kill_cluster()
 

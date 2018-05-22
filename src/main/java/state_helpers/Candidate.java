@@ -2,6 +2,7 @@ package state_helpers;
 
 import info.HostInfo;
 import messages.Vote;
+import routing.RoutingTable;
 import voting_booth.VotingBooth;
 import messages.HeartBeat;
 import routing.Route;
@@ -19,7 +20,6 @@ public class Candidate {
             host_info.becomeFollower();
         }  else {
             hb.setReply(false);
-
             Route origin = hb.getRoute();
 
             // update the origin info for the heartbeat on response
@@ -43,38 +43,26 @@ public class Candidate {
      * @param vb voting booth which maintains election functionality
      * @param host_info info of the current host
      */
-    public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info) {
+    public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, RoutingTable rt) {
         Logger logger = new Logger(host_info);
 
         if (host_info.matchRoute(vote.getRoute())) {  // Received response to our RequestVote RPC
 
             if (vote.getVoteStatus()) {  // Somebody voted for us!
-                vb.incrementVotes();
-            }
+                vb.incrementVotes(vote.getResponder());
 
-            if (vb.checkIfWonElection()) {  // Have we received majority votes yet?
-                logger.log("[" + host_info.getState() + "]: Election Won, becoming Leader");
-                host_info.becomeLeader();
-            }
-
-            if (vb.isElectionOver()) {  // Check election timeout
-                logger.log("[" + host_info.getState() + "]: Election Lost, restarting election");
-                vb.startElection();
+                if (vb.checkIfWonElection()) {  // Have we received majority votes yet?
+                    vb.printWon();
+                    host_info.becomeLeader();
+                }
             }
 
         } else {  // Other nodes are requesting a vote
 
-            if(true) {
-                // TODO: move returnVote to non-state_helpers dependent class
-
-                try {
-                    rpc.returnVote(vote);
-                } catch (java.io.IOException e) {
-                    System.out.println(e);
-                }
-
-            } else {
-                // handle term based cased
+            try {
+                rpc.returnVote(vote);
+            } catch (java.io.IOException e) {
+                System.out.println(e);
             }
         }
     }

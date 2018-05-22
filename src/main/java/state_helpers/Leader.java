@@ -42,7 +42,7 @@ public class Leader {
      * @param rt
      */
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info, RoutingTable rt) {
-         Logger logger = new Logger(host_info);
+        Logger logger = new Logger(host_info);
         if(hb.hasReplied() && host_info.matchRoute((hb.getRoute()))) {  // Heartbeat is acknowledged and is from me (From a Follower)
             logger.log("Received Response From Follower " + hb.getRoute().getIP() + ":" + hb.getRoute().getHeartbeatPort());
             if(hb.getReply()) { // Checks if Follower Response is True

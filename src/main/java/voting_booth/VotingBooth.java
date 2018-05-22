@@ -2,7 +2,11 @@ package voting_booth;
 
 import Logger.Logger;
 import info.HostInfo;
+import routing.Route;
 import routing.RoutingTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VotingBooth {
 
@@ -13,9 +17,10 @@ public class VotingBooth {
     private Logger logger;
 
     private final int ELECTION_TIMEOUT_MIN = 150;
-    private final int ELECTION_TIMEOUT_MAX = 300;
+    private final int ELECTION_TIMEOUT_MAX = 2000;
 
     private RoutingTable rt;
+    private List<Integer> voters;
 
     public VotingBooth(RoutingTable rt, HostInfo host_info, Logger logger) {
         this.rt = rt;
@@ -31,8 +36,9 @@ public class VotingBooth {
         return this.votes_obtained;
     }
 
-    public void incrementVotes() {
+    public void incrementVotes(int voter_id) {
         this.votes_obtained += 1;
+        this.voters.add(voter_id);
     }
 
     /**
@@ -47,6 +53,8 @@ public class VotingBooth {
         this.host_info.incrementTerm();
         this.election_interval = (ELECTION_TIMEOUT_MIN + (int)(Math.random() * ELECTION_TIMEOUT_MAX) * 1000);
         this.start_election = System.nanoTime();
+        this.voters = new ArrayList<>();
+        this.voters.add(this.host_info.getId());
         this.votes_obtained = 1;
     }
 
@@ -75,7 +83,27 @@ public class VotingBooth {
         int totalTableLength = this.rt.getTable().size();
         this.host_info.setVotesObtained(this.votes_obtained);
         this.logger.log("Votes received: " + this.votes_obtained);
-        return (this.votes_obtained >= totalTableLength/2 + 1);
+        boolean result = (this.votes_obtained >= totalTableLength/2 + 1);
+        return result;
     }
+
+    public void printWon() {
+        logger.log("Election Won, becoming Leader");
+        printVotesObtained();
+    }
+
+    public void printLost() {
+        logger.log("Election Lost, restarting election");
+        printVotesObtained();
+    }
+
+    public void printVotesObtained() {
+        logger.log("[" + host_info.getState() + "]: Received " + this.votes_obtained + " votes");
+        for (Integer voter : this.voters) {
+            Route route = rt.getRouteById(voter);
+            logger.log("[" + host_info.getState() + "]: Received Vote From: Node " + voter + " " + route.printInfo());
+        }
+    }
+
 
 }

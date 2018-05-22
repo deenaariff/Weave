@@ -7,6 +7,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,11 +21,9 @@ public class RoutingTable {
 	private List<Route> table;
 	private HashMap<Integer,Route> id_map;
 
-	/* Only Necessary for Leaders */
+	// Data Structures used by Leader
     private HashMap<Route,Integer> matchIndex;
     private HashMap<Route,Integer> nextIndex;
-
-    private Ledger ledger;
 
     /**
      * Constructor for Routing Table
@@ -35,8 +35,7 @@ public class RoutingTable {
         this.table = new ArrayList<Route>();
         this.matchIndex = new HashMap<Route, Integer>();
         this.nextIndex = new HashMap<Route,Integer>();
-        this.ledger = ledger;
-        this.configToTable(configFile);
+        this.configToTable(configFile); // this will initialize next, index in the routing table for us
     }
 
     /**
@@ -81,15 +80,6 @@ public class RoutingTable {
     }
 
     /**
-     * This method returns the number of nodes it would take to specify the
-     * majority of the cluster.
-     * @return
-     */
-	public Integer getMajority() {
-	    return (int) Math.ceil(this.table.size() / 2);
-    }
-
-    /**
      * Add a new entry to the RoutingTable
      * @param ip
      * @param heartbeat_port
@@ -114,13 +104,14 @@ public class RoutingTable {
 
     /**
      * Construct the Routing Table Given the Appropriate xml file
+     *
      * @param configFile
      * @return
      */
     private void configToTable(String configFile) {
 
         try {
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(configFile);
+            InputStream is = new FileInputStream(new File(configFile)); // Grab from absolute path of config file
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(is);
@@ -134,18 +125,14 @@ public class RoutingTable {
 
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
-
-                    // Initialize new_route info and assign the route to its id
-                    Integer id = initializeRouteFromElement(eElement, new_route);
+                    Integer id = initializeRouteFromElement(eElement, new_route);  // Initialize new_route info and assign the route to its id
                     this.id_map.put(id,new_route);
                 }
 
-                // Intialize nextIndex and match index
-                this.matchIndex.put(new_route,0);
-                this.nextIndex.put(new_route,0);
+                this.matchIndex.put(new_route,0); // initialize match index to 0
+                this.nextIndex.put(new_route,0); // initialize nextIndex to 0
 
-                // Add to the routing table
-                this.table.add(new_route);
+                this.table.add(new_route); // Add to the routing table
             }
 
         } catch (FileNotFoundException e) {
@@ -172,12 +159,17 @@ public class RoutingTable {
         return id;
     }
 
-    public List<Route> getTable() {
-        return this.table;
+    /**
+     * This method returns the number of nodes it would take to specify the
+     * majority of the cluster.
+     * @return
+     */
+    public Integer getMajority() {
+        return (int) Math.ceil(this.table.size() / 2);
     }
 
-
-
+    /** Standard Getters and Setters */
+    public List<Route> getTable() { return this.table; }
 
 }
 

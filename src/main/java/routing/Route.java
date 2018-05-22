@@ -20,6 +20,10 @@ public class Route implements Serializable {
         this.voting_port = voting_port;
     }
 
+    public String printInfo() {
+        return "(" + IP + "|" + endpoint_port + "|" + heartbeat_port + "|" + voting_port + ")";
+    }
+
     public int getId() {
         return id;
     }
