@@ -3,6 +3,8 @@ package messages;
 import java.io.Serializable;
 
 import info.HostInfo;
+import ledger.Ledger;
+import ledger.Log;
 import routing.Route;
 
 /**
@@ -26,19 +28,24 @@ public class Vote implements Serializable {
 	private int endpoint_port;
     private Route route;
     private int term;
+    private int responder;
+    private int last_log_index;
+    private int last_log_term;
 	
 	/**
 	 * The Constructor for the Vote Class.
 	 * 
 	 * @param host The host of the origin that is requesting the Vote.
 	 */
-	public Vote(HostInfo host) {
+	public Vote(HostInfo host, Log last_log) {
 		this.isVoteCast = false;
 		this.ip = host.getHostName();
 		this.voting_port = host.getVotingPort();
 		this.endpoint_port = host.getEndPointPort();
 		this.route = host.getRoute();
 		this.term = host.getTerm();
+		this.last_log_index = last_log.getIndex();
+		this.last_log_term = last_log.getTerm();
 	}
 
     public Route getRoute() {
@@ -48,9 +55,19 @@ public class Vote implements Serializable {
     /**
 	 * The method a rpc uses to cast a vote for a Candidate.
 	 */
-	public void castVote() {
+	public void castVote(int id) {
 		this.isVoteCast = true;
+		this.responder = id;
 	}
+
+	public int getLastLogIndex() { return this.last_log_index; }
+
+	public int getLastLogTerm() { return this.last_log_term; }
+
+	public int getResponder() {
+		return this.responder;
+	}
+
 	
 	/**
 	 * This return's the vote status of the Vote Object

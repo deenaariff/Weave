@@ -49,7 +49,7 @@ public class rpc {
      * @param rt
      * @param host_info
      */
-    public static void broadcastVotes(RoutingTable rt, HostInfo host_info) {
+    public static void broadcastVotes(RoutingTable rt, HostInfo host_info, Log last_log) {
         int totalTableLength = rt.getTable().size();
 
         // Send New Vote Objects to all nodes in the routing Table.
@@ -57,7 +57,7 @@ public class rpc {
 
         for (Route route : rt.getTable()) {
             if (host_info.matchRoute(route) == false) {  // Add logic to not send to yourself
-                Vote newVote = new Vote(host_info);
+                Vote newVote = new Vote(host_info, last_log);
                 System.out.println("--------" + route.getIP() + ":" +  route.getEndpointPort() + "--------------");
                 try {
                     sendVote(newVote, route.getIP(), route.getVotingPort());

@@ -69,16 +69,20 @@ public class Follower {
      * @param vb
      * @param host_info
      */
-    public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info) throws IOException {
+    public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, Ledger ledger) throws IOException {
         Logger logger = new Logger(host_info);
 
-        if ((vote.getTerm() >= host_info.getTerm()) && !host_info.hasVoted()) {  // Check if valid candidate
-            vote.castVote();
+        boolean valid_term = (vote.getTerm() >= host_info.getTerm());
+        boolean up_to_date = ledger.validateVote(vote);
+
+        if (!host_info.hasVoted() && valid_term && up_to_date) {  // Check if valid candidate
+            vote.castVote(host_info.getId());
             host_info.setVoteFlag(true);
             host_info.setVote(vote.getRoute());
             logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
-            rpc.returnVote(vote);  // Send vote back
         }
+
+        rpc.returnVote(vote);  // Send vote back
 
     }
 }

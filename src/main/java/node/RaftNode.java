@@ -3,6 +3,8 @@ import rpc.rpc;
 import info.HostInfo;
 import ledger.Ledger;
 import routing.RoutingTable;
+import voting_booth.VotingBooth;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,16 +19,18 @@ public class RaftNode implements Runnable {
 	private Ledger ledger;
 	private HostInfo host;
 	private RoutingTable rt;
+	private VotingBooth vb;
 
 	/**
 	 * Constructor for the RaftNode Class.vb
      * Pass option Routing Table
 	 *
 	 */
-	public RaftNode(RoutingTable rt, Ledger ledger, HostInfo host) {
+	public RaftNode(RoutingTable rt, Ledger ledger, HostInfo host, VotingBooth vb) {
         this.rt = rt;
         this.host = host;
         this.ledger = ledger;
+        this.vb = vb;
     }
 
 	public void run() {
@@ -37,13 +41,9 @@ public class RaftNode implements Runnable {
             e.printStackTrace();
         }
 
-        int loops = 0;
-
         while(!Thread.currentThread().isInterrupted()) {
-            loops += 1;
             synchronized (this) {
                 if(this.host.isLeader()) {
-                    System.out.println("Loops: " + loops);
                     System.out.println("[" + this.host.getState() + "]: Last Index Committed: " + this.ledger.getCommitIndex());
                     System.out.println("[" + this.host.getState() + "]: Logs in Ledger: " + this.ledger.getLastApplied());
                     System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers ");
@@ -59,23 +59,5 @@ public class RaftNode implements Runnable {
         }
 
     }
-
-	/***
-	 * Returns the Node's Ledger
-	 * 
-	 * @return
-	 */
-	public Ledger getLedger() {
-		return ledger;
-	}
-	
-	/**
-	 * Return's the nodes current state_helpers
-	 * 
-	 * @return
-	 */
-	public HostInfo getHostInfo() {
-		return host;
-	}
 	
 }

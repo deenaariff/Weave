@@ -1,5 +1,6 @@
 package rpc_vote;
 
+import ledger.Ledger;
 import state_helpers.Candidate;
 import state_helpers.Follower;
 import Logger.Logger;
@@ -19,13 +20,15 @@ public class VotingListener implements Runnable {
     private HostInfo host_info;
     private RoutingTable rt;
     private VotingBooth vb;
+    private Ledger ledger;
     private Logger logger;
 
-    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Logger logger) {
+    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Ledger ledger, Logger logger) {
         this.host_info = host_info;
         this.rt = rt;
         this.vb = vb;
         this.logger = logger;
+        this.ledger = ledger;
     }
 
     @Override
@@ -39,6 +42,12 @@ public class VotingListener implements Runnable {
 
         // Listen for the heartbeat until the waiting time interval has elapsed
         while (true) {
+
+            if (this.host_info.isCandidate() && this.vb.checkIfWonElection() == false && this.vb.isElectionOver()) {
+                this.vb.printLost();
+                host_info.becomeCandidate(this.vb, this.rt, this.ledger);
+            }
+
             try {
 
                 Socket socket = listener.accept();
@@ -56,9 +65,9 @@ public class VotingListener implements Runnable {
                 if (this.host_info.isLeader()) {
                     // term based handling
                 } else if (this.host_info.isCandidate()) {
-                    Candidate.HandleVote(vote, vb, host_info);
+                    Candidate.HandleVote(vote, this.vb, this.host_info, this.rt);
                 } else if (this.host_info.isFollower()) {
-                    Follower.HandleVote(vote, vb, host_info);
+                    Follower.HandleVote(vote, this.vb, this.host_info, this.ledger);
                 }
 
                 socket.close();
