@@ -117,9 +117,9 @@ public class Ledger {
 	 */
 	public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
 
-		Route origin = hb.getRoute();
+		Route route = hb.getResponderRoute();
 		int num_entries = hb.getEntries().size();
-		int start = rt.getNextIndex(origin);
+		int start = rt.getNextIndex(route);
 
 		for(int i = 0; i < num_entries; i++) { // Increment the number of nodes acknowledged at a given index
 			int new_value = appendMatch.get(start+i) + 1;
@@ -129,7 +129,7 @@ public class Ledger {
 			}
 		}
 
-		rt.updateServerIndex(origin,num_entries); // update matchIndex[] and nextIndex[]
+		rt.updateServerIndex(route,num_entries); // update matchIndex[] and nextIndex[]
 	}
 
 	/**

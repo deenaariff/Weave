@@ -44,11 +44,10 @@ public class Follower {
                 hb.setReply(false);
             }
 
-            Route origin = hb.getRoute();
+            Route origin = hb.getOriginRoute();
 
             // Update the origin info for the heartbeat on response
             hb.setTerm(host_info.getTerm());
-            hb.setRoute(host_info.getRoute());
 
             if (hb.getReply()) {  // Ensure my commitIndex is synced
                 ledger.syncCommitIndex(hb.getLeaderCommitIndex());
