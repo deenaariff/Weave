@@ -1,0 +1,14 @@
+<nodes>
+    <node id="1">
+        <ip>127.0.0.1</ip>
+        <client>8080</client>
+        <heartbeat>8081</heartbeat>
+        <voting>8082</voting>
+    </node>
+    <node id="2">
+        <ip>127.0.0.1</ip>
+        <client>8090</client>
+        <heartbeat>8091</heartbeat>
+        <voting>8092</voting>
+    </node>
+</nodes>
