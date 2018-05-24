@@ -11,7 +11,7 @@ src/main/resources/META-INF/
 
 # Binaries
 tmp/
-target/
+target/*
 bin/
 out/
 *.class
