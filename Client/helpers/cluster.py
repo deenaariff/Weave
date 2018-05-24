@@ -8,19 +8,23 @@ import os
 
 class Cluster:
 
-    def __init__(self, nodes):
+    def __init__(self, nodes, orchestrator=None):
         
         self.default_keys = ["IP Address","Endpoint Port","Voting Port","Heartbeat Port", "State", "Term","Last Applied Index","Commit Index","Votes Obtained"]
 
-        self.old_jar = "/Users/deenaariff/Documents/DVKS/Raft/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
-        #self.old_jar = "/Users/thomasnguyen/Documents/Programming/RAFT/Weave/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
-        self.new_jar = "Weave_Files/Weave.jar"
-        self.cmd = "java -jar " + self.new_jar
-        self.config = os.path.abspath('Weave_Files/nodes.xml')
+        if orchestrator:
+            self.start_remote_cluster(nodes,orchestrator)
+            
+        else:
+            self.old_jar = "/Users/deenaariff/Documents/DVKS/Raft/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
+            #self.old_jar = "/Users/thomasnguyen/Documents/Programming/RAFT/Weave/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
+            self.new_jar = "Weave_Files/Weave.jar"
+            self.cmd = "java -jar " + self.new_jar
+            self.config = os.path.abspath('Weave_Files/nodes.xml')
 
-        self.leader = None;
-        self.processes = []
-        self.start_cluster(nodes)
+            self.leader = None;
+            self.processes = []
+            self.start_local_cluster(nodes)
 
     def initialize_routes(self, routes):
 
@@ -35,7 +39,11 @@ class Cluster:
         for process in self.processes:
             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
-    def start_cluster(self, nodes):
+    def start_remote_cluster(self,nodes,orchestrator):
+
+        orchestrator.run(nodes)
+
+    def start_local_cluster(self, nodes):
 
         subprocess.Popen(["cp",self.old_jar,self.new_jar])
 
