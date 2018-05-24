@@ -36,8 +36,8 @@ def run_jar(machine,jar,args):
 class Orchestrator:
 
 	self.AUTH = os.environ['USER'] # grab user authentication info from dc machine
-	self.CONFIG_FILE = 'config.json'
 	self.RESOURCE_PATH = './resources/'
+	self.CONFIG_FILE = self.RESOURCE_PATH + 'config.json'
 	self.DESTINATION_PATH = 'application/'
 
 
