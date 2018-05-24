@@ -8,7 +8,7 @@ import sys,time
 
 run_client = True  # Run Client in Loop Until User Quits
 
-remote = sys.argv[3]
+remote = sys.argv[1]
 
 if remote:
 
@@ -36,8 +36,8 @@ else:
     time.sleep(3)
 
     print "Initializing Request for Routes..."
-    ip = sys.argv[1]
-    port = sys.argv[2]
+    ip = sys.argv[2]
+    port = sys.argv[3]
 
     init_url = "http://" + ip + ":" + port
     rsp = dh.make_request(init_url, "routes")

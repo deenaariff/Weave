@@ -6,19 +6,19 @@ import json
 # SCP a file to another machine
 def send_file(machine, file):
 	local_path = RESOURCE_PATH + file
-    login = AUTH + "@" + machine
-    scp_to = login + ":" + DESTINATION_PATH + file
-    cmd = "mkdir -p " + DESTINATION_PATH
+	login = AUTH + "@" + machine
+	scp_to = login + ":" + DESTINATION_PATH + file
+	cmd = "mkdir -p " + DESTINATION_PATH
 
-    try:
-        out = subprocess.Popen(["ssh", "-o", "StrictHostKeyChecking=no", login, cmd], shell=False])
-        out.wait()
-        out = subprocess.Popen(["scp", "-B", local_path, scp_to])
-        out.wait()
-    except subprocess.CalledProcessError:
-        return "ERROR: An Error Occured over SSH/SCP", 1
+	try:
+	    out = subprocess.Popen(["ssh", "-o", "StrictHostKeyChecking=no", login, cmd], shell=False])
+	    out.wait()
+	    out = subprocess.Popen(["scp", "-B", local_path, scp_to])
+	    out.wait()
+	except subprocess.CalledProcessError:
+	    return "ERROR: An Error Occured over SSH/SCP", 1
 
-    return "File Successfully Written to Remote Machine (" + machine + ")", 0
+	return "File Successfully Written to Remote Machine (" + machine + ")", 0
 
 
 def run_jar(machine,jar,args):
