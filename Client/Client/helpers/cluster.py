@@ -12,7 +12,8 @@ class Cluster:
         
         self.default_keys = ["IP Address","Endpoint Port","Voting Port","Heartbeat Port", "State", "Term","Last Applied Index","Commit Index","Votes Obtained"]
 
-        self.old_jar = "/Users/thomasnguyen/Documents/Programming/RAFT/Weave/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        self.old_jar = "/Users/deenaariff/Documents/DVKS/Raft/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        #self.old_jar = "/Users/thomasnguyen/Documents/Programming/RAFT/Weave/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
         self.new_jar = "Weave_Files/Weave.jar"
         self.cmd = "java -jar " + self.new_jar
         self.config = os.path.abspath('Weave_Files/nodes.xml')

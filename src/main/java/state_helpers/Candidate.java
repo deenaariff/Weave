@@ -7,7 +7,6 @@ import voting_booth.VotingBooth;
 import messages.HeartBeat;
 import routing.Route;
 import rpc.rpc;
-import Logger.Logger;
 
 import java.io.IOException;
 
@@ -58,7 +57,6 @@ public class Candidate {
      * @param host_info info of the current host
      */
     public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, RoutingTable rt) {
-        Logger logger = new Logger(host_info);
 
         if (host_info.matchRoute(vote.getRoute())) {  // Received response to our RequestVote RPC
 

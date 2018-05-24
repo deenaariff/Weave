@@ -67,8 +67,6 @@ public class HeartBeat implements Serializable {
 
 	public List<Log> getEntries() { return entries; }
 
-	public static long getSerialVersionUID() { return serialVersionUID; }
-
     public int getPrevLogIndex() { return prevLogIndex; }
 
     public void setPrevLogIndex(int prevLogIndex) { this.prevLogIndex = prevLogIndex; }
