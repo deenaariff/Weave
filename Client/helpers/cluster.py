@@ -18,9 +18,9 @@ class Cluster:
         else:
             self.old_jar = "/Users/deenaariff/Documents/DVKS/Raft/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
             #self.old_jar = "/Users/thomasnguyen/Documents/Programming/RAFT/Weave/target/Weave-1.0-SNAPSHOT-jar-with-dependencies.jar"
-            self.new_jar = "Weave_Files/Weave.jar"
+            self.new_jar = "resources/Weave.jar"
             self.cmd = "java -jar " + self.new_jar
-            self.config = os.path.abspath('Weave_Files/nodes.xml')
+            self.config = os.path.abspath('resources/nodes.xml')
 
             self.leader = None;
             self.processes = []

@@ -73,8 +73,8 @@ public class RoutingTable {
      * by a given amount
      */
     public void updateServerIndex(Route route, int increment) {
-        int new_mi = this.matchIndex.get(route) + increment;
-        int new_ni = this.nextIndex.get(route) + increment;
+        int new_mi = Math.max(0,this.matchIndex.get(route) + increment);
+        int new_ni = Math.max(0,this.nextIndex.get(route) + increment);
         this.matchIndex.put(route,new_mi);
         this.nextIndex.put(route,new_ni);
     }

@@ -43,11 +43,6 @@ public class VotingListener implements Runnable {
         // Listen for the heartbeat until the waiting time interval has elapsed
         while (true) {
 
-            if (this.host_info.isCandidate() && this.vb.checkIfWonElection() == false && this.vb.isElectionOver()) {
-                this.vb.printLost();
-                host_info.becomeCandidate(this.vb, this.rt, this.ledger);
-            }
-
             try {
 
                 Socket socket = listener.accept();

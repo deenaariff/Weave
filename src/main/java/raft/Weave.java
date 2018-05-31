@@ -26,7 +26,13 @@ public class Weave {
 	    // Weave Dependencies
 		Ledger ledger = new Ledger();
 
-        RoutingTable rt = new RoutingTable(args[1], ledger); //Load the Routing Table Info from nodes.xml
+		String file = "/Users/deenaariff/Documents/DVKS/Raft/src/main/resources/nodes.xml";
+
+		if (args.length >= 2) {
+		    file = args[1];
+        }
+
+        RoutingTable rt = new RoutingTable(file, ledger); //Load the Routing Table Info from nodes.xml
         Route route = rt.getRouteById(Integer.parseInt(args[0])); // Get this Nodes Routing Info
 
         HostInfo host = new HostInfo(route);

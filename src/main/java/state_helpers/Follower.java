@@ -59,7 +59,7 @@ public class Follower {
     }
 
     private static void RetryReturnHeartbeat(HeartBeat hb, Route origin) throws IOException {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 rpc.returnHeartbeat(hb, origin);  // Return heartbeat to the destination
                 break;
@@ -105,7 +105,7 @@ public class Follower {
      * @throws IOException
      */
     private static void RetryVote(Vote vote) throws IOException {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 rpc.returnVote(vote);  // Send vote back
                 break;
