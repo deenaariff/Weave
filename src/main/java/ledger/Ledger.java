@@ -51,19 +51,6 @@ public class Ledger {
 	}
 
 	/**
-	 *
-	 * @param key
-	 * @return
-	 */
-	public String getData(String key) {
-		if(keyStore.containsKey(key)) {
-			return keyStore.get(key);
-		} else {
-			throw new RuntimeException("This Key Has Not Been Commited to the Cluster");
-		}
-	}
-
-	/**
 	 * Get the Logs in that are in the interval of a given start index, to the # num_logs after that
 	 *
 	 * @param start_index
@@ -73,7 +60,7 @@ public class Ledger {
 	public List<Log> getLogs(int start_index, int num_logs) {
 		List<Log> updates = new ArrayList<Log>();
 		for(int i = 0; i < num_logs; i++) {
-			if(start_index + i < this.logs.size() - 1) {
+			if((start_index + i) < this.logs.size()) {
 				updates.add(this.logs.get(start_index+i));
 			}
 		}
@@ -105,13 +92,16 @@ public class Ledger {
 
 		Route route = hb.getResponderRoute();
 		int num_entries = hb.getEntries().size();
-		int start = rt.getNextIndex(route);
+		int start = hb.getPrevLogIndex();
 
 		for(int i = 0; i < num_entries; i++) { // Increment the number of nodes acknowledged at a given index
-			int new_value = appendMatch.get(start+i) + 1;
-			appendMatch.set(start + i, new_value);
+			while(start + i >= appendMatch.size()) {
+				appendMatch.add(0);
+			}
+			int new_value = this.appendMatch.get(start+i) + 1;
+			this.appendMatch.set(start + i, new_value);
 			if(new_value >= rt.getMajority()) {
-				updateCommitIndex(new_value);
+				updateCommitIndex(start + i);
 			}
 		}
 
@@ -125,10 +115,10 @@ public class Ledger {
 	 * @param new_index
 	 */
 	private void updateCommitIndex(int new_index) {
-		for(int i = commitIndex; i <= new_index; i++) {
+		for(int i = this.commitIndex; i <= new_index; i++) {
 			commitToLogs(i);
 		}
-		this.commitIndex = Math.max(this.commitIndex, new_index);
+		this.commitIndex = Math.max(this.commitIndex, new_index + 1);
 	}
 
 
@@ -140,10 +130,13 @@ public class Ledger {
 	 * @return
 	 */
 	public Boolean confirmMatch(int index, Log term) {
-		if(index < 0) {
+		if(index == 0) {
 			return term == null;
+		} else if (index - 1 >= logs.size()) {
+		    System.out.println("match - Exceeded Size of " + logs.size());
+			return false;
 		}
-		return logs.get(index).equals(term);
+		return logs.get(index-1).equals(term);
 	}
 
 	/**
@@ -155,6 +148,10 @@ public class Ledger {
 	public void syncCommitIndex(int leader_commit_index) {
 		if(leader_commit_index > this.commitIndex) {
 			this.commitIndex = Math.min(leader_commit_index,this.lastApplied);
+			for (int i = 0; i < commitIndex; i++) {
+				Log entry = this.logs.get(i);
+				updateKeyStore(entry.getKey(),entry.getValue());
+			}
 		}
 	}
 
@@ -166,10 +163,16 @@ public class Ledger {
 	 * @param hb The heartbeat message sent from the leader
 	 */
 	public void update(HeartBeat hb) {
-		for(Log log : hb.getEntries()) {
-			this.logs.add(log);
-			updateKeyStore(log.getKey(), log.getValue());
+		int begin_entries = hb.getPrevLogIndex();
+		for (int i = 0; i < hb.getEntries().size(); i++) {
+			int update_index = begin_entries + i;
+			if(update_index < logs.size()) {
+				logs.set(update_index,hb.getEntries().get(i));
+			} else {
+				logs.add(hb.getEntries().get(i));
+			}
 		}
+		this.lastApplied = begin_entries + hb.getEntries().size();
 	}
 
 	/**

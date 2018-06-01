@@ -24,7 +24,6 @@ class Cluster:
 
             self.leader = None;
             self.processes = []
-            self.start_local_cluster(nodes)
 
     def initialize_routes(self, routes):
 

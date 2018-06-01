@@ -14,6 +14,13 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.*;
 
+/**
+ * This is a Runnable that implements a socket to listen for incoming messages on
+ * the Voting Port. Based on the state of the RAFT node it will call a handler
+ * function to respond to a Vote Request in an appropriate manner as traditionally
+ * done in RAFT.
+ *
+ */
 public class VotingListener implements Runnable {
 
     private ServerSocket listener;
@@ -23,6 +30,15 @@ public class VotingListener implements Runnable {
     private Ledger ledger;
     private Logger logger;
 
+    /**
+     * Constructor for the Voting Listener
+     *
+     * @param host_info
+     * @param rt
+     * @param vb
+     * @param ledger
+     * @param logger
+     */
     public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Ledger ledger, Logger logger) {
         this.host_info = host_info;
         this.rt = rt;
@@ -40,27 +56,32 @@ public class VotingListener implements Runnable {
             e.printStackTrace();
         }
 
-        // Listen for the heartbeat until the waiting time interval has elapsed
-        while (true) {
+        while (true) { // Listen for the heartbeat until the waiting time interval has elapsed
+
+            // Check for split vote at end of election, and restart election
+            if (this.host_info.isCandidate() && this.vb.checkIfWonElection() == false && this.vb.isElectionOver()) {
+                this.vb.printLost();
+                this.host_info.becomeCandidate(this.vb, this.rt, this.ledger);
+            }
 
             try {
-
-                Socket socket = listener.accept();
+                Socket socket = listener.accept(); // accept incoming mesages
 
                 final InputStream yourInputStream = socket.getInputStream();
                 final ObjectInputStream inputStream = new ObjectInputStream(yourInputStream);
                 final Vote vote = (Vote) inputStream.readObject();
 
-                if (vote.getVoteStatus()) {
+                if (vote.getVoteStatus()) { // Is this vote acknowledged (voter -> requester)
                     logger.log("Received Acknowledged Vote w/ Origin : " + vote.getHostName() + ":" + vote.getEndpointPort());
-                } else {
+                } else { // Is this vote a requested vote (requester -> voter)
                     logger.log("Received Request Vote w/ Origin : " + vote.getHostName() + ":" + vote.getEndpointPort());
                 }
 
+                // State machine handle of the vote object
                 if (this.host_info.isLeader()) {
                     // term based handling
                 } else if (this.host_info.isCandidate()) {
-                    Candidate.HandleVote(vote, this.vb, this.host_info, this.rt);
+                    Candidate.HandleVote(vote, this.vb, this.host_info, this.rt, this.ledger);
                 } else if (this.host_info.isFollower()) {
                     Follower.HandleVote(vote, this.vb, this.host_info, this.ledger);
                 }

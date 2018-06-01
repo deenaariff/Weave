@@ -16,8 +16,8 @@ public class VotingBooth {
     private HostInfo host_info;
     private Logger logger;
 
-    private final int ELECTION_TIMEOUT_MIN = 150;
-    private final int ELECTION_TIMEOUT_MAX = 2000;
+    private final int ELECTION_TIMEOUT_MIN = 2000;
+    private final int ELECTION_TIMEOUT_MAX = 3000;
 
     private RoutingTable rt;
     private List<Integer> voters;
@@ -51,7 +51,7 @@ public class VotingBooth {
      */
     public void startElection() {
         this.host_info.incrementTerm();
-        this.election_interval = (ELECTION_TIMEOUT_MIN + (int)(Math.random() * ELECTION_TIMEOUT_MAX) * 1000);
+        this.election_interval = ELECTION_TIMEOUT_MIN + (int)(Math.random() * (ELECTION_TIMEOUT_MAX - ELECTION_TIMEOUT_MIN));
         this.start_election = System.nanoTime();
         this.voters = new ArrayList<>();
         this.voters.add(this.host_info.getId());
@@ -65,9 +65,9 @@ public class VotingBooth {
      * @return boolean value describing whether election has timed out
      */
     public boolean isElectionOver() {
-        boolean result = (System.nanoTime() - this.start_election) > this.election_interval;
+        boolean result = (System.nanoTime() - this.start_election) > (this.election_interval*1000);
         if(result) {
-            this.logger.log("Election interval elapsed: (" + this.election_interval / 1000 + " ms)");
+            this.logger.log("Election interval elapsed: (" + this.election_interval + " ms)");
         }
         return result;
     }

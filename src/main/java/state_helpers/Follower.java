@@ -37,8 +37,12 @@ public class Follower {
                 if(ledger.confirmMatch(prevIndex, prevLogTerm) == true) {
                     new Logger(host_info).log("PrevLogTerm in HeartBeat Matches");
                     ledger.update(hb);
+                    ledger.syncCommitIndex(hb.getLeaderCommitIndex());
                     hb.setReply(true);
                 } else {
+                    new Logger(host_info).log("PrevLogTerm in Does not Match");
+                    new Logger(host_info).log("Heartbeat PrevLogTerm Index: " + hb.getPrevLogIndex());
+                    new Logger(host_info).log("Log Size: " + ledger.getLastApplied());
                     hb.setReply(false);
                 }
             } else {  // False if term is ahead of leader term
@@ -92,7 +96,7 @@ public class Follower {
             vote.castVote(host_info.getId());
             host_info.setVoteFlag(true);
             host_info.setVote(vote.getRoute());
-            logger.log("Returning vote - " + vote.getHostName() + ":" + vote.getVotingPort());
+            logger.log("Voting For - " + vote.getHostName() + ":" + vote.getVotingPort());
         }
 
         RetryVote(vote);

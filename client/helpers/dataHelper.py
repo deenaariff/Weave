@@ -1,6 +1,5 @@
 import urllib2, json, time
 
-from psutil import process_iter
 from signal import SIGTERM # or SIGKILL
 
 

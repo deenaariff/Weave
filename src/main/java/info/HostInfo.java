@@ -24,9 +24,9 @@ public class HostInfo implements Serializable {
 	private Route votedFor;
 	private Boolean initialized;
 
-    private final static int HEARTBEAT_INTERVAL = 50;
-    private final static int HEARTBEAT_TIMEOUT_MIN = 150;
-    private final static int HEARTBEAT_TIMEOUT_MAX = 2000;
+    private final static int HEARTBEAT_INTERVAL = 1000;
+    private final static int HEARTBEAT_TIMEOUT_MIN = 2000;
+    private final static int HEARTBEAT_TIMEOUT_MAX = 3000;
 
     private int hearbeat_timeout_interval;
 
@@ -67,7 +67,7 @@ public class HostInfo implements Serializable {
 	 * 
 	 */
 	public void becomeFollower() {
-	    this.hearbeat_timeout_interval = HEARTBEAT_TIMEOUT_MIN + (int)(Math.random() * HEARTBEAT_TIMEOUT_MAX);
+	    this.hearbeat_timeout_interval = HEARTBEAT_TIMEOUT_MIN + (int)(Math.random() * (HEARTBEAT_TIMEOUT_MAX- HEARTBEAT_TIMEOUT_MIN));
 	    this.state = FOLLOWER_TAG;
 	    this.initialized = false;
 	    this.hasVoted = false;

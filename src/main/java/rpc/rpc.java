@@ -7,7 +7,6 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.util.List;
 
-import Logger.Logger;
 import info.HostInfo;
 import ledger.Ledger;
 import ledger.Log;
@@ -34,7 +33,7 @@ public class rpc {
                     List<Log> updates = Leader.determineUpdates(route, rt, ledger);
                     HeartBeat hb = new HeartBeat(host_info, updates, route, rt, ledger); // create a new heartbeat
                     sendHeartbeat(hb, route.getIP(), route.getHeartbeatPort());
-
+                    System.out.println(hb.toString());
                     System.out.println("[" + host_info.getState() + "]: Sending Updates to " + route.getIP() + ":" + route.getHeartbeatPort());
                 } catch (ConnectException e) {
                     System.out.println("[" + host_info.getState() + "]: Error - Unable Connect to " + route.getIP() + ":" + route.getHeartbeatPort());

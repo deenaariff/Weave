@@ -11,8 +11,7 @@ import java.io.Serializable;
  * 
  */
 public class Log implements Serializable {
-	
-	// TODO: Check to see if we need to add hostname to the log
+
 	private static final long serialVersionUID = 1L;
 	private int term;
 	private int index;
@@ -32,39 +31,18 @@ public class Log implements Serializable {
 		this.key = key;
 		this.value = value;
 	}
-	
+
+	@Override
 	/**
-	 * Update the key-value entry for a Log.
-	 * @param key The lookup key value of the key-value pair. 
-	 * @param value The value to be paired to a lookup key. 
+	 * Print the Value of the Log
 	 */
-	public void updateKeyValue(String key, String value) {
-		this.key = key;
-		this.value = value;
+	public String toString() {
+		return this.key + "|" + this.value + "|" + this.index;
 	}
-
-
-	public int getTerm() {
-		return this.term;
-	}
-
-	public int getIndex() {
-		return this.index;
-	}
-
-	public String getKey() {
-		return this.key;
-	}
-
-	public String getValue() {
-		return this.value;
-	}
-
 
 	@Override
 	/**
 	 * Override equals to determine equivalence based of key, value, and index
-	 *
 	 */
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -75,12 +53,45 @@ public class Log implements Serializable {
 		}
 		final Log to_be_matched = (Log) obj;
 
-		boolean matchKey =  this.key == to_be_matched.getKey();
-		boolean matchValue = this.value == to_be_matched.getValue();
+		boolean matchKey = this.key.equals(to_be_matched.getKey());
+		boolean matchValue = this.value.equals(to_be_matched.getValue());
 		boolean matchIndex = this.index == to_be_matched.getIndex();
 
 		return matchKey && matchValue && matchIndex;
-
 	}
+
+
+	/**
+	 * Get the term stored in the log
+	 * @return
+	 */
+	public int getTerm() {
+		return this.term;
+	}
+
+	/**
+	 * Get the index stored in the log
+	 * @return
+	 */
+	public int getIndex() {
+		return this.index;
+	}
+
+	/**
+	 * Get the key stored in the log
+	 * @return
+	 */
+	public String getKey() {
+		return this.key;
+	}
+
+	/**
+	 * Get the value stored in the log
+	 * @return
+	 */
+	public String getValue() {
+		return this.value;
+	}
+
 
 }

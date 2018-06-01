@@ -10,7 +10,7 @@ run_client = True  # Run Client in Loop Until User Quits
 
 remote = sys.argv[1]
 
-print "Initializing Cluster..."
+#print "Initializing Cluster..."
 cluster = Cluster(3)
 
 print "Giving Time for Processes to Startup..."
@@ -58,7 +58,6 @@ while run_client:
     else:
         print um.INVALID_CMD
 
-cluster.kill_cluster()
 
 
 

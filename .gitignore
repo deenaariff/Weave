@@ -3,6 +3,8 @@
 .settings
 .classpath
 .project
+.move_client.sh
+.move_jar.sh
 Raft.iml
 Distributed-Value-Key-Store.iml
 src/main/java/META-INF/
