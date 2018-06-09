@@ -24,7 +24,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>raft.Weave</mainClass>
+                            <mainClass>main.Weave</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

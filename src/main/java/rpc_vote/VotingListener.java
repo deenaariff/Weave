@@ -81,7 +81,7 @@ public class VotingListener implements Runnable {
                 if (this.host_info.isLeader()) {
                     // term based handling
                 } else if (this.host_info.isCandidate()) {
-                    Candidate.HandleVote(vote, this.vb, this.host_info, this.rt, this.ledger);
+                    Candidate.HandleVote(vote, this.vb, this.host_info, this.rt);
                 } else if (this.host_info.isFollower()) {
                     Follower.HandleVote(vote, this.vb, this.host_info, this.ledger);
                 }

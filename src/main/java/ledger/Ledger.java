@@ -133,7 +133,6 @@ public class Ledger {
 		if(index == 0) {
 			return term == null;
 		} else if (index - 1 >= logs.size()) {
-		    System.out.println("match - Exceeded Size of " + logs.size());
 			return false;
 		}
 		return logs.get(index-1).equals(term);
@@ -185,20 +184,6 @@ public class Ledger {
 		updateKeyStore(log.getKey(),log.getValue());
 	}
 
-	/**
-	 * This members prints all current logs that have been stored in the ledger.
-	 */
-	public void printLogs() {
-		System.out.println("Logs:");
-		for(Log entry : logs) {
-			System.out.println("  " + entry.getIndex() + " | term: " + entry.getTerm());
-		}
-		System.out.println("\nKey-Value Pairs:");
-		for (String key : keyStore.keySet()) {
-			System.out.println("  " + key + " - " + keyStore.get(key));
-		}
-	}
-
     /**
      * Get the Log at a Given Index
      *
@@ -247,10 +232,30 @@ public class Ledger {
         return false;
     }
 
+	/**
+	 *
+	 * @return
+	 */
+	public Map<String,String> getKeyStore() {
+		return this.keyStore;
+	}
 
-    /** Standard Getters and Setters **/
-    public Map<String,String> getKeyStore() { return this.keyStore; }
-	public int getCommitIndex() { return commitIndex; }
-	public int getLastApplied() { return lastApplied; }
+	/**
+	 *
+	 * @return
+	 */
+	public int getCommitIndex() {
+		return commitIndex;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public int getLastApplied() {
+		return lastApplied;
+	}
+
+
 
 }

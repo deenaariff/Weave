@@ -1,7 +1,7 @@
 package state_helpers;
 
+import Logger.Logger;
 import info.HostInfo;
-import ledger.Ledger;
 import messages.Vote;
 import routing.RoutingTable;
 import voting_booth.VotingBooth;
@@ -54,14 +54,16 @@ public class Candidate {
      * @param vb voting booth which maintains election functionality
      * @param host_info info of the current host
      */
-    public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, RoutingTable rt, Ledger ledger) {
+    public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, RoutingTable rt) {
+
+        Logger logger = host_info.getLogger();
 
         if (host_info.matchRoute(vote.getRoute()) && vote.getVoteStatus()) {  // Received response to our RequestVote RPC
             vb.incrementVotes(vote.getResponder());
 
             if (vb.checkIfWonElection()) {  // Have we received majority votes yet?
                 vb.printWon();
-                host_info.becomeLeader(); // we now become a leader node
+                host_info.becomeLeader(rt); // we now become a leader node
             }
         } else if (host_info.matchRoute(vote.getRoute()) == false && vote.getVoteStatus() == false) {  // Other candidates are requesting a vote
             try {
@@ -75,7 +77,7 @@ public class Candidate {
                 }
                 rpc.returnVote(vote); // return vote to the requesting candidate
             } catch (java.io.IOException e) {
-                System.out.println(e);
+                logger.log(e.getMessage());
             }
         }
     }

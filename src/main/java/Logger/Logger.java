@@ -11,7 +11,7 @@ public class Logger {
     }
 
     public void log(String message) {
-        System.out.println("[" + this.host_info.getState() + " (" + this.host_info.getTerm() + ") " + "| " + System.currentTimeMillis() + " ]:"  + message);
+        System.out.println("[" + this.host_info.getState() + " (" + this.host_info.getTerm() + ") " + "| " + System.currentTimeMillis() + " | " + this.host_info.getEndPointPort() + " ]:"  + message);
     }
 
 

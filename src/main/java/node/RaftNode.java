@@ -44,9 +44,9 @@ public class RaftNode implements Runnable {
         while(!Thread.currentThread().isInterrupted()) {
             synchronized (this) {
                 if(this.host.isLeader()) {
-                    System.out.println("[" + this.host.getState() + "]: Last Index Committed: " + this.ledger.getCommitIndex());
-                    System.out.println("[" + this.host.getState() + "]: Logs in Ledger: " + this.ledger.getLastApplied());
-                    System.out.println("[" + this.host.getState() + "]: Broadcasting Messages to Followers ");
+                    this.host.getLogger().log("Last Index Committed: " + this.ledger.getCommitIndex());
+                    this.host.getLogger().log("Logs in Ledger: " + this.ledger.getLastApplied());
+                    this.host.getLogger().log("Broadcasting Messages to Followers ");
                     try {
                         Thread.sleep(this.host.getHeartbeatInterval());
                     } catch (InterruptedException e) {

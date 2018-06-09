@@ -59,6 +59,27 @@ public class HeartBeat implements Serializable {
         this.leaderCommitIndex = ledger.getCommitIndex();
 	}
 
+    /**
+     * Constructor to Test Heartbeats
+     *
+     * @param hostInfo
+     * @param updates
+     * @param destination
+     * @param prevLogIndex
+     * @param prevLog
+     * @param leaderCommitIndex
+     */
+    public HeartBeat(HostInfo hostInfo, List<Log> updates, Route destination, int prevLogIndex, Log prevLog, int leaderCommitIndex) {
+        this.term = hostInfo.getTerm();
+        this.entries = updates;
+        this.reply = null; // allows us to determine whether this is appendEntries RPC or Response RPC
+        this.originRoute = hostInfo.getRoute();
+        this.responderRoute = destination;
+        this.prevLogIndex = prevLogIndex; // prevLogIndex is equivalent to matchIndex - 1
+        this.prevLog = prevLog; // null if prevLogIndex == -1
+        this.leaderCommitIndex = leaderCommitIndex;
+    }
+
 	@Override
     public String toString(){
 	    String result = "term: " + this.term;

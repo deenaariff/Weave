@@ -25,6 +25,9 @@ public class RoutingTable {
     private HashMap<Route,Integer> matchIndex;
     private HashMap<Route,Integer> nextIndex;
 
+    // Watchers listening for leader election changes
+    private List<Route> watchers;
+
     /**
      * Constructor for Routing Table
      * @param configFile
@@ -35,6 +38,7 @@ public class RoutingTable {
         this.table = new ArrayList<Route>();
         this.matchIndex = new HashMap<Route, Integer>();
         this.nextIndex = new HashMap<Route,Integer>();
+        this.watchers = new ArrayList();
         this.configToTable(configFile); // this will initialize next, index in the routing table for us
     }
 
@@ -135,6 +139,20 @@ public class RoutingTable {
                 this.table.add(new_route); // Add to the routing table
             }
 
+            NodeList wList = doc.getElementsByTagName("watcher");
+
+            for (int i = 0; i < wList.getLength(); i++) {
+                Node wNode = wList.item(i);
+                Route watcher = new Route();
+
+                if(wNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) wNode;
+                    initializeWatcherFromElement(eElement,watcher);
+                }
+
+                this.watchers.add(watcher);
+            }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -160,6 +178,16 @@ public class RoutingTable {
     }
 
     /**
+     * Set fields for a Watcher route given an Element Object
+     * @param eElement
+     * @param watcher
+     */
+    private static void initializeWatcherFromElement(Element eElement, Route watcher) {
+        watcher.setIP(eElement.getElementsByTagName("ip").item(0).getTextContent());
+        watcher.setEndpointPort(Integer.parseInt(eElement.getElementsByTagName("port").item(0).getTextContent()));
+    }
+
+    /**
      * This method returns the number of nodes it would take to specify the
      * majority of the cluster.
      * @return
@@ -170,6 +198,12 @@ public class RoutingTable {
 
     /** Standard Getters and Setters */
     public List<Route> getTable() { return this.table; }
+
+    public List<Route> getWatchers () { return this.watchers; }
+
+    public boolean hasWatchers () { return this.watchers.size() > 0; }
+
+
 
 }
 

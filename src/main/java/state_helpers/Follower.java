@@ -28,6 +28,8 @@ public class Follower {
      * @throws IOException
      */
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info) throws IOException {
+        Logger logger = host_info.getLogger();
+
         if (!hb.hasReplied()) {  // Ensure this is a heartbeat from a leader (yet to be acknowledged)
             if (host_info.getTerm() <= hb.getTerm()) {  // Check if equal or behind leader term
                 int prevIndex = hb.getPrevLogIndex();
@@ -35,14 +37,18 @@ public class Follower {
 
                 // Ensure prevLog Term matches at given index
                 if(ledger.confirmMatch(prevIndex, prevLogTerm) == true) {
-                    new Logger(host_info).log("PrevLogTerm in HeartBeat Matches");
+                    if (prevLogTerm != null) {
+                        logger.log("PrevLogTerm in HeartBeat Matches - " + prevLogTerm.toString());
+                    } else {
+                        logger.log("PrevLogTerm in HeartBeat Matches - NULL");
+                    }
                     ledger.update(hb);
                     ledger.syncCommitIndex(hb.getLeaderCommitIndex());
                     hb.setReply(true);
                 } else {
-                    new Logger(host_info).log("PrevLogTerm in Does not Match");
-                    new Logger(host_info).log("Heartbeat PrevLogTerm Index: " + hb.getPrevLogIndex());
-                    new Logger(host_info).log("Log Size: " + ledger.getLastApplied());
+                    logger.log("PrevLogTerm in Does not Match");
+                    logger.log("Heartbeat PrevLogTerm Index: " + hb.getPrevLogIndex());
+                    logger.log("Log Size: " + ledger.getLastApplied());
                     hb.setReply(false);
                 }
             } else {  // False if term is ahead of leader term
@@ -58,17 +64,17 @@ public class Follower {
                 ledger.syncCommitIndex(hb.getLeaderCommitIndex());
             }
 
-            RetryReturnHeartbeat(hb, origin);
+            RetryReturnHeartbeat(hb, origin, logger);
         }
     }
 
-    private static void RetryReturnHeartbeat(HeartBeat hb, Route origin) throws IOException {
+    private static void RetryReturnHeartbeat(HeartBeat hb, Route origin, Logger logger) throws IOException {
         for (int i = 0; i < 1; i++) {
             try {
                 rpc.returnHeartbeat(hb, origin);  // Return heartbeat to the destination
                 break;
             } catch (ConnectException e) {
-                System.out.println("Retry Heartbeat Failed");
+                logger.log("Retry Heartbeat Failed");
                 // Do nothing
             }
         }
@@ -87,7 +93,7 @@ public class Follower {
      * @param host_info
      */
     public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, Ledger ledger) throws IOException {
-        Logger logger = new Logger(host_info);
+        Logger logger = host_info.getLogger();
 
         boolean valid_term = (vote.getTerm() >= host_info.getTerm());
         boolean up_to_date = ledger.validateVote(vote);
@@ -99,7 +105,7 @@ public class Follower {
             logger.log("Voting For - " + vote.getHostName() + ":" + vote.getVotingPort());
         }
 
-        RetryVote(vote);
+        RetryVote(vote, logger);
     }
 
     /**
@@ -108,13 +114,13 @@ public class Follower {
      * @param vote
      * @throws IOException
      */
-    private static void RetryVote(Vote vote) throws IOException {
+    private static void RetryVote(Vote vote, Logger logger) throws IOException {
         for (int i = 0; i < 1; i++) {
             try {
                 rpc.returnVote(vote);  // Send vote back
                 break;
             } catch (ConnectException e) {
-                System.out.println("Retry Vote Failed");
+                logger.log("Retry Vote Failed");
                 // Do nothing
             }
         }

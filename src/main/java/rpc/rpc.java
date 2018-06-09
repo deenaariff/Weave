@@ -1,10 +1,9 @@
 package rpc;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
 
 import info.HostInfo;
@@ -122,5 +121,55 @@ public class rpc {
     public static void returnVote(Vote vote) throws IOException {
         Route vote_route = vote.getRoute();
         sendVote(vote,vote_route.getIP(),vote_route.getVotingPort());
+    }
+
+    /**
+     * Notify all watchers that a leader election has occured
+     *
+     * @param host_info
+     * @param rt
+     */
+    public static void notifyElectionChange(HostInfo host_info, RoutingTable rt) {
+        System.out.println("We have " + rt.getWatchers().size() + " watchers");
+        if(rt.hasWatchers()) {
+            try {
+                for (Route watcher : rt.getWatchers()) {
+                    Socket socket = new Socket(watcher.getIP(), watcher.getEndpointPort());
+
+                    HashMap<String, Object> notif = new HashMap();
+                    notif.put("cmd","leader");
+                    notif.put("leader_IP", host_info.getRoute().getIP());
+                    notif.put("leader_port",host_info.getRoute().getEndpointPort());
+                    notif.put("election_time",System.nanoTime());
+
+                    String response = JsonUtil.toJson(notif) + "\n";
+                    System.out.println("Notifying Watcher : " + response);
+
+                    final OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+                    osw.write(response, 0, response.length());
+                    osw.flush();
+                    osw.close();
+                }
+            } catch (ConnectException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     * Send a response to a Client when is Socket Client Controller Mode
+     *
+     * @param socket
+     * @param response
+     * @throws IOException
+     */
+    public static void sendClientResponse(Socket socket, String response) throws IOException {
+        final OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
+        osw.write(response, 0, response.length());
+        osw.flush();
+        osw.close();
     }
 }

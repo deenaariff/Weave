@@ -57,8 +57,8 @@ public class Leader {
                 logger.log("Follower Replied False!");
                 host_info.becomeFollower();
             }
-        } else if (hb.getTerm() > host_info.getTerm()) { // Received Response from another leader
-            logger.log("Received Heartbeat From Another Follower with Greater Term");
+        } else if (hb.hasReplied() == false && hb.getTerm() >= host_info.getTerm()) { // Received Response from another leader
+            logger.log("Received Heartbeat From Another Leader with Greater or Equal Term");
             host_info.becomeFollower();
         }
     }
