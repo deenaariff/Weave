@@ -26,23 +26,20 @@ public class HeartbeatListener implements Runnable {
 
     /**
      * Constructor
-     * @param host_info
-     * @param ledger
-     * @param rt
+     * @param host_info The {@link HostInfo} of the ndoe
+     * @param ledger The {@link Ledger} of the Node
+     * @param rt The {@link RoutingTable} of the Node
+     * @param vb The {@link VotingBooth} of the node
      */
-    public HeartbeatListener(HostInfo host_info, Ledger ledger, RoutingTable rt, VotingBooth vb, Logger logger) {
+    public HeartbeatListener(HostInfo host_info, Ledger ledger, RoutingTable rt, VotingBooth vb) {
         this.host_info = host_info;
         this.ledger = ledger;
         this.rt = rt;
         this.vb = vb;
-        this.logger = logger;
+        this.logger = host_info.getLogger();
     }
 
     @Override
-    /**
-     *
-     *
-     */
     public void run() {
 
         try {

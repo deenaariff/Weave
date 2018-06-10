@@ -33,7 +33,7 @@ public class Weave {
             file = args[2];
         }
 
-        RoutingTable rt = new RoutingTable(file, ledger); //Load the Routing Table Info from nodes.xml
+        RoutingTable rt = new RoutingTable(file); //Load the Routing Table Info from nodes.xml
         Route route = rt.getRouteById(Integer.parseInt(args[0])); // Get this Nodes Routing Info
 
         HostInfo host = new HostInfo(route);
@@ -60,8 +60,8 @@ public class Weave {
         }
 
         // Create all Threads
-        Thread hb_thread = new Thread(new HeartbeatListener(host, ledger, rt, vb, logger));
-        Thread voting_thread = new Thread(new VotingListener(host, rt, vb, ledger, logger));
+        Thread hb_thread = new Thread(new HeartbeatListener(host, ledger, rt, vb));
+        Thread voting_thread = new Thread(new VotingListener(host, rt, vb, ledger));
         Thread main_thread = new Thread(new RaftNode(rt, ledger, host, vb));
 
         ExecutorService executor = Executors.newFixedThreadPool(4);

@@ -63,7 +63,7 @@ public class Log implements Serializable {
 
 	/**
 	 * Get the term stored in the log
-	 * @return
+	 * @return return the term of this log
 	 */
 	public int getTerm() {
 		return this.term;
@@ -71,7 +71,7 @@ public class Log implements Serializable {
 
 	/**
 	 * Get the index stored in the log
-	 * @return
+	 * @return return the index of this log
 	 */
 	public int getIndex() {
 		return this.index;
@@ -79,7 +79,7 @@ public class Log implements Serializable {
 
 	/**
 	 * Get the key stored in the log
-	 * @return
+	 * @return return the key of this log
 	 */
 	public String getKey() {
 		return this.key;
@@ -87,7 +87,7 @@ public class Log implements Serializable {
 
 	/**
 	 * Get the value stored in the log
-	 * @return
+	 * @return return the value assigned to the key of this log
 	 */
 	public String getValue() {
 		return this.value;

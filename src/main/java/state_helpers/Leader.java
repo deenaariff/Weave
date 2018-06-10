@@ -17,12 +17,12 @@ public class Leader {
      * Determine the updates to send to a Follower based upon how consistent
      * their logs are.
      *
-     * If no updates to send return an empty ArrayList<Log>
+     * If no updates to send return an empty ArrayList of {@link Log}
      *
-     * @param route
-     * @param rt
-     * @param ledger
-     * @return
+     * @param route The {@link Route} To determine index matching
+     * @param rt The {@link RoutingTable} Object of the Node
+     * @param ledger The {@link Ledger} Object of the Node
+     * @return Returns the List of {@link Log} updates to send to a follower over a HeartBeat
      */
     public static List<Log> determineUpdates(Route route, RoutingTable rt, Ledger ledger) {
         boolean followerSynced = (rt.getMatchIndex(route) == ledger.getLastApplied());  // determine whether the follower is up to date with the leader's log entries
@@ -38,10 +38,10 @@ public class Leader {
      * 2) From A Follower - Responded False
      * 3) From another Leader - Term Handling to resolve multiple leaders
      *
-     * @param hb
-     * @param ledger
-     * @param host_info
-     * @param rt
+     * @param hb The {@link HeartBeat} this method handles
+     * @param ledger the {@link Ledger} Object of the Node
+     * @param host_info The {@link HostInfo} Object of the Node
+     * @param rt the {@link RoutingTable} Object of the Node
      */
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info, RoutingTable rt) {
         Logger logger = new Logger(host_info);

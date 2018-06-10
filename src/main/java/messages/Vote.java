@@ -17,11 +17,7 @@ import routing.Route;
  *
  */
 public class Vote implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private boolean isVoteCast;
 	private String ip;
 	private int voting_port;
@@ -61,47 +57,71 @@ public class Vote implements Serializable {
 
     /**
 	 * The method a rpc uses to cast a vote for a Candidate.
+	 * @param id the id of the node to cast a vote for
 	 */
 	public void castVote(int id) {
 		this.isVoteCast = true;
 		this.responder = id;
 	}
 
-	public int getLastLogIndex() { return this.last_log_index; }
+	/**
+	 *
+	 * @return Returns the last Log Index of the given vote
+	 */
+	public int getLastLogIndex() {
+		return this.last_log_index;
+	}
 
-	public int getLastLogTerm() { return this.last_log_term; }
+	/**
+	 *
+	 * @return Returns the {@link Log} last Log Term of the given vote
+	 */
+	public int getLastLogTerm() {
+		return this.last_log_term;
+	}
 
+	/**
+	 *
+	 * @return Returns the integer responder id of a given Vote
+	 */
 	public int getResponder() {
 		return this.responder;
 	}
 
-	
-	/**
-	 * This return's the vote status of the Vote Object
-	 */
+    /**
+     *
+     * @return returns a Boolean based on whether the vote has been cast
+     */
 	public boolean getVoteStatus () {
 		return this.isVoteCast;
 	}
 
-	public int getEndpointPort() { return this.endpoint_port; };
-	
 	/**
-	 * This returns the vote's origin host
+	 *
+	 * @return returns the integer endpoint port of the vote initiator
+	 */
+	public int getEndpointPort() { return this.endpoint_port; };
+
+	/**
+	 *
+	 * @return Returns the String hostname of the initiator
 	 */
 	public String getHostName() {
 		return this.ip;
 	}
 
 	/**
-	 * This return's the vote's origin hosts' port that is being listened on
+	 *
+	 * @return returns the integer voting Port of the initiator
 	 */
 	public int getVotingPort() {
 		return this.voting_port;
 	}
 
-    /**
-     * This returns the vote's origin host's term
-     */
-    public int getTerm() { return this.term; }
+	/**
+	 *
+	 * @return returns the vote's origin host's term
+	 */
+	public int getTerm() { return this.term; }
 
 }

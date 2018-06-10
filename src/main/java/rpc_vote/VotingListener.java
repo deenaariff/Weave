@@ -33,17 +33,16 @@ public class VotingListener implements Runnable {
     /**
      * Constructor for the Voting Listener
      *
-     * @param host_info
-     * @param rt
-     * @param vb
-     * @param ledger
-     * @param logger
+     * @param host_info The {@link HostInfo} of the node
+     * @param rt The {@link RoutingTable} of the node
+     * @param vb The {@link VotingBooth} of the node
+     * @param ledger The {@link Ledger} of the node
      */
-    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Ledger ledger, Logger logger) {
+    public VotingListener(HostInfo host_info, RoutingTable rt, VotingBooth vb, Ledger ledger) {
         this.host_info = host_info;
         this.rt = rt;
         this.vb = vb;
-        this.logger = logger;
+        this.logger = host_info.getLogger();
         this.ledger = ledger;
     }
 

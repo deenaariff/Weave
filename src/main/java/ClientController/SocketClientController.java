@@ -25,9 +25,9 @@ public class SocketClientController {
     /**
      * Handle a a Client Message Over a Socket
      *
-     * @param content
-     * @return
-     * @throws IOException
+     * @param content The serialized JSON request of a client
+     * @return Returns JSON serialized string of response to a client request
+     * @throws IOException Throws an IO Exception of their is an error in processing deserializing request
      */
     public String processResponse(String content) throws IOException {
 

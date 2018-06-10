@@ -63,7 +63,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @return
+	 * @return returns Boolean based on whether state is Follower
 	 */
 	public boolean isFollower() {
 		return this.state == FOLLOWER_TAG;
@@ -71,7 +71,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @return
+	 * @return returns Boolean based on whether state is Candidate
 	 */
 	public boolean isCandidate() {
 		return this.state == CANDIDATE_TAG;
@@ -79,7 +79,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @return
+	 * @return returns Boolean based on whether state is Leader
 	 */
 	public boolean isLeader() {
 		return this.state == LEADER_TAG;
@@ -102,9 +102,9 @@ public class HostInfo {
 	 *
 	 * This method will also trigger the voting booth's startElection() method.
 	 *
-	 * @param vb
-	 * @param rt
-	 * @param ledger
+	 * @param vb The {@link VotingBooth} Object to start new election
+	 * @param rt The {@link RoutingTable} Object to broadcast new votes
+	 * @param ledger The {@link Ledger} Object to determine info in Votes
 	 */
 	public void becomeCandidate(VotingBooth vb, RoutingTable rt, Ledger ledger) {
 	    this.state = CANDIDATE_TAG;
@@ -122,7 +122,7 @@ public class HostInfo {
      * Once the state has changed, the main thread will recognize the node to be
      * a leader and begin broadcasting AppendEntries RPCs.
 	 *
-	 * @param rt
+	 * @param rt The {@link RoutingTable} Object to
 	 */
 	public void becomeLeader(RoutingTable rt) {
 	    this.state = LEADER_TAG;
@@ -133,8 +133,8 @@ public class HostInfo {
 	/**
 	 * Is the route parameter the same as the member variable route
 	 *
-	 * @param route
-	 * @return
+	 * @param route The {@link Route} to match against this node's route
+	 * @return Return boolean based on whether provided route mathces this node's route
 	 */
 	public boolean matchRoute(Route route) {
 		return this.route.equals(route);
@@ -257,7 +257,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @param flag
+	 * @param flag The Flag to tell whether this node has voted
 	 */
 	public void setVoteFlag(boolean flag) {
 		this.hasVoted = flag;
@@ -265,7 +265,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @param route
+	 * @param route The {@link Route} of the node that this node has voted for
 	 */
     public void setVote(Route route) {
     	this.votedFor = route;
@@ -273,7 +273,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @param votes
+	 * @param votes The number of votes a node has obtained in an election
 	 */
 	public void setVotesObtained(int votes) {
 		this.votes_obtained = votes;
@@ -281,7 +281,7 @@ public class HostInfo {
 
 	/**
 	 *
-	 * @return
+	 * @return returns the number of votes obtained during an election
 	 */
     public Integer getVotesObtained () {
     	return this.votes_obtained;

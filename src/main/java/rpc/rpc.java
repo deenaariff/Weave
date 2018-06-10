@@ -45,8 +45,9 @@ public class rpc {
 
     /**
      *
-     * @param rt
-     * @param host_info
+     * @param rt The {@link RoutingTable} of the Node
+     * @param host_info the {@link HostInfo} of the Node
+     * @param ledger the {@link Ledger} of the Node
      */
     public static void broadcastVotes(RoutingTable rt, HostInfo host_info, Ledger ledger) {
         int totalTableLength = rt.getTable().size();
@@ -75,10 +76,10 @@ public class rpc {
 
     /**
      *
-     * @param hb
-     * @param hostName
-     * @param portNumber
-     * @throws IOException
+     * @param hb The {@link HeartBeat} Object to send
+     * @param hostName the HostName of the node to send the Heartbeat to
+     * @param portNumber the port number of the node to send the heartbeat to
+     * @throws IOException Throw IOException caused by Socket IO
      */
     public static void sendHeartbeat(HeartBeat hb, String hostName, Integer portNumber) throws IOException {
         Socket socket = new Socket(hostName, portNumber);
@@ -90,10 +91,10 @@ public class rpc {
 
     /**
      *
-     * @param vote
-     * @param hostName
-     * @param portNumber
-     * @throws IOException
+     * @param vote The {@link Vote} to send
+     * @param hostName the HostName of the node to send the vote to
+     * @param portNumber the port number of the node to send the vote to
+     * @throws IOException Throw IOException caused by Socket IO
      */
     public static void sendVote (Vote vote, String hostName, int portNumber) throws IOException {
         Socket socket = new Socket(hostName, portNumber);
@@ -105,9 +106,9 @@ public class rpc {
 
     /**
      *
-     * @param hb
-     * @param destination
-     * @throws IOException
+     * @param hb The {@link HeartBeat} to return to the original sender
+     * @param destination the {@link Route} to return the Heartbeat to
+     * @throws IOException throws IO Exception from Socket IO
      */
 	public static void returnHeartbeat(HeartBeat hb, Route destination) throws IOException {
 	    sendHeartbeat(hb,destination.getIP(),destination.getHeartbeatPort());
@@ -115,8 +116,8 @@ public class rpc {
 
     /**
      *
-     * @param vote
-     * @throws IOException
+     * @param vote The {@link Vote} to return from Origin
+     * @throws IOException throws IO Exception due to Socket IO
      */
     public static void returnVote(Vote vote) throws IOException {
         Route vote_route = vote.getRoute();
@@ -126,8 +127,8 @@ public class rpc {
     /**
      * Notify all watchers that a leader election has occured
      *
-     * @param host_info
-     * @param rt
+     * @param host_info The {@link HostInfo} Object of the Node
+     * @param rt The {@link RoutingTable} of the node
      */
     public static void notifyElectionChange(HostInfo host_info, RoutingTable rt) {
         System.out.println("We have " + rt.getWatchers().size() + " watchers");
@@ -162,9 +163,9 @@ public class rpc {
     /**
      * Send a response to a Client when is Socket Client Controller Mode
      *
-     * @param socket
-     * @param response
-     * @throws IOException
+     * @param socket The Socket on which a client connection has been accepted on
+     * @param response the Serialized JSON repsonse to send to the Client
+     * @throws IOException Throw the IO Exception due to Socket IO
      */
     public static void sendClientResponse(Socket socket, String response) throws IOException {
         final OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");

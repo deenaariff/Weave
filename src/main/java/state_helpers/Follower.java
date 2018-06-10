@@ -22,10 +22,10 @@ public class Follower {
      * the follower confirms that the previous log items match then sends a
      * confirmation
      *
-     * @param hb
-     * @param ledger
-     * @param host_info
-     * @throws IOException
+     * @param hb The {@link HeartBeat} Object this method handles
+     * @param ledger The {@link Ledger} Object of the node
+     * @param host_info The {@link HostInfo} Object of the node
+     * @throws IOException Throws IO Exception from RetryReturnHeartBeat()
      */
     public static void HandleHeartBeat(HeartBeat hb, Ledger ledger, HostInfo host_info) throws IOException {
         Logger logger = host_info.getLogger();
@@ -88,9 +88,11 @@ public class Follower {
      *
      * If it is not a valid candidate, return the vote without casting a vote.
      *
-     * @param vote
-     * @param vb
-     * @param host_info
+     * @param vote The {@link Vote} Object this method handles
+     * @param vb The {@link VotingBooth} of the Node
+     * @param host_info The {@link HostInfo} of the Node
+     * @param ledger The {@link Ledger} of the node
+     * @throws IOException Throws IO Exception from RetryVote()
      */
     public static void HandleVote(Vote vote, VotingBooth vb, HostInfo host_info, Ledger ledger) throws IOException {
         Logger logger = host_info.getLogger();
@@ -109,9 +111,9 @@ public class Follower {
     }
 
     /**
+     * Retries respond to Votes if the first fails
      *
-     *
-     * @param vote
+     * @param vote The {@link Vote} Object this method will retry
      * @throws IOException
      */
     private static void RetryVote(Vote vote, Logger logger) throws IOException {

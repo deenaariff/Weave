@@ -22,9 +22,9 @@ public class Candidate {
      *
      * Else, respond to the heartbeat without the acknowledgement.
      *
-     * @param hb
-     * @param host_info
-     * @throws IOException
+     * @param hb The {@link HeartBeat} this methods handles
+     * @param host_info The {@link HostInfo} of the node
+     * @throws IOException Throws an IO Excpetion that may originate from rpc.returnHeartBeat()
      */
     public static void HandleHeartBeat(HeartBeat hb, HostInfo host_info) throws IOException {
         if (hb.getTerm() >= host_info.getTerm()) {

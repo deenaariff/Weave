@@ -53,9 +53,9 @@ public class Ledger {
 	/**
 	 * Get the Logs in that are in the interval of a given start index, to the # num_logs after that
 	 *
-	 * @param start_index
-	 * @param num_logs
-	 * @return
+	 * @param start_index The start index of the first log to get
+	 * @param num_logs The number of logs to get from the given start index
+	 * @return a {@link List} of {@link Log} for the given start_index and num_logs
 	 */
 	public List<Log> getLogs(int start_index, int num_logs) {
 		List<Log> updates = new ArrayList<Log>();
@@ -71,7 +71,7 @@ public class Ledger {
 	 * This method is called by client to add new log to the list of logs.
 	 * This will be replicated to followers.
 	 *
-	 * @param value
+	 * @param value The {@link Log} to append to this nodes logs
 	 */
 	public void addToLogs(Log value) {
 		this.logs.add(value);
@@ -85,8 +85,8 @@ public class Ledger {
 	 * Will update the commitIndex if a majority of servers have committed at a given index
 	 * by calling updateCommitIndex()
 	 *
-	 * @param hb
-	 * @param rt
+	 * @param hb the {@link HeartBeat} (response to AppendEntries RPC) to be confirmed by the leader
+	 * @param rt the {@link RoutingTable} to determine majority of cluster for commiting Log
 	 */
 	public void receiveConfirmation(HeartBeat hb, RoutingTable rt) {
 
@@ -112,7 +112,7 @@ public class Ledger {
 	 * Given a majority of nodes have acknowledged a Log at a given index
 	 * update the commitIndex accordingly
 	 *
-	 * @param new_index
+	 * @param new_index The last index to be committed from the logs applied
 	 */
 	private void updateCommitIndex(int new_index) {
 		for(int i = this.commitIndex; i <= new_index; i++) {
@@ -125,9 +125,9 @@ public class Ledger {
 	/**
 	 * Confirms whether a Log at a given index matches the equivalent Log in the ledger
 	 *
-	 * @param index
-	 * @param term
-	 * @return
+	 * @param index the index at which to confirm a match for a given {@link Log} entry
+	 * @param term the {@link Log} entry to match at the provided index
+	 * @return returns a Boolean based upon whether the term matches the logs at the given index
 	 */
 	public Boolean confirmMatch(int index, Log term) {
 		if(index == 0) {
@@ -142,7 +142,7 @@ public class Ledger {
 	 * Given the commit Index from a Leader, update the commit index to be the min
 	 * of the last applied log to our ledger and the leader's commit index.
 	 *
-	 * @param leader_commit_index
+	 * @param leader_commit_index the leader_commit_index to update the follower's commit index
 	 */
 	public void syncCommitIndex(int leader_commit_index) {
 		if(leader_commit_index > this.commitIndex) {
@@ -177,7 +177,7 @@ public class Ledger {
 	/**
 	 * Commit a Log at a given index in the logs to the keyStore
 	 *
-	 * @param index
+	 * @param index the index at which to commit a log
 	 */
 	private void commitToLogs(int index) {
 		Log log = logs.get(index);
@@ -187,8 +187,8 @@ public class Ledger {
     /**
      * Get the Log at a Given Index
      *
-     * @param index
-     * @return
+     * @param index The index to obtain a certain log in the node's logs
+     * @return returns a {@link Log} that is at the given index in the node's logs
      */
     public Log getLogbyIndex(int index) {
         if(index < 0) {
@@ -200,7 +200,7 @@ public class Ledger {
     /**
      * Get the last log in the ledger
      *
-     * @return
+     * @return returns a {@link Log} at the end of the node's Logs
      */
     public Log getLastLog() {
         if(logs.size() > 0) {
@@ -214,8 +214,8 @@ public class Ledger {
      * Method for follower to validate Candidate's vote
      * If Candidate's log is at least as up to date as receiver's log grant vote
      *
-     * @param vote
-     * @return
+     * @param vote The {@link Vote} to validate given the node's terms and last Log Term
+     * @return returns a boolean one whether this vote is validated by the ledger's info
      */
     public boolean validateVote(Vote vote) {
 
@@ -234,7 +234,7 @@ public class Ledger {
 
 	/**
 	 *
-	 * @return
+	 * @return returns a Map that represents this node's key store
 	 */
 	public Map<String,String> getKeyStore() {
 		return this.keyStore;
@@ -242,7 +242,7 @@ public class Ledger {
 
 	/**
 	 *
-	 * @return
+	 * @return returns the current commit index of this node
 	 */
 	public int getCommitIndex() {
 		return commitIndex;
@@ -250,7 +250,7 @@ public class Ledger {
 
 	/**
 	 *
-	 * @return
+	 * @return returns the last index applied in the node's logs
 	 */
 	public int getLastApplied() {
 		return lastApplied;

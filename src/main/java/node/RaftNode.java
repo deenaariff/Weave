@@ -21,11 +21,13 @@ public class RaftNode implements Runnable {
 	private RoutingTable rt;
 	private VotingBooth vb;
 
-	/**
-	 * Constructor for the RaftNode Class.vb
-     * Pass option Routing Table
-	 *
-	 */
+    /**
+     *
+     * @param rt The {@link RoutingTable} of the ndoe
+     * @param ledger The {@link Ledger} of the node
+     * @param host the {@link HostInfo} of the node
+     * @param vb the {@link VotingBooth} of the node
+     */
 	public RaftNode(RoutingTable rt, Ledger ledger, HostInfo host, VotingBooth vb) {
         this.rt = rt;
         this.host = host;
