@@ -14,7 +14,7 @@ Among our three main goals in creating Weave, were to design:
 
 ## JAVADOC
 
-You can read the Javadoc here [link] (https://deenaariff.github.io/Weave/).
+You can read the Javadoc here [link](https://deenaariff.github.io/Weave/).
 
 ## An Introduction to RAFT Consensus
 
