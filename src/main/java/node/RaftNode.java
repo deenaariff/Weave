@@ -15,11 +15,11 @@ import java.util.concurrent.TimeUnit;
  * @author deenaariff
  */
 public class RaftNode implements Runnable {
-	
-	private Ledger ledger;
-	private HostInfo host;
-	private RoutingTable rt;
-	private VotingBooth vb;
+    
+    private Ledger ledger;
+    private HostInfo host;
+    private RoutingTable rt;
+    private VotingBooth vb;
 
     /**
      *
@@ -28,14 +28,14 @@ public class RaftNode implements Runnable {
      * @param host the {@link HostInfo} of the node
      * @param vb the {@link VotingBooth} of the node
      */
-	public RaftNode(RoutingTable rt, Ledger ledger, HostInfo host, VotingBooth vb) {
+    public RaftNode(RoutingTable rt, Ledger ledger, HostInfo host, VotingBooth vb) {
         this.rt = rt;
         this.host = host;
         this.ledger = ledger;
         this.vb = vb;
     }
 
-	public void run() {
+    public void run() {
 
         try{
             TimeUnit.SECONDS.sleep(1);
@@ -61,5 +61,5 @@ public class RaftNode implements Runnable {
         }
 
     }
-	
+    
 }
