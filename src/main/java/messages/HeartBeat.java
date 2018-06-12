@@ -26,17 +26,17 @@ public class HeartBeat implements Serializable {
 
     private static final int HEARTBEAT_CAPACITY = 2; // the number of logs per heartbeat
 
-	private int term;  // The term of the sender of the heartbeat
+    private int term;  // The term of the sender of the heartbeat
     private int leaderCommitIndex; // the commit index the leader sends
 
     private int prevLogIndex; // the prevLogIndex to match with the Follower
     private Log prevLog; // the Term at prevLogIndex to match with the Follower
 
-	private List<Log> entries;  // The Entries the leader wants to send to the Follower
+    private List<Log> entries;  // The Entries the leader wants to send to the Follower
     
-	private Boolean reply; // What does the Follower say in response?
-	private Route originRoute; // The origin of the Heartbeat (Leader's Route)
-	private Route responderRoute; // The route of the Follower responding to the heartbeat
+    private Boolean reply; // What does the Follower say in response?
+    private Route originRoute; // The origin of the Heartbeat (Leader's Route)
+    private Route responderRoute; // The route of the Follower responding to the heartbeat
 
 
     /**
@@ -48,16 +48,16 @@ public class HeartBeat implements Serializable {
      * @param rt The {@link RoutingTable} by which to obtain the prevLogIndex and prevLog info
      * @param ledger The {@link Ledger} object to obtain info needed in this heartbeat
      */
-	public HeartBeat(HostInfo hostInfo, List<Log> updates, Route destination, RoutingTable rt, Ledger ledger) {
-		this.term = hostInfo.getTerm();
-		this.entries = updates;
-		this.reply = null; // allows us to determine whether this is appendEntries RPC or Response RPC
-		this.originRoute = hostInfo.getRoute();
-		this.responderRoute = destination;
+    public HeartBeat(HostInfo hostInfo, List<Log> updates, Route destination, RoutingTable rt, Ledger ledger) {
+        this.term = hostInfo.getTerm();
+        this.entries = updates;
+        this.reply = null; // allows us to determine whether this is appendEntries RPC or Response RPC
+        this.originRoute = hostInfo.getRoute();
+        this.responderRoute = destination;
         this.prevLogIndex = rt.getMatchIndex(destination); // prevLogIndex is equivalent to matchIndex - 1
         this.prevLog = ledger.getLogbyIndex(this.prevLogIndex-1); // null if prevLogIndex == -1
         this.leaderCommitIndex = ledger.getCommitIndex();
-	}
+    }
 
     public HeartBeat(HostInfo hostInfo, List<Log> updates, Route destination, int prevLogIndex, Log prevLog, int leaderCommitIndex) {
         this.term = hostInfo.getTerm();
@@ -70,11 +70,11 @@ public class HeartBeat implements Serializable {
         this.leaderCommitIndex = leaderCommitIndex;
     }
 
-	@Override
+    @Override
     public String toString(){
-	    String result = "term: " + this.term;
-	    result = result + " | prevLogIndex: " + this.prevLogIndex;
-	    if(this.prevLog != null) {
+        String result = "term: " + this.term;
+        result = result + " | prevLogIndex: " + this.prevLogIndex;
+        if(this.prevLog != null) {
             result = result + " | prevLog: " + this.prevLog.toString();
         }
         return result;
@@ -110,7 +110,7 @@ public class HeartBeat implements Serializable {
      * Get the Entries stored in the Heartbeat
      * @return returns the List of {@link Log} updates in this Heartbeat
      */
-	public List<Log> getEntries() { return entries; }
+    public List<Log> getEntries() { return entries; }
 
     /**
      * Get the PrevLogIndex the Leader tries to match with the Follower
@@ -134,13 +134,13 @@ public class HeartBeat implements Serializable {
      * Get the reply value (true or false) of the follower
      * @return returns Boolean to determine whether response is False or True
      */
-	public Boolean getReply () { return this.reply; }
+    public Boolean getReply () { return this.reply; }
 
     /**
      * Set the reply value of the Heartbeat
      * @param response the boolean value to set the response of this Hearbeat to
      */
-	public void setReply(boolean response) { this.reply = response; }
+    public void setReply(boolean response) { this.reply = response; }
 
     /**
      * Get the origin of the Heartbeat (Leader's Route)
