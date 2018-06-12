@@ -18,10 +18,10 @@ import java.util.NoSuchElementException;
 
 public class RoutingTable {
 
-	private List<Route> table;
-	private HashMap<Integer,Route> id_map;
+    private List<Route> table;
+    private HashMap<Integer,Route> id_map;
 
-	// Data Structures used by Leader
+    // Data Structures used by Leader
     private HashMap<Route,Integer> matchIndex;
     private HashMap<Route,Integer> nextIndex;
 
@@ -32,8 +32,8 @@ public class RoutingTable {
      * Constructor for Routing Table
      * @param configFile The configfile to create the routing table from
      */
-	public RoutingTable(String configFile) {
-	    this.id_map = new HashMap<Integer, Route>();
+    public RoutingTable(String configFile) {
+        this.id_map = new HashMap<Integer, Route>();
         this.table = new ArrayList<Route>();
         this.matchIndex = new HashMap<Route, Integer>();
         this.nextIndex = new HashMap<Route,Integer>();
@@ -46,12 +46,12 @@ public class RoutingTable {
      * @param route The {@link Route} to lookup
      * @return returns integer based on the nextIndex to be updated for a given {@link Route}
      */
-	public int getNextIndex(Route route) {
-	    try {
+    public int getNextIndex(Route route) {
+        try {
             return nextIndex.get(route);
         } catch (NoSuchElementException e) {
-	        e.printStackTrace();
-	        System.exit(1);
+            e.printStackTrace();
+            System.exit(1);
         }
         return -1;
     }
