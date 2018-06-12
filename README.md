@@ -12,7 +12,7 @@ Among our three main goals in creating Weave, were to design:
 2) A go-to implementation of RAFT for distributed Java Applications that require a consensus algorithm
 3) A distributed environment for academic enrichment in the subject of Distributed Consensus 
 
-## JAVADOC
+## Javadoc
 
 You can read the Javadoc [here](https://deenaariff.github.io/Weave/).
 
