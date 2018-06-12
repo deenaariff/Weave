@@ -11,7 +11,18 @@ public class Logger {
     }
 
     public void log(String message) {
-        System.out.println("[" + this.host_info.getState() + " (" + this.host_info.getTerm() + ") " + "| " + System.currentTimeMillis() + " | " + this.host_info.getEndPointPort() + " ]:"  + message);
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(this.host_info.getState());
+        builder.append(this.host_info.getTerm());
+        builder.append(") ");
+        builder.append("| ");
+        builder.append(System.currentTimeMillis());
+        builder.append(" | ");
+        builder.append(this.host_info.getEndPointPort());
+        builder.append(" ]: ");
+        builder.append(message);
+        System.out.println(builder.toString());
     }
 
 
