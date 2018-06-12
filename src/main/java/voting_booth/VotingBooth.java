@@ -1,6 +1,6 @@
 package voting_booth;
 
-import Logger.Logger;
+import logger.Logger;
 import info.HostInfo;
 import routing.Route;
 import routing.RoutingTable;

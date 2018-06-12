@@ -1,6 +1,6 @@
 package rpc_heartbeat;
 
-import Logger.Logger;
+import logger.Logger;
 import info.HostInfo;
 import ledger.Ledger;
 import messages.HeartBeat;

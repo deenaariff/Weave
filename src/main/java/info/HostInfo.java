@@ -1,6 +1,6 @@
 package info;
 
-import Logger.Logger;
+import logger.Logger;
 import ledger.Ledger;
 import routing.RoutingTable;
 import rpc.rpc;

@@ -1,4 +1,4 @@
-package ClientController;
+package client_controller;
 
 import info.HostInfo;
 import ledger.Ledger;

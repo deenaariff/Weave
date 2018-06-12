@@ -3,7 +3,7 @@ package rpc_vote;
 import ledger.Ledger;
 import state_helpers.Candidate;
 import state_helpers.Follower;
-import Logger.Logger;
+import logger.Logger;
 import voting_booth.VotingBooth;
 import info.HostInfo;
 import messages.Vote;

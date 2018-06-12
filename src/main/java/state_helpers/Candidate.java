@@ -1,6 +1,6 @@
 package state_helpers;
 
-import Logger.Logger;
+import logger.Logger;
 import info.HostInfo;
 import messages.Vote;
 import routing.RoutingTable;
