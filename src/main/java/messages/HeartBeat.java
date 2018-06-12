@@ -83,6 +83,7 @@ public class HeartBeat implements Serializable {
 
     /**
      * Get the number of entries sent in each AppendEntries RPC
+     *
      * @return retursn the number of entries to be sent in each Heartbeat
      */
     public static int getHeartbeatCapacity() { return HEARTBEAT_CAPACITY; }
@@ -90,71 +91,83 @@ public class HeartBeat implements Serializable {
     /**
      * if hasReplied() == false: Get the Term of the Leader
      * else: Get the Term of the Follower
+     *
      * @return Returns the term of given heartbeat
      */
     public int getTerm() { return term; }
 
     /**
      * Get the commit Index of the Leader who sent the Heartbeat
+     *
      * @return returns the leader commit index of the given heartbeat
      */
     public int getLeaderCommitIndex() { return leaderCommitIndex; }
 
     /**
      * Set the Term of the Heartbeat
+     *
      * @param new_term sets the term of this heratbeat
      */
     public void setTerm(int new_term) { this.term = new_term; }
 
     /**
      * Get the Entries stored in the Heartbeat
+     *
      * @return returns the List of {@link Log} updates in this Heartbeat
      */
     public List<Log> getEntries() { return entries; }
 
     /**
      * Get the PrevLogIndex the Leader tries to match with the Follower
+     *
      * @return returns the prevLogIndex of this Heartbeat
      */
     public int getPrevLogIndex() { return prevLogIndex; }
 
     /**
      * Get the PrevLog at PrevLogIndex the Leader tries to match with the Follower
+     *
      * @return returns the {@link Log} prevLog Object in this heartbeat
      */
     public Log getPrevLog() { return prevLog; }
 
     /**
      * Test to see if this is an AppendEntries RPC (leader to follower) or a response (follower to leader)
+     *
      * @return returns a boolean to test whether this a initiating or response Heartbeat
      */
     public boolean hasReplied() { return this.reply != null; }
 
     /**
      * Get the reply value (true or false) of the follower
+     *
      * @return returns Boolean to determine whether response is False or True
      */
     public Boolean getReply () { return this.reply; }
 
     /**
      * Set the reply value of the Heartbeat
+     *
      * @param response the boolean value to set the response of this Hearbeat to
      */
     public void setReply(boolean response) { this.reply = response; }
 
     /**
      * Get the origin of the Heartbeat (Leader's Route)
+     *
      * @return returns the origin {@link Route} of this Heartbeat (the initiating Leader)
      */
     public Route getOriginRoute() { return originRoute; }
 
     /**
+     * Set the originating (Leader) Route of a Heartbeat
      *
      * @param originRoute The {@link Route} to set this Heartbeat to
      */
     public void setOriginRoute(Route originRoute) { this.originRoute = originRoute; }
 
     /**
+     * Get the Route of the responder to the Heartbeat
      *
      * @return returns the  {@link Route}  of the responder to the Heartbeat
      */

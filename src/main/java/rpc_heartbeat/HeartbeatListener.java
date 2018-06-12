@@ -25,7 +25,8 @@ public class HeartbeatListener implements Runnable {
     private Logger logger;
 
     /**
-     * Constructor
+     * Constructor for HeartbeatListener
+     *
      * @param host_info The {@link HostInfo} of the ndoe
      * @param ledger The {@link Ledger} of the Node
      * @param rt The {@link RoutingTable} of the Node
